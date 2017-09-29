@@ -1,0 +1,14 @@
+﻿<Properties StartupConfiguration="{B1EF7F8D-A4D1-451F-A208-5F926839141A}|Default">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.Workbench ActiveDocument="ArchivosTarea2\Form1.cs">
+    <Files>
+      <File FileName="ArchivosTarea2\ModificadorAtributo.cs" Line="1" Column="1" />
+      <File FileName="ArchivosTarea2\Form1.cs" Line="1" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.ItemProperties.ArchivosTarea2 PreferredExecutionTarget="MonoDevelop.Default" />
+</Properties>
