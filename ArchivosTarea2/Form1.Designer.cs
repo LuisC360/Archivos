@@ -55,6 +55,9 @@
             this.label5 = new System.Windows.Forms.Label();
             this.dataGridView2 = new System.Windows.Forms.DataGridView();
             this.button9 = new System.Windows.Forms.Button();
+            this.label8 = new System.Windows.Forms.Label();
+            this.button10 = new System.Windows.Forms.Button();
+            this.label9 = new System.Windows.Forms.Label();
             this.statusStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -309,17 +312,47 @@
             // 
             this.button9.Location = new System.Drawing.Point(271, 24);
             this.button9.Name = "button9";
-            this.button9.Size = new System.Drawing.Size(135, 23);
+            this.button9.Size = new System.Drawing.Size(112, 23);
             this.button9.TabIndex = 17;
             this.button9.Text = "Insertar datos";
             this.button9.UseVisualStyleBackColor = true;
             this.button9.Click += new System.EventHandler(this.button9_Click);
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(272, 9);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(111, 13);
+            this.label8.TabIndex = 18;
+            this.label8.Text = "Secuencial ordenado:";
+            // 
+            // button10
+            // 
+            this.button10.Location = new System.Drawing.Point(389, 24);
+            this.button10.Name = "button10";
+            this.button10.Size = new System.Drawing.Size(112, 23);
+            this.button10.TabIndex = 19;
+            this.button10.Text = "Insertar datos";
+            this.button10.UseVisualStyleBackColor = true;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(389, 9);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(109, 13);
+            this.label9.TabIndex = 20;
+            this.label9.Text = "Secuencial indexado:";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(629, 540);
+            this.Controls.Add(this.label9);
+            this.Controls.Add(this.button10);
+            this.Controls.Add(this.label8);
             this.Controls.Add(this.button9);
             this.Controls.Add(this.dataGridView2);
             this.Controls.Add(this.label5);
@@ -333,6 +366,7 @@
             this.Controls.Add(this.textBox1);
             this.Name = "Form1";
             this.Text = "Form1";
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.panel1.ResumeLayout(false);
@@ -375,6 +409,9 @@
         private System.Windows.Forms.ComboBox comboBox2;
         private System.Windows.Forms.Button button8;
         private System.Windows.Forms.Button button9;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Button button10;
+        private System.Windows.Forms.Label label9;
     }
 }
 

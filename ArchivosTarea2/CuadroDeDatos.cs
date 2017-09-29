@@ -20,6 +20,7 @@ namespace ArchivosTarea2
         long tamDato = 0;
         public long apDatos = 0;
         public bool bandChanged = false;
+        List<Dato> datosVigentes = new List<Dato>();
         /** NOTA: Intentarlo con una lista tipo dynamic **/
 
         int valorMasBajoInt = 0;
@@ -60,6 +61,14 @@ namespace ArchivosTarea2
                 }
             }
 
+            foreach(Dato dat in ent.listaDatos)
+            {
+                if(dat.apSigDato != -3 && dat.apSigDato != -4)
+                {
+                    datosVigentes.Add(dat);
+                }
+            }
+
             InitializeComponent();
 
             rellena_dataGrid();
@@ -71,8 +80,11 @@ namespace ArchivosTarea2
             {
                 pobla_dataGrid();
             }
+
+            button4.Enabled = false;
         }
 
+        // Boton para añadir un dato
         private void button1_Click(object sender, EventArgs e)
         {           
             int celdaSeleccionada = dataGridView1.CurrentRow.Index;
@@ -229,32 +241,50 @@ namespace ArchivosTarea2
             {
                 case 'I': foreach (Dato dt in ent.listaDatos)
                           {
-                              valoresInt.Add(Convert.ToInt32(dt.datos[indiceLlave]));
+                              if (dt.apSigDato != -3 && dt.apSigDato != -4)
+                              {
+                                  valoresInt.Add(Convert.ToInt32(dt.datos[indiceLlave]));
+                              }
                           }
                           break;
                 case 'F': foreach (Dato dt in ent.listaDatos)
                           {
-                              valoresFloat.Add((float)dt.datos[indiceLlave]);
+                              if (dt.apSigDato != -3 && dt.apSigDato != -4)
+                              {
+                                  valoresFloat.Add((float)dt.datos[indiceLlave]);
+                              }
                           }
                           break;
                 case 'D': foreach (Dato dt in ent.listaDatos)
                           {
-                              valoresDouble.Add(Convert.ToDouble(dt.datos[indiceLlave]));
+                              if (dt.apSigDato != -3 && dt.apSigDato != -4)
+                              {
+                                  valoresDouble.Add(Convert.ToDouble(dt.datos[indiceLlave]));
+                              }
                           }
                           break;
                 case 'L': foreach (Dato dt in ent.listaDatos)
                           {
-                              valoresLong.Add(Convert.ToInt64(dt.datos[indiceLlave]));
+                              if (dt.apSigDato != -3 && dt.apSigDato != -4)
+                              {
+                                  valoresLong.Add(Convert.ToInt64(dt.datos[indiceLlave]));
+                              }
                           }
                           break;
                 case 'C': foreach (Dato dt in ent.listaDatos)
                           {
-                              valoresChar.Add(Convert.ToChar(dt.datos[indiceLlave]));
+                              if (dt.apSigDato != -3 && dt.apSigDato != -4)
+                              {
+                                  valoresChar.Add(Convert.ToChar(dt.datos[indiceLlave]));
+                              }
                           }
                           break;
                 case 'S': foreach(Dato dt in ent.listaDatos)
                           {
-                              valoresString.Add(Convert.ToString(dt.datos[indiceLlave]));
+                              if (dt.apSigDato != -3 && dt.apSigDato != -4)
+                              {
+                                  valoresString.Add(Convert.ToString(dt.datos[indiceLlave]));
+                              }
                           }
                           break;
             }
@@ -292,6 +322,7 @@ namespace ArchivosTarea2
                 nuevoDato.posDato = posMemoria;
                 posMemoria += tamDato;
                 ent.listaDatos.Add(nuevoDato);
+                datosVigentes.Add(nuevoDato);
                 datoValorMasBajo = nuevoDato;
                 ent.apDatos = nuevoDato.posDato;
                 apDatos = ent.apDatos;
@@ -324,58 +355,687 @@ namespace ArchivosTarea2
             {
                 foreach (Dato dat in ent.listaDatos)
                 {
-                    if(attr.tipo == 'I' || attr.tipo == 'F' || attr.tipo == 'D' || attr.tipo == 'L')
+                    if (dat.apSigDato != -3 && dat.apSigDato != -4)
                     {
-                        int datoA = 0;
-                        int datoB = 0;
-                        float datoC = 0;
-                        float datoD = 0;
-                        double datoE = 0;
-                        double datoF = 0;
-                        long datoG = 0;
-                        long datoH = 0;                        
-
-                        switch(attr.tipo)
+                        if (attr.tipo == 'I' || attr.tipo == 'F' || attr.tipo == 'D' || attr.tipo == 'L')
                         {
-                            case 'I': datoA = Convert.ToInt32(dat.datos[indiceLlave]);
-                                      datoB = Convert.ToInt32(nuevoDato.datos[indiceLlave]);
-                                      break;
-                            case 'F': datoC = (float)dat.datos[indiceLlave];
-                                      datoD = (float)nuevoDato.datos[indiceLlave];
-                                      break;
-                            case 'D': datoE = Convert.ToDouble(dat.datos[indiceLlave]);
-                                      datoF = Convert.ToDouble(nuevoDato.datos[indiceLlave]);
-                                      break;
-                            case 'L': datoG = Convert.ToInt64(dat.datos[indiceLlave]);
-                                      datoH = Convert.ToInt64(nuevoDato.datos[indiceLlave]);
-                                      break;
+                            int datoA = 0;
+                            int datoB = 0;
+                            float datoC = 0;
+                            float datoD = 0;
+                            double datoE = 0;
+                            double datoF = 0;
+                            long datoG = 0;
+                            long datoH = 0;
+
+                            switch (attr.tipo)
+                            {
+                                case 'I': datoA = Convert.ToInt32(dat.datos[indiceLlave]);
+                                    datoB = Convert.ToInt32(nuevoDato.datos[indiceLlave]);
+                                    break;
+                                case 'F': datoC = (float)dat.datos[indiceLlave];
+                                    datoD = (float)nuevoDato.datos[indiceLlave];
+                                    break;
+                                case 'D': datoE = Convert.ToDouble(dat.datos[indiceLlave]);
+                                    datoF = Convert.ToDouble(nuevoDato.datos[indiceLlave]);
+                                    break;
+                                case 'L': datoG = Convert.ToInt64(dat.datos[indiceLlave]);
+                                    datoH = Convert.ToInt64(nuevoDato.datos[indiceLlave]);
+                                    break;
+                            }
+
+                            //**---------- ENTEROS ----------**//
+                            if (datoA != 0 && datoB != 0)
+                            {
+                                if (datoA == datoB)
+                                {
+                                    MessageBox.Show("Error, llave primaria duplicada.");
+                                    break;
+                                }
+                                // Si el dato insertado es el valor mas pequeño
+                                else if (datoB < datoA && dat == datoValorMasBajo)
+                                {
+                                    nuevoDato.posDato = posMemoria;
+                                    posMemoria += tamDato;
+
+                                    nuevoDato.apSigDato = dat.posDato;
+                                    ent.apDatos = nuevoDato.posDato;
+                                    apDatos = ent.apDatos;
+
+                                    ent.listaDatos.Add(nuevoDato);
+                                    datosVigentes.Add(nuevoDato);
+
+                                    valorMasBajoInt = Convert.ToInt32(nuevoDato.datos[indiceLlave]);
+                                    posDatoValorMasBajo = ent.listaDatos.IndexOf(nuevoDato);
+                                    datoValorMasBajo = nuevoDato;
+
+                                    dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato;
+
+                                    for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
+                                    {
+                                        if (dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == dat.datos[indiceLlave].ToString())
+                                        {
+                                            dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = dat.apSigDato;
+                                            break;
+                                        }
+                                    }
+
+                                    break;
+                                }
+                                else if (datoB < datoA)
+                                {
+                                    nuevoDato.posDato = posMemoria;
+                                    posMemoria += tamDato;
+
+                                    List<int> valoresResta = new List<int>();
+                                    List<int> sustraendos = new List<int>();
+                                    Dato datoPredecesor = new Dato();
+
+                                    foreach (Dato dt in ent.listaDatos)
+                                    {
+                                        if (dt.apSigDato != -3 && dt.apSigDato != -4)
+                                        {
+                                            int sustraendo = Convert.ToInt32(dt.datos[indiceLlave]);
+                                            int resta = datoB - sustraendo;
+
+                                            if (resta >= 0)
+                                            {
+                                                valoresResta.Add(resta);
+                                                sustraendos.Add(sustraendo);
+                                            }
+                                        }
+                                    }
+
+                                    var valorRestaMenor = valoresResta.Min();
+
+                                    for (int i = 0; i < sustraendos.Count; i++)
+                                    {
+                                        if (valoresResta[i] == valorRestaMenor)
+                                        {
+                                            foreach (Dato data in ent.listaDatos)
+                                            {
+                                                if (data.apSigDato != -3 && data.apSigDato != -4)
+                                                {
+                                                    if (Convert.ToInt32(data.datos[indiceLlave]) == sustraendos[i])
+                                                    {
+                                                        datoPredecesor = data;
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                            break;
+                                        }
+                                    }
+
+                                    datoPredecesor.apSigDato = nuevoDato.posDato;
+                                    nuevoDato.apSigDato = dat.posDato;
+                                    ent.listaDatos.Add(nuevoDato);
+                                    datosVigentes.Add(nuevoDato);
+
+                                    dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato;
+
+                                    for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
+                                    {
+                                        if (dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == dat.datos[indiceLlave].ToString())
+                                        {
+                                            dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = dat.apSigDato;
+                                            break;
+                                        }
+                                    }
+
+                                    for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
+                                    {
+                                        if (dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == datoPredecesor.datos[indiceLlave].ToString())
+                                        {
+                                            dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = datoPredecesor.apSigDato;
+                                            break;
+                                        }
+                                    }
+
+                                    break;
+                                }
+                                // Si es el valor mas grande de todos
+                                else if (datosVigentes.Count - 1 == posDatoComparar && datoB > datoA)
+                                {
+                                    nuevoDato.posDato = posMemoria;
+                                    posMemoria += tamDato;
+
+                                    Dato datoValorMasGrande = new Dato();
+
+                                    var valorMasGrande = valoresInt.Max();
+
+                                    // Buscamos el dato con ese valor
+                                    foreach (Dato dt in ent.listaDatos)
+                                    {
+                                        if (dt.apSigDato != -3 && dt.apSigDato != -4)
+                                        {
+                                            if (Convert.ToInt32(dt.datos[indiceLlave]) == valorMasGrande)
+                                            {
+                                                datoValorMasGrande = dt;
+                                                break;
+                                            }
+                                        }
+                                    }
+
+                                    datoValorMasGrande.apSigDato = nuevoDato.posDato;
+                                    ent.listaDatos.Add(nuevoDato);
+                                    datosVigentes.Add(nuevoDato);
+
+                                    dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato;
+
+                                    for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
+                                    {
+                                        if (dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == datoValorMasGrande.datos[indiceLlave].ToString())
+                                        {
+                                            dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = datoValorMasGrande.apSigDato;
+                                            break;
+                                        }
+                                    }
+
+                                    break;
+                                }
+                                else if (datoB > datoA)
+                                {
+                                    posDatoComparar++;
+                                }
+                            }
+                            //**---------- FLOTANTES ----------**//
+                            else if (datoC != 0 && datoD != 0)
+                            {
+                                if (datoC == datoD)
+                                {
+                                    MessageBox.Show("Error, llave primaria duplicada.");
+                                    break;
+                                }
+                                // Si el dato insertado es el valor mas pequeño
+                                else if (datoD < datoC && dat == datoValorMasBajo)
+                                {
+                                    nuevoDato.posDato = posMemoria;
+                                    posMemoria += tamDato;
+
+                                    nuevoDato.apSigDato = dat.posDato;
+                                    ent.apDatos = nuevoDato.posDato;
+                                    apDatos = ent.apDatos;
+
+                                    ent.listaDatos.Add(nuevoDato);
+                                    datosVigentes.Add(nuevoDato);
+
+                                    valorMasBajoFloat = (float)nuevoDato.datos[indiceLlave];
+                                    posDatoValorMasBajo = ent.listaDatos.IndexOf(nuevoDato);
+                                    datoValorMasBajo = nuevoDato;
+
+                                    dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato;
+
+                                    for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
+                                    {
+                                        if (dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == dat.datos[indiceLlave].ToString())
+                                        {
+                                            dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = dat.apSigDato;
+                                            break;
+                                        }
+                                    }
+
+                                    break;
+                                }
+                                else if (datoD < datoC)
+                                {
+                                    nuevoDato.posDato = posMemoria;
+                                    posMemoria += tamDato;
+
+                                    List<float> valoresResta = new List<float>();
+                                    List<float> sustraendos = new List<float>();
+                                    Dato datoPredecesor = new Dato();
+
+                                    foreach (Dato dt in ent.listaDatos)
+                                    {
+                                        if (dt.apSigDato != -3 && dt.apSigDato != -4)
+                                        {
+                                            float sustraendo = (float)dt.datos[indiceLlave];
+                                            float resta = datoD - sustraendo;
+
+                                            if (resta >= 0)
+                                            {
+                                                valoresResta.Add(resta);
+                                                sustraendos.Add(sustraendo);
+                                            }
+                                        }
+                                    }
+
+                                    var valorRestaMenor = valoresResta.Min();
+
+                                    for (int i = 0; i < sustraendos.Count; i++)
+                                    {
+                                        if (valoresResta[i] == valorRestaMenor)
+                                        {
+                                            foreach (Dato data in ent.listaDatos)
+                                            {
+                                                if (data.apSigDato != -3 && data.apSigDato != -4)
+                                                {
+                                                    if (((float)(data.datos[indiceLlave])) == sustraendos[i])
+                                                    {
+                                                        datoPredecesor = data;
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                            break;
+                                        }
+                                    }
+
+                                    datoPredecesor.apSigDato = nuevoDato.posDato;
+                                    nuevoDato.apSigDato = dat.posDato;
+                                    ent.listaDatos.Add(nuevoDato);
+                                    datosVigentes.Add(nuevoDato);
+
+                                    dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato;
+
+                                    for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
+                                    {
+                                        if (dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == dat.datos[indiceLlave].ToString())
+                                        {
+                                            dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = dat.apSigDato;
+                                            break;
+                                        }
+                                    }
+
+                                    for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
+                                    {
+                                        if (dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == datoPredecesor.datos[indiceLlave].ToString())
+                                        {
+                                            dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = datoPredecesor.apSigDato;
+                                            break;
+                                        }
+                                    }
+
+                                    break;
+                                }
+                                // Si es el valor mas grande de todos
+                                else if (datosVigentes.Count - 1 == posDatoComparar && datoD > datoC)
+                                {
+                                    nuevoDato.posDato = posMemoria;
+                                    posMemoria += tamDato;
+
+                                    Dato datoValorMasGrande = new Dato();
+
+                                    var valorMasGrande = valoresFloat.Max();
+
+                                    // Buscamos el dato con ese valor
+                                    foreach (Dato dt in ent.listaDatos)
+                                    {
+                                        if (dt.apSigDato != -3 && dt.apSigDato != -4)
+                                        {
+                                            if (((float)dt.datos[indiceLlave]) == valorMasGrande)
+                                            {
+                                                datoValorMasGrande = dt;
+                                                break;
+                                            }
+                                        }
+                                    }
+
+                                    datoValorMasGrande.apSigDato = nuevoDato.posDato;
+                                    ent.listaDatos.Add(nuevoDato);
+                                    datosVigentes.Add(nuevoDato);
+
+                                    dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato;
+
+                                    for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
+                                    {
+                                        if (dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == datoValorMasGrande.datos[indiceLlave].ToString())
+                                        {
+                                            dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = datoValorMasGrande.apSigDato;
+                                            break;
+                                        }
+                                    }
+
+                                    break;
+                                }
+                                else if (datoD > datoC)
+                                {
+                                    posDatoComparar++;
+                                }
+                            }
+                            //**---------- DOBLES ----------**//
+                            else if (datoE != 0 && datoF != 0)
+                            {
+                                if (datoE == datoF)
+                                {
+                                    MessageBox.Show("Error, llave primaria duplicada.");
+                                    break;
+                                }
+                                // Si el dato insertado es el valor mas pequeño
+                                else if (datoF < datoE && dat == datoValorMasBajo)
+                                {
+                                    nuevoDato.posDato = posMemoria;
+                                    posMemoria += tamDato;
+
+                                    nuevoDato.apSigDato = dat.posDato;
+                                    ent.apDatos = nuevoDato.posDato;
+                                    apDatos = ent.apDatos;
+
+                                    ent.listaDatos.Add(nuevoDato);
+                                    datosVigentes.Add(nuevoDato);
+
+                                    valorMasBajoDouble = Convert.ToDouble(nuevoDato.datos[indiceLlave]);
+                                    posDatoValorMasBajo = ent.listaDatos.IndexOf(nuevoDato);
+                                    datoValorMasBajo = nuevoDato;
+
+                                    dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato;
+
+                                    for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
+                                    {
+                                        if (dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == dat.datos[indiceLlave].ToString())
+                                        {
+                                            dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = dat.apSigDato;
+                                            break;
+                                        }
+                                    }
+
+                                    break;
+                                }
+                                else if (datoF < datoE)
+                                {
+                                    nuevoDato.posDato = posMemoria;
+                                    posMemoria += tamDato;
+
+                                    List<double> valoresResta = new List<double>();
+                                    List<double> sustraendos = new List<double>();
+                                    Dato datoPredecesor = new Dato();
+
+                                    foreach (Dato dt in ent.listaDatos)
+                                    {
+                                        if (dt.apSigDato != -3 && dt.apSigDato != -4)
+                                        {
+                                            double sustraendo = Convert.ToDouble(dt.datos[indiceLlave]);
+                                            double resta = datoF - sustraendo;
+
+                                            if (resta >= 0)
+                                            {
+                                                valoresResta.Add(resta);
+                                                sustraendos.Add(sustraendo);
+                                            }
+                                        }
+                                    }
+
+                                    var valorRestaMenor = valoresResta.Min();
+
+                                    for (int i = 0; i < sustraendos.Count; i++)
+                                    {
+                                        if (valoresResta[i] == valorRestaMenor)
+                                        {
+                                            foreach (Dato data in ent.listaDatos)
+                                            {
+                                                if (data.apSigDato != -3 && data.apSigDato != -4)
+                                                {
+                                                    if (Convert.ToDouble(data.datos[indiceLlave]) == sustraendos[i])
+                                                    {
+                                                        datoPredecesor = data;
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                            break;
+                                        }
+                                    }
+
+                                    datoPredecesor.apSigDato = nuevoDato.posDato;
+                                    nuevoDato.apSigDato = dat.posDato;
+                                    ent.listaDatos.Add(nuevoDato);
+                                    datosVigentes.Add(nuevoDato);
+
+                                    dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato;
+
+                                    for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
+                                    {
+                                        if (dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == dat.datos[indiceLlave].ToString())
+                                        {
+                                            dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = dat.apSigDato;
+                                            break;
+                                        }
+                                    }
+
+                                    for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
+                                    {
+                                        if (dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == datoPredecesor.datos[indiceLlave].ToString())
+                                        {
+                                            dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = datoPredecesor.apSigDato;
+                                            break;
+                                        }
+                                    }
+
+                                    break;
+                                }
+                                // Si es el valor mas grande de todos
+                                else if (datosVigentes.Count - 1 == posDatoComparar && datoF > datoE)
+                                {
+                                    nuevoDato.posDato = posMemoria;
+                                    posMemoria += tamDato;
+
+                                    Dato datoValorMasGrande = new Dato();
+
+                                    var valorMasGrande = valoresDouble.Max();
+
+                                    // Buscamos el dato con ese valor
+                                    foreach (Dato dt in ent.listaDatos)
+                                    {
+                                        if (dt.apSigDato != -3 && dt.apSigDato != -4)
+                                        {
+                                            if (Convert.ToDouble(dt.datos[indiceLlave]) == valorMasGrande)
+                                            {
+                                                datoValorMasGrande = dt;
+                                                break;
+                                            }
+                                        }
+                                    }
+
+                                    datoValorMasGrande.apSigDato = nuevoDato.posDato;
+                                    ent.listaDatos.Add(nuevoDato);
+                                    datosVigentes.Add(nuevoDato);
+
+                                    dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato;
+
+                                    for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
+                                    {
+                                        if (dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == datoValorMasGrande.datos[indiceLlave].ToString())
+                                        {
+                                            dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = datoValorMasGrande.apSigDato;
+                                            break;
+                                        }
+                                    }
+
+                                    break;
+                                }
+                                else if (datoF > datoE)
+                                {
+                                    posDatoComparar++;
+                                }
+                            }
+                            //**---------- LONG ----------**//
+                            else if (datoG != 0 && datoH != 0)
+                            {
+                                if (datoG == datoH)
+                                {
+                                    MessageBox.Show("Error, llave primaria duplicada.");
+                                    break;
+                                }
+                                // Si el dato insertado es el valor mas pequeño
+                                else if (datoH < datoG && dat == datoValorMasBajo)
+                                {
+                                    nuevoDato.posDato = posMemoria;
+                                    posMemoria += tamDato;
+
+                                    nuevoDato.apSigDato = dat.posDato;
+                                    ent.apDatos = nuevoDato.posDato;
+                                    apDatos = ent.apDatos;
+
+                                    ent.listaDatos.Add(nuevoDato);
+                                    datosVigentes.Add(nuevoDato);
+
+                                    valorMasBajoLong = Convert.ToInt64(nuevoDato.datos[indiceLlave]);
+                                    posDatoValorMasBajo = ent.listaDatos.IndexOf(nuevoDato);
+                                    datoValorMasBajo = nuevoDato;
+
+                                    dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato;
+
+                                    for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
+                                    {
+                                        if (dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == dat.datos[indiceLlave].ToString())
+                                        {
+                                            dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = dat.apSigDato;
+                                            break;
+                                        }
+                                    }
+
+                                    break;
+                                }
+                                else if (datoH < datoG)
+                                {
+                                    nuevoDato.posDato = posMemoria;
+                                    posMemoria += tamDato;
+
+                                    List<long> valoresResta = new List<long>();
+                                    List<long> sustraendos = new List<long>();
+                                    Dato datoPredecesor = new Dato();
+
+                                    foreach (Dato dt in ent.listaDatos)
+                                    {
+                                        if (dt.apSigDato != -3 && dt.apSigDato != -4)
+                                        {
+                                            long sustraendo = Convert.ToInt64(dt.datos[indiceLlave]);
+                                            long resta = datoH - sustraendo;
+
+                                            if (resta >= 0)
+                                            {
+                                                valoresResta.Add(resta);
+                                                sustraendos.Add(sustraendo);
+                                            }
+                                        }
+                                    }
+
+                                    var valorRestaMenor = valoresResta.Min();
+
+                                    for (int i = 0; i < sustraendos.Count; i++)
+                                    {
+                                        if (valoresResta[i] == valorRestaMenor)
+                                        {
+                                            foreach (Dato data in ent.listaDatos)
+                                            {
+                                                if (data.apSigDato != -3 && data.apSigDato != -4)
+                                                {
+                                                    if (Convert.ToInt64(data.datos[indiceLlave]) == sustraendos[i])
+                                                    {
+                                                        datoPredecesor = data;
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                            break;
+                                        }
+                                    }
+
+                                    datoPredecesor.apSigDato = nuevoDato.posDato;
+                                    nuevoDato.apSigDato = dat.posDato;
+                                    ent.listaDatos.Add(nuevoDato);
+                                    datosVigentes.Add(nuevoDato);
+
+                                    dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato;
+
+                                    for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
+                                    {
+                                        if (dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == dat.datos[indiceLlave].ToString())
+                                        {
+                                            dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = dat.apSigDato;
+                                            break;
+                                        }
+                                    }
+
+                                    for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
+                                    {
+                                        if (dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == datoPredecesor.datos[indiceLlave].ToString())
+                                        {
+                                            dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = datoPredecesor.apSigDato;
+                                            break;
+                                        }
+                                    }
+
+                                    break;
+                                }
+                                // Si es el valor mas grande de todos
+                                else if (datosVigentes.Count - 1 == posDatoComparar && datoH > datoG)
+                                {
+                                    nuevoDato.posDato = posMemoria;
+                                    posMemoria += tamDato;
+
+                                    Dato datoValorMasGrande = new Dato();
+
+                                    var valorMasGrande = valoresLong.Max();
+
+                                    // Buscamos el dato con ese valor
+                                    foreach (Dato dt in ent.listaDatos)
+                                    {
+                                        if (dt.apSigDato != -3 && dt.apSigDato != -4)
+                                        {
+                                            if (Convert.ToInt64(dt.datos[indiceLlave]) == valorMasGrande)
+                                            {
+                                                datoValorMasGrande = dt;
+                                                break;
+                                            }
+                                        }
+                                    }
+
+                                    datoValorMasGrande.apSigDato = nuevoDato.posDato;
+                                    ent.listaDatos.Add(nuevoDato);
+                                    datosVigentes.Add(nuevoDato);
+
+                                    dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato;
+
+                                    for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
+                                    {
+                                        if (dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == datoValorMasGrande.datos[indiceLlave].ToString())
+                                        {
+                                            dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = datoValorMasGrande.apSigDato;
+                                            break;
+                                        }
+                                    }
+
+                                    break;
+                                }
+                                else if (datoH > datoG)
+                                {
+                                    posDatoComparar++;
+                                }
+                            }
                         }
-
-                        //**---------- ENTEROS ----------**//
-                        if (datoA != 0 && datoB != 0)
+                        //**---------- CARACTERES ----------**//
+                        else if (attr.tipo == 'C')
                         {
-                            if(datoA == datoB)
+                            char datoI = ' ';
+                            char datoJ = ' ';
+
+                            datoI = Convert.ToChar(dat.datos[indiceLlave]);
+                            datoJ = Convert.ToChar(nuevoDato.datos[indiceLlave]);
+
+                            if (datoI == datoJ)
                             {
                                 MessageBox.Show("Error, llave primaria duplicada.");
                                 break;
                             }
-                            // Si el dato insertado es el valor mas pequeño
-                            else if (datoB < datoA && dat == datoValorMasBajo)
+                            else if (datoJ < datoI && dat == datoValorMasBajo)
                             {
                                 nuevoDato.posDato = posMemoria;
-                                posMemoria += tamDato;           
-                    
+                                posMemoria += tamDato;
+
                                 nuevoDato.apSigDato = dat.posDato;
                                 ent.apDatos = nuevoDato.posDato;
                                 apDatos = ent.apDatos;
 
                                 ent.listaDatos.Add(nuevoDato);
+                                datosVigentes.Add(nuevoDato);
 
-                                valorMasBajoInt = Convert.ToInt32(nuevoDato.datos[indiceLlave]);
+                                valorMasBajoChar = Convert.ToChar(nuevoDato.datos[indiceLlave]);
                                 posDatoValorMasBajo = ent.listaDatos.IndexOf(nuevoDato);
                                 datoValorMasBajo = nuevoDato;
 
-                                dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato; 
+                                dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato;
 
                                 for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
                                 {
@@ -385,10 +1045,10 @@ namespace ArchivosTarea2
                                         break;
                                     }
                                 }
-                                
+
                                 break;
                             }
-                            else if(datoB < datoA)
+                            else if (datoJ < datoI)
                             {
                                 nuevoDato.posDato = posMemoria;
                                 posMemoria += tamDato;
@@ -397,158 +1057,18 @@ namespace ArchivosTarea2
                                 List<int> sustraendos = new List<int>();
                                 Dato datoPredecesor = new Dato();
 
-                                foreach(Dato dt in ent.listaDatos)
-                                {
-                                    int sustraendo = Convert.ToInt32(dt.datos[indiceLlave]);
-                                    int resta = datoB - sustraendo;
-
-                                    if(resta >= 0)
-                                    {
-                                        valoresResta.Add(resta);
-                                        sustraendos.Add(sustraendo);
-                                    }
-                                }
-
-                                var valorRestaMenor = valoresResta.Min();
-
-                                for(int i = 0; i < sustraendos.Count;i++)
-                                {
-                                    if(valoresResta[i] == valorRestaMenor)
-                                    {
-                                        foreach(Dato data in ent.listaDatos)
-                                        {
-                                            if(Convert.ToInt32(data.datos[indiceLlave]) == sustraendos[i])
-                                            {
-                                                datoPredecesor = data;
-                                                break;
-                                            }
-                                        }
-                                        break;
-                                    }
-                                }
-
-                                datoPredecesor.apSigDato = nuevoDato.posDato;
-                                nuevoDato.apSigDato = dat.posDato;
-                                ent.listaDatos.Add(nuevoDato);
-
-                                dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato;
-
-                                for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
-                                {
-                                    if (dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == dat.datos[indiceLlave].ToString())
-                                    {
-                                        dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = dat.apSigDato;
-                                        break;
-                                    }
-                                }
-
-                                for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
-                                {
-                                    if (dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == datoPredecesor.datos[indiceLlave].ToString())
-                                    {
-                                        dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = datoPredecesor.apSigDato;
-                                        break;
-                                    }
-                                }
-
-                                break;
-                            }
-                            // Si es el valor mas grande de todos
-                            else if (ent.listaDatos.Count - 1 == posDatoComparar && datoB > datoA)
-                            {
-                                nuevoDato.posDato = posMemoria;
-                                posMemoria += tamDato;
-                                
-                                Dato datoValorMasGrande = new Dato();
-
-                                var valorMasGrande = valoresInt.Max();
-
-                                // Buscamos el dato con ese valor
-                                foreach(Dato dt in ent.listaDatos)
-                                {
-                                    if(Convert.ToInt32(dt.datos[indiceLlave]) == valorMasGrande)
-                                    {
-                                        datoValorMasGrande = dt;
-                                        break;
-                                    }
-                                }
-
-                                datoValorMasGrande.apSigDato = nuevoDato.posDato;
-                                ent.listaDatos.Add(nuevoDato);
-
-                                dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato;
-
-                                for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
-                                {
-                                    if(dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == datoValorMasGrande.datos[indiceLlave].ToString())
-                                    {
-                                        dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = datoValorMasGrande.apSigDato;
-                                        break;
-                                    }
-                                }
-
-                                break;
-                            }
-                            else if(datoB > datoA)
-                            {
-                                posDatoComparar++;
-                            }                            
-                        }
-                        //**---------- FLOTANTES ----------**//
-                        else if(datoC != 0 && datoD != 0)
-                        {
-                            if (datoC == datoD)
-                            {
-                                MessageBox.Show("Error, llave primaria duplicada.");
-                                break;
-                            }
-                            // Si el dato insertado es el valor mas pequeño
-                            else if (datoD < datoC && dat == datoValorMasBajo)
-                            {
-                                nuevoDato.posDato = posMemoria;
-                                posMemoria += tamDato;
-
-                                nuevoDato.apSigDato = dat.posDato;
-                                ent.apDatos = nuevoDato.posDato;
-                                apDatos = ent.apDatos;
-
-                                ent.listaDatos.Add(nuevoDato);
-
-                                valorMasBajoFloat = (float)nuevoDato.datos[indiceLlave];
-                                posDatoValorMasBajo = ent.listaDatos.IndexOf(nuevoDato);
-                                datoValorMasBajo = nuevoDato;
-
-                                dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato;
-
-                                for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
-                                {
-                                    if (dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == dat.datos[indiceLlave].ToString())
-                                    {
-                                        dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = dat.apSigDato;
-                                        break;
-                                    }
-                                }
-
-                                break;
-                            }
-                            else if (datoD < datoC)
-                            {
-                                nuevoDato.posDato = posMemoria;
-                                posMemoria += tamDato;
-
-                                List<float> valoresResta = new List<float>();
-                                List<float> sustraendos = new List<float>();
-                                Dato datoPredecesor = new Dato();
-
                                 foreach (Dato dt in ent.listaDatos)
                                 {
-                                    float sustraendo = (float)dt.datos[indiceLlave];
-                                    float resta = datoD - sustraendo;
-
-                                    if (resta >= 0)
+                                    if (dt.apSigDato != -3 && dt.apSigDato != -4)
                                     {
-                                        valoresResta.Add(resta);
-                                        sustraendos.Add(sustraendo);
+                                        int sustraendo = Convert.ToInt32(dt.datos[indiceLlave]);
+                                        int resta = datoJ - sustraendo;
+
+                                        if (resta >= 0)
+                                        {
+                                            valoresResta.Add(resta);
+                                            sustraendos.Add(sustraendo);
+                                        }
                                     }
                                 }
 
@@ -560,10 +1080,13 @@ namespace ArchivosTarea2
                                     {
                                         foreach (Dato data in ent.listaDatos)
                                         {
-                                            if (((float)(data.datos[indiceLlave])) == sustraendos[i])
+                                            if (data.apSigDato != -3 && data.apSigDato != -4)
                                             {
-                                                datoPredecesor = data;
-                                                break;
+                                                if (Convert.ToInt32(data.datos[indiceLlave]) == sustraendos[i])
+                                                {
+                                                    datoPredecesor = data;
+                                                    break;
+                                                }
                                             }
                                         }
                                         break;
@@ -573,6 +1096,7 @@ namespace ArchivosTarea2
                                 datoPredecesor.apSigDato = nuevoDato.posDato;
                                 nuevoDato.apSigDato = dat.posDato;
                                 ent.listaDatos.Add(nuevoDato);
+                                datosVigentes.Add(nuevoDato);
 
                                 dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato;
 
@@ -597,661 +1121,240 @@ namespace ArchivosTarea2
                                 break;
                             }
                             // Si es el valor mas grande de todos
-                            else if (ent.listaDatos.Count - 1 == posDatoComparar && datoD > datoC)
+                            else if (datosVigentes.Count - 1 == posDatoComparar && datoJ > datoI)
                             {
                                 nuevoDato.posDato = posMemoria;
                                 posMemoria += tamDato;
 
                                 Dato datoValorMasGrande = new Dato();
 
-                                var valorMasGrande = valoresFloat.Max();
+                                var valorMasGrande = valoresChar.Max();
 
                                 // Buscamos el dato con ese valor
                                 foreach (Dato dt in ent.listaDatos)
                                 {
-                                    if (((float)dt.datos[indiceLlave]) == valorMasGrande)
+                                    if (dt.apSigDato != -3 && dt.apSigDato != -4)
                                     {
-                                        datoValorMasGrande = dt;
-                                        break;
-                                    }
-                                }
-
-                                datoValorMasGrande.apSigDato = nuevoDato.posDato;
-                                ent.listaDatos.Add(nuevoDato);
-
-                                dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato;
-
-                                for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
-                                {
-                                    if (dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == datoValorMasGrande.datos[indiceLlave].ToString())
-                                    {
-                                        dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = datoValorMasGrande.apSigDato;
-                                        break;
-                                    }
-                                }
-
-                                break;
-                            }
-                            else if (datoD > datoC)
-                            {
-                                posDatoComparar++;
-                            }
-                        }
-                        //**---------- DOBLES ----------**//
-                        else if (datoE != 0 && datoF != 0)
-                        {
-                            if (datoE == datoF)
-                            {
-                                MessageBox.Show("Error, llave primaria duplicada.");
-                                break;
-                            }
-                            // Si el dato insertado es el valor mas pequeño
-                            else if (datoF < datoE && dat == datoValorMasBajo)
-                            {
-                                nuevoDato.posDato = posMemoria;
-                                posMemoria += tamDato;
-
-                                nuevoDato.apSigDato = dat.posDato;
-                                ent.apDatos = nuevoDato.posDato;
-                                apDatos = ent.apDatos;
-
-                                ent.listaDatos.Add(nuevoDato);
-
-                                valorMasBajoDouble = Convert.ToDouble(nuevoDato.datos[indiceLlave]);
-                                posDatoValorMasBajo = ent.listaDatos.IndexOf(nuevoDato);
-                                datoValorMasBajo = nuevoDato;
-
-                                dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato;
-
-                                for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
-                                {
-                                    if (dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == dat.datos[indiceLlave].ToString())
-                                    {
-                                        dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = dat.apSigDato;
-                                        break;
-                                    }
-                                }
-
-                                break;
-                            }
-                            else if (datoF < datoE)
-                            {
-                                nuevoDato.posDato = posMemoria;
-                                posMemoria += tamDato;
-
-                                List<double> valoresResta = new List<double>();
-                                List<double> sustraendos = new List<double>();
-                                Dato datoPredecesor = new Dato();
-
-                                foreach (Dato dt in ent.listaDatos)
-                                {
-                                    double sustraendo = Convert.ToDouble(dt.datos[indiceLlave]);
-                                    double resta = datoF - sustraendo;
-
-                                    if (resta >= 0)
-                                    {
-                                        valoresResta.Add(resta);
-                                        sustraendos.Add(sustraendo);
-                                    }
-                                }
-
-                                var valorRestaMenor = valoresResta.Min();
-
-                                for (int i = 0; i < sustraendos.Count; i++)
-                                {
-                                    if (valoresResta[i] == valorRestaMenor)
-                                    {
-                                        foreach (Dato data in ent.listaDatos)
+                                        if (Convert.ToChar(dt.datos[indiceLlave]) == valorMasGrande)
                                         {
-                                            if (Convert.ToDouble(data.datos[indiceLlave]) == sustraendos[i])
-                                            {
-                                                datoPredecesor = data;
-                                                break;
-                                            }
-                                        }
-                                        break;
-                                    }
-                                }
-
-                                datoPredecesor.apSigDato = nuevoDato.posDato;
-                                nuevoDato.apSigDato = dat.posDato;
-                                ent.listaDatos.Add(nuevoDato);
-
-                                dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato;
-
-                                for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
-                                {
-                                    if (dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == dat.datos[indiceLlave].ToString())
-                                    {
-                                        dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = dat.apSigDato;
-                                        break;
-                                    }
-                                }
-
-                                for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
-                                {
-                                    if (dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == datoPredecesor.datos[indiceLlave].ToString())
-                                    {
-                                        dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = datoPredecesor.apSigDato;
-                                        break;
-                                    }
-                                }
-
-                                break;
-                            }
-                            // Si es el valor mas grande de todos
-                            else if (ent.listaDatos.Count - 1 == posDatoComparar && datoF > datoE)
-                            {
-                                nuevoDato.posDato = posMemoria;
-                                posMemoria += tamDato;
-
-                                Dato datoValorMasGrande = new Dato();
-
-                                var valorMasGrande = valoresDouble.Max();
-
-                                // Buscamos el dato con ese valor
-                                foreach (Dato dt in ent.listaDatos)
-                                {
-                                    if (Convert.ToDouble(dt.datos[indiceLlave]) == valorMasGrande)
-                                    {
-                                        datoValorMasGrande = dt;
-                                        break;
-                                    }
-                                }
-
-                                datoValorMasGrande.apSigDato = nuevoDato.posDato;
-                                ent.listaDatos.Add(nuevoDato);
-
-                                dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato; 
-
-                                for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
-                                {
-                                    if (dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == datoValorMasGrande.datos[indiceLlave].ToString())
-                                    {
-                                        dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = datoValorMasGrande.apSigDato;
-                                        break;
-                                    }
-                                }
-
-                                break;
-                            }
-                            else if (datoF > datoE)
-                            {
-                                posDatoComparar++;
-                            }
-                        }
-                        //**---------- LONG ----------**//
-                        else if (datoG != 0 && datoH != 0)
-                        {
-                            if (datoG == datoH)
-                            {
-                                MessageBox.Show("Error, llave primaria duplicada.");
-                                break;
-                            }
-                            // Si el dato insertado es el valor mas pequeño
-                            else if (datoH < datoG && dat == datoValorMasBajo)
-                            {
-                                nuevoDato.posDato = posMemoria;
-                                posMemoria += tamDato;
-
-                                nuevoDato.apSigDato = dat.posDato;
-                                ent.apDatos = nuevoDato.posDato;
-                                apDatos = ent.apDatos;
-
-                                ent.listaDatos.Add(nuevoDato);
-
-                                valorMasBajoLong = Convert.ToInt64(nuevoDato.datos[indiceLlave]);
-                                posDatoValorMasBajo = ent.listaDatos.IndexOf(nuevoDato);
-                                datoValorMasBajo = nuevoDato;
-
-                                dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato;
-
-                                for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
-                                {
-                                    if (dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == dat.datos[indiceLlave].ToString())
-                                    {
-                                        dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = dat.apSigDato;
-                                        break;
-                                    }
-                                }
-
-                                break;
-                            }
-                            else if (datoH < datoG)
-                            {
-                                nuevoDato.posDato = posMemoria;
-                                posMemoria += tamDato;
-
-                                List<long> valoresResta = new List<long>();
-                                List<long> sustraendos = new List<long>();
-                                Dato datoPredecesor = new Dato();
-
-                                foreach (Dato dt in ent.listaDatos)
-                                {
-                                    long sustraendo = Convert.ToInt64(dt.datos[indiceLlave]);
-                                    long resta = datoH - sustraendo;
-
-                                    if (resta >= 0)
-                                    {
-                                        valoresResta.Add(resta);
-                                        sustraendos.Add(sustraendo);
-                                    }
-                                }
-
-                                var valorRestaMenor = valoresResta.Min();
-
-                                for (int i = 0; i < sustraendos.Count; i++)
-                                {
-                                    if (valoresResta[i] == valorRestaMenor)
-                                    {
-                                        foreach (Dato data in ent.listaDatos)
-                                        {
-                                            if (Convert.ToInt64(data.datos[indiceLlave]) == sustraendos[i])
-                                            {
-                                                datoPredecesor = data;
-                                                break;
-                                            }
-                                        }
-                                        break;
-                                    }
-                                }
-
-                                datoPredecesor.apSigDato = nuevoDato.posDato;
-                                nuevoDato.apSigDato = dat.posDato;
-                                ent.listaDatos.Add(nuevoDato);
-
-                                dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato;
-
-                                for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
-                                {
-                                    if (dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == dat.datos[indiceLlave].ToString())
-                                    {
-                                        dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = dat.apSigDato;
-                                        break;
-                                    }
-                                }
-
-                                for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
-                                {
-                                    if (dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == datoPredecesor.datos[indiceLlave].ToString())
-                                    {
-                                        dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = datoPredecesor.apSigDato;
-                                        break;
-                                    }
-                                }
-
-                                break;
-                            }
-                            // Si es el valor mas grande de todos
-                            else if (ent.listaDatos.Count - 1 == posDatoComparar && datoH > datoG)
-                            {
-                                nuevoDato.posDato = posMemoria;
-                                posMemoria += tamDato;
-
-                                Dato datoValorMasGrande = new Dato();
-
-                                var valorMasGrande = valoresLong.Max();
-
-                                // Buscamos el dato con ese valor
-                                foreach (Dato dt in ent.listaDatos)
-                                {
-                                    if (Convert.ToInt64(dt.datos[indiceLlave]) == valorMasGrande)
-                                    {
-                                        datoValorMasGrande = dt;
-                                        break;
-                                    }
-                                }
-
-                                datoValorMasGrande.apSigDato = nuevoDato.posDato;
-                                ent.listaDatos.Add(nuevoDato);
-
-                                dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato;
-
-                                for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
-                                {
-                                    if (dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == datoValorMasGrande.datos[indiceLlave].ToString())
-                                    {
-                                        dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = datoValorMasGrande.apSigDato;
-                                        break;
-                                    }
-                                }
-
-                                break;
-                            }
-                            else if (datoH > datoG)
-                            {
-                                posDatoComparar++;
-                            }
-                        }
-                    }
-                    //**---------- CARACTERES ----------**//
-                    else if(attr.tipo == 'C')
-                    {
-                        char datoI = ' ';
-                        char datoJ = ' ';
-
-                        datoI = Convert.ToChar(dat.datos[indiceLlave]);
-                        datoJ = Convert.ToChar(nuevoDato.datos[indiceLlave]);
-
-                        if (datoI == datoJ)
-                        {
-                            MessageBox.Show("Error, llave primaria duplicada.");
-                            break;
-                        }
-                        else if (datoJ < datoI && dat == datoValorMasBajo)
-                        {
-                            nuevoDato.posDato = posMemoria;
-                            posMemoria += tamDato;
-
-                            nuevoDato.apSigDato = dat.posDato;
-                            ent.apDatos = nuevoDato.posDato;
-                            apDatos = ent.apDatos;
-
-                            ent.listaDatos.Add(nuevoDato);
-
-                            valorMasBajoChar = Convert.ToChar(nuevoDato.datos[indiceLlave]);
-                            posDatoValorMasBajo = ent.listaDatos.IndexOf(nuevoDato);
-                            datoValorMasBajo = nuevoDato;
-
-                            dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato;
-
-                            for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
-                            {
-                                if (dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == dat.datos[indiceLlave].ToString())
-                                {
-                                    dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = dat.apSigDato;
-                                    break;
-                                }
-                            }
-
-                            break;
-                        }
-                        else if (datoJ < datoI)
-                        {
-                            nuevoDato.posDato = posMemoria;
-                            posMemoria += tamDato;
-
-                            List<int> valoresResta = new List<int>();
-                            List<int> sustraendos = new List<int>();
-                            Dato datoPredecesor = new Dato();
-
-                            foreach (Dato dt in ent.listaDatos)
-                            {
-                                int sustraendo = Convert.ToInt32(dt.datos[indiceLlave]);
-                                int resta = datoJ - sustraendo;
-
-                                if (resta >= 0)
-                                {
-                                    valoresResta.Add(resta);
-                                    sustraendos.Add(sustraendo);
-                                }
-                            }
-
-                            var valorRestaMenor = valoresResta.Min();
-
-                            for (int i = 0; i < sustraendos.Count; i++)
-                            {
-                                if (valoresResta[i] == valorRestaMenor)
-                                {
-                                    foreach (Dato data in ent.listaDatos)
-                                    {
-                                        if (Convert.ToInt32(data.datos[indiceLlave]) == sustraendos[i])
-                                        {
-                                            datoPredecesor = data;
+                                            datoValorMasGrande = dt;
                                             break;
                                         }
                                     }
-                                    break;
                                 }
-                            }
 
-                            datoPredecesor.apSigDato = nuevoDato.posDato;
-                            nuevoDato.apSigDato = dat.posDato;
-                            ent.listaDatos.Add(nuevoDato);
+                                datoValorMasGrande.apSigDato = nuevoDato.posDato;
+                                ent.listaDatos.Add(nuevoDato);
+                                datosVigentes.Add(nuevoDato);
 
-                            dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato;
+                                dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato;
 
-                            for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
-                            {
-                                if (dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == dat.datos[indiceLlave].ToString())
+                                for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
                                 {
-                                    dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = dat.apSigDato;
-                                    break;
+                                    if (dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == datoValorMasGrande.datos[indiceLlave].ToString())
+                                    {
+                                        dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = datoValorMasGrande.apSigDato;
+                                        break;
+                                    }
                                 }
-                            }
 
-                            for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
+                                break;
+                            }
+                            else if (datoJ > datoI)
                             {
-                                if (dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == datoPredecesor.datos[indiceLlave].ToString())
-                                {
-                                    dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = datoPredecesor.apSigDato;
-                                    break;
-                                }
+                                posDatoComparar++;
                             }
-
-                            break;
                         }
-                        // Si es el valor mas grande de todos
-                        else if (ent.listaDatos.Count - 1 == posDatoComparar && datoJ > datoI)
+                        //**---------- CADENAS ----------**//
+                        else if (attr.tipo == 'S')
                         {
-                            nuevoDato.posDato = posMemoria;
-                            posMemoria += tamDato;
+                            String datoK = ""; // I
+                            String datoL = ""; // J
 
-                            Dato datoValorMasGrande = new Dato();
-
-                            var valorMasGrande = valoresChar.Max();
-
-                            // Buscamos el dato con ese valor
-                            foreach (Dato dt in ent.listaDatos)
+                            if (dat.datos[indiceLlave] is char[])
                             {
-                                if (Convert.ToChar(dt.datos[indiceLlave]) == valorMasGrande)
+                                char[] arregloK = (char[])dat.datos[indiceLlave];
+                                datoK = new string(arregloK);
+                                datoK = datoK.Replace("\0", "");
+                            }
+                            else
+                            {
+                                datoK = Convert.ToString(dat.datos[indiceLlave]);
+                            }
+
+                            datoL = Convert.ToString(nuevoDato.datos[indiceLlave]);
+
+                            datoK.ToLower();
+                            datoL.ToLower();
+
+                            if (String.Compare(datoK, datoL) == 0)
+                            {
+                                MessageBox.Show("Error, llave primaria duplicada.");
+                                break;
+                            }
+                            else if (String.Compare(datoL, datoK) < 0 && dat == datoValorMasBajo)
+                            {
+                                nuevoDato.posDato = posMemoria;
+                                posMemoria += tamDato;
+
+                                nuevoDato.apSigDato = dat.posDato;
+                                ent.apDatos = nuevoDato.posDato;
+                                apDatos = ent.apDatos;
+
+                                ent.listaDatos.Add(nuevoDato);
+                                datosVigentes.Add(nuevoDato);
+
+                                valorMasBajoString = Convert.ToString(nuevoDato.datos[indiceLlave]);
+                                posDatoValorMasBajo = ent.listaDatos.IndexOf(nuevoDato);
+                                datoValorMasBajo = nuevoDato;
+
+                                dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato;
+
+                                for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
                                 {
-                                    datoValorMasGrande = dt;
-                                    break;
+                                    String str1 = dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString();
+                                    char[] crtemp = (char[])dat.datos[indiceLlave];
+                                    String str2 = new string(crtemp);
+                                    str1.ToLower();
+                                    str2.ToLower();
+                                    str1 = str1.Replace("\0", "");
+                                    str2 = str2.Replace("\0", "");
+
+                                    if (String.Compare(str1, str2) == 0)
+                                    {
+                                        dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = dat.apSigDato;
+                                        break;
+                                    }
                                 }
+
+                                break;
                             }
-
-                            datoValorMasGrande.apSigDato = nuevoDato.posDato;
-                            ent.listaDatos.Add(nuevoDato);
-
-                            dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato;
-
-                            for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
+                            else if (String.Compare(datoL, datoK) < 0)
                             {
-                                if (dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == datoValorMasGrande.datos[indiceLlave].ToString())
+                                nuevoDato.posDato = posMemoria;
+                                posMemoria += tamDato;
+                                Dato datoPredecesor = new Dato();
+
+                                List<string> listaRespaldo = new List<string>();
+
+                                foreach (Dato d in ent.listaDatos)
                                 {
-                                    dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = datoValorMasGrande.apSigDato;
-                                    break;
+                                    if (d.apSigDato != -3 && d.apSigDato != -4)
+                                    {
+                                        char[] cadena = (char[])d.datos[indiceLlave];
+                                        string item = new string(cadena);
+                                        item = item.Replace("\0", "");
+                                        listaRespaldo.Add(item);
+                                    }
                                 }
-                            }
 
-                            break;
-                        }
-                        else if (datoJ > datoI)
-                        {
-                            posDatoComparar++;
-                        }                            
-                    }
-                    //**---------- CADENAS ----------**//
-                    else if(attr.tipo == 'S')
-                    {
-                        String datoK = ""; // I
-                        String datoL = ""; // J
+                                listaRespaldo.Sort();
 
-                        if (dat.datos[indiceLlave] is char[])
-                        {
-                            char[] arregloK = (char[])dat.datos[indiceLlave];
-                            datoK = new string(arregloK);
-                            datoK = datoK.Replace("\0", "");
-                        }
-                        else
-                        {
-                            datoK = Convert.ToString(dat.datos[indiceLlave]);
-                        }
-
-                        datoL = Convert.ToString(nuevoDato.datos[indiceLlave]);
-
-                        datoK.ToLower();
-                        datoL.ToLower();
-
-                        if(String.Compare(datoK, datoL) == 0)
-                        {
-                            MessageBox.Show("Error, llave primaria duplicada.");
-                            break;
-                        }
-                        else if (String.Compare(datoL, datoK) < 0 && dat == datoValorMasBajo)
-                        {
-                            nuevoDato.posDato = posMemoria;
-                            posMemoria += tamDato;
-
-                            nuevoDato.apSigDato = dat.posDato;
-                            ent.apDatos = nuevoDato.posDato;
-                            apDatos = ent.apDatos;
-
-                            ent.listaDatos.Add(nuevoDato);
-
-                            valorMasBajoString = Convert.ToString(nuevoDato.datos[indiceLlave]);
-                            posDatoValorMasBajo = ent.listaDatos.IndexOf(nuevoDato);
-                            datoValorMasBajo = nuevoDato;
-
-                            dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato;
-
-                            for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
-                            {
-                                String str1 = dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString();
-                                char[] crtemp = (char[])dat.datos[indiceLlave];
-                                String str2 = new string(crtemp);
-                                str1.ToLower();
-                                str2.ToLower();
-                                str1 = str1.Replace("\0", "");
-                                str2 = str2.Replace("\0", "");
-
-                                if (String.Compare(str1, str2) == 0)
+                                foreach (string str1 in listaRespaldo)
                                 {
-                                    dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = dat.apSigDato;
-                                    break;
+                                    if (String.Compare(datoL, str1) > 0)
+                                    {
+                                        // datoL va despues de str1
+                                        int indiceAntecesor = listaRespaldo.IndexOf(str1);
+
+                                        datoPredecesor = ent.listaDatos[indiceAntecesor];
+                                    }
                                 }
-                            }
 
-                            break;
-                        }
-                        else if (String.Compare(datoL, datoK) < 0)
-                        {
-                            nuevoDato.posDato = posMemoria;
-                            posMemoria += tamDato;
-                            Dato datoPredecesor = new Dato();
+                                datoPredecesor.apSigDato = nuevoDato.posDato;
+                                nuevoDato.apSigDato = dat.posDato;
+                                ent.listaDatos.Add(nuevoDato);
+                                datosVigentes.Add(nuevoDato);
 
-                            List<string> listaRespaldo = new List<string>();
+                                dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato;
 
-                            foreach(Dato d in ent.listaDatos)
-                            {
-                                char[] cadena = (char[])d.datos[indiceLlave];
-                                string item = new string(cadena);
-                                item = item.Replace("\0", "");
-                                listaRespaldo.Add(item);
-                            }
-
-                            listaRespaldo.Sort();
-
-                            foreach(string str1 in listaRespaldo)
-                            {
-                                if(String.Compare(datoL, str1) > 0)
+                                for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
                                 {
-                                    // datoL va despues de str1
-                                    int indiceAntecesor = listaRespaldo.IndexOf(str1);
+                                    String str1 = dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString();
+                                    char[] crtemp = (char[])dat.datos[indiceLlave];
+                                    String str2 = new string(crtemp);
+                                    str1.ToLower();
+                                    str2.ToLower();
+                                    str1 = str1.Replace("\0", "");
+                                    str2 = str2.Replace("\0", "");
 
-                                    datoPredecesor = ent.listaDatos[indiceAntecesor];                                    
+                                    if (String.Compare(str1, str2) == 0)
+                                    {
+                                        dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = dat.apSigDato;
+                                        break;
+                                    }
                                 }
-                            }
 
-                            datoPredecesor.apSigDato = nuevoDato.posDato;
-                            nuevoDato.apSigDato = dat.posDato;
-                            ent.listaDatos.Add(nuevoDato);
-
-                            dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato;
-
-                            for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
-                            {
-                                String str1 = dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString();
-                                char[] crtemp = (char[])dat.datos[indiceLlave];
-                                String str2 = new string(crtemp);
-                                str1.ToLower();
-                                str2.ToLower();
-                                str1 = str1.Replace("\0", "");
-                                str2 = str2.Replace("\0", "");
-
-                                if (String.Compare(str1, str2) == 0)
+                                for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
                                 {
-                                    dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = dat.apSigDato;
-                                    break;
-                                }
-                            }
+                                    String str1 = dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString();
+                                    char[] crtemp = (char[])datoPredecesor.datos[indiceLlave];
+                                    String str2 = new string(crtemp);
+                                    str1.ToLower();
+                                    str2.ToLower();
+                                    str1 = str1.Replace("\0", "");
+                                    str2 = str2.Replace("\0", "");
 
-                            for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
+                                    if (String.Compare(str1, str2) == 0)
+                                    {
+                                        dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = datoPredecesor.apSigDato;
+                                        break;
+                                    }
+                                }
+
+                                break;
+                            }
+                            else if (datosVigentes.Count - 1 == posDatoComparar && String.Compare(datoL, datoK) > 0)
                             {
-                                String str1 = dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString();
-                                char[] crtemp = (char[])datoPredecesor.datos[indiceLlave];
-                                String str2 = new string(crtemp);
-                                str1.ToLower();
-                                str2.ToLower();
-                                str1 = str1.Replace("\0", "");
-                                str2 = str2.Replace("\0", "");
+                                nuevoDato.posDato = posMemoria;
+                                posMemoria += tamDato;
 
-                                if (String.Compare(str1, str2) == 0)
+                                Dato datoValorMasGrande = new Dato();
+
+                                var valorMasGrande = valoresString.Max();
+
+                                // Buscamos el dato con ese valor
+                                foreach (Dato dt in ent.listaDatos)
                                 {
-                                    dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = datoPredecesor.apSigDato;
-                                    break;
+                                    if (dt.apSigDato != -3 && dt.apSigDato != -4)
+                                    {
+                                        if (Convert.ToString(dt.datos[indiceLlave]) == valorMasGrande)
+                                        {
+                                            datoValorMasGrande = dt;
+                                            break;
+                                        }
+                                    }
                                 }
+
+                                datoValorMasGrande.apSigDato = nuevoDato.posDato;
+                                ent.listaDatos.Add(nuevoDato);
+                                datosVigentes.Add(nuevoDato);
+
+                                dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato;
+
+                                for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
+                                {
+                                    String str1 = dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString();
+                                    char[] crtemp = (char[])datoValorMasGrande.datos[indiceLlave];
+                                    String str2 = new string(crtemp);
+                                    str1.ToLower();
+                                    str2.ToLower();
+                                    str1 = str1.Replace("\0", "");
+                                    str2 = str2.Replace("\0", "");
+
+                                    if (String.Compare(str1, str2) == 0)
+                                    {
+                                        dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = datoValorMasGrande.apSigDato;
+                                        break;
+                                    }
+                                }
+
+                                break;
                             }
-
-                            break;
-                        }
-                        else if (ent.listaDatos.Count - 1 == posDatoComparar && String.Compare(datoL, datoK) > 0)
-                        {
-                            nuevoDato.posDato = posMemoria;
-                            posMemoria += tamDato;
-
-                            Dato datoValorMasGrande = new Dato();
-
-                            var valorMasGrande = valoresString.Max();
-
-                            // Buscamos el dato con ese valor
-                            foreach (Dato dt in ent.listaDatos)
+                            else if (String.Compare(datoK, datoL) < 0)
                             {
-                                if (Convert.ToString(dt.datos[indiceLlave]) == valorMasGrande)
-                                {
-                                    datoValorMasGrande = dt;
-                                    break;
-                                }
+                                posDatoComparar++;
                             }
-
-                            datoValorMasGrande.apSigDato = nuevoDato.posDato;
-                            ent.listaDatos.Add(nuevoDato);
-
-                            dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato;
-
-                            for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
-                            {
-                                String str1 = dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString();
-                                char[] crtemp = (char[])datoValorMasGrande.datos[indiceLlave];
-                                String str2 = new string(crtemp);
-                                str1.ToLower();
-                                str2.ToLower();
-                                str1 = str1.Replace("\0", "");
-                                str2 = str2.Replace("\0", "");
-
-                                if (String.Compare(str1, str2) == 0)
-                                {
-                                    dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = datoValorMasGrande.apSigDato;
-                                    break;
-                                }
-                            }
-
-                            break;
-                        }
-                        else if(String.Compare(datoK, datoL) < 0)
-                        {
-                            posDatoComparar++;
                         }
                     }
                 }
@@ -1302,7 +1405,7 @@ namespace ArchivosTarea2
             Dato datoAnterior = new Dato();
 
             foreach (Dato dat in ent.listaDatos)
-            {
+            {                
                 foreach(object obj in dat.datos)
                 {
                     if (obj is char[])
@@ -1317,7 +1420,14 @@ namespace ArchivosTarea2
                     }
                     count++;
                 }
-                fila[count] = dat.apSigDato.ToString();
+                if (dat.apSigDato != -2)
+                {
+                    fila[count] = dat.apSigDato.ToString();
+                }
+                else
+                {
+                    fila[count] = "-1";
+                }
 
                 if(dat == ent.listaDatos[0])
                 {
@@ -1330,7 +1440,10 @@ namespace ArchivosTarea2
                     datoAnterior = dat;
                 }
 
-                filas.Add(fila);
+                if (dat.apSigDato != -3 && dat.apSigDato != -4)
+                {
+                    filas.Add(fila);
+                }
                 fila = new string[atributosVigentes.Count + 1];
                 count = 0;
             }
@@ -1373,7 +1486,10 @@ namespace ArchivosTarea2
 
             foreach (Dato dat in ent.listaDatos)
             {
-                listaValores.Add(dat.datos[indice]);
+                if (dat.apSigDato != -3 && dat.apSigDato != -4)
+                {
+                    listaValores.Add(dat.datos[indice]);
+                }
             }
 
             if (attr.tipo == 'I' || attr.tipo == 'F' || attr.tipo == 'D' || attr.tipo == 'L')
@@ -1405,57 +1521,60 @@ namespace ArchivosTarea2
             bool encontrado = false;
 
             foreach(Dato dt in ent.listaDatos)
-            {                
-                switch(attr.tipo)
+            {
+                if (dt.apSigDato != -3 && dt.apSigDato != -4)
                 {
-                    case 'I': if(Convert.ToInt32(dt.datos[indice]) == lowestVal)
-                         {
-                            bajo = dt;
-                            encontrado = true;      
-                         }
-                        break;
-                    case 'F': if ((float)dt.datos[indice] == lowestVal)
-                        {
-                            bajo = dt;
-                            encontrado = true;   
-                        }
-                        break;
-                    case 'D': if (Convert.ToDouble(dt.datos[indice]) == lowestVal)
-                        {
-                            bajo = dt;
-                            encontrado = true;   
-                        }
-                        break;
-                    case 'L': if (Convert.ToInt64(dt.datos[indice]) == lowestVal)
-                        {
-                            bajo = dt;
-                            encontrado = true;   
-                        }
-                        break;
-                    case 'C': if (Convert.ToChar(dt.datos[indice]) == lowestVal)
-                        {
-                            bajo = dt;
-                            encontrado = true;   
-                        }
-                        break;
-                    case 'S':
-                        String strn = "";
+                    switch (attr.tipo)
+                    {
+                        case 'I': if (Convert.ToInt32(dt.datos[indice]) == lowestVal)
+                            {
+                                bajo = dt;
+                                encontrado = true;
+                            }
+                            break;
+                        case 'F': if ((float)dt.datos[indice] == lowestVal)
+                            {
+                                bajo = dt;
+                                encontrado = true;
+                            }
+                            break;
+                        case 'D': if (Convert.ToDouble(dt.datos[indice]) == lowestVal)
+                            {
+                                bajo = dt;
+                                encontrado = true;
+                            }
+                            break;
+                        case 'L': if (Convert.ToInt64(dt.datos[indice]) == lowestVal)
+                            {
+                                bajo = dt;
+                                encontrado = true;
+                            }
+                            break;
+                        case 'C': if (Convert.ToChar(dt.datos[indice]) == lowestVal)
+                            {
+                                bajo = dt;
+                                encontrado = true;
+                            }
+                            break;
+                        case 'S':
+                            String strn = "";
 
-                        if(dt.datos[indice] is char[])
-                        {
-                            strn = new string((char[])dt.datos[indice]);
-                        }
-                        else
-                        {
-                            strn = dt.datos[indice].ToString();
-                        }
+                            if (dt.datos[indice] is char[])
+                            {
+                                strn = new string((char[])dt.datos[indice]);
+                            }
+                            else
+                            {
+                                strn = dt.datos[indice].ToString();
+                            }
 
-                        if(String.Compare(lowestVal, strn) == 0)
-                        {
-                            bajo = dt;
-                            encontrado = true;
-                        }
-                        break;
+                            if (String.Compare(lowestVal, strn) == 0)
+                            {
+                                bajo = dt;
+                                encontrado = true;
+                            }
+                            break;
+                    }
                 }
 
                 if(encontrado == true)
@@ -1475,7 +1594,10 @@ namespace ArchivosTarea2
 
             foreach(Dato dat in ent.listaDatos)
             {
-                listaValores.Add(dat.datos[indice]);
+                if (dat.apSigDato != -3 && dat.apSigDato != -4)
+                {
+                    listaValores.Add(dat.datos[indice]);
+                }
             }
 
             if(attr.tipo == 'I' || attr.tipo == 'F' || attr.tipo == 'D' || attr.tipo == 'L')
@@ -1510,6 +1632,7 @@ namespace ArchivosTarea2
             return lowestVal;      
         }
 
+        // Boton que actualiza el dataGridView 
         private void button2_Click(object sender, EventArgs e)
         {
             List<Dato> ordenada = new List<Dato>();
@@ -1562,7 +1685,15 @@ namespace ArchivosTarea2
                     }
                     count++;
                 }
-                fila[count] = dat.apSigDato.ToString();
+
+                if (dat.apSigDato != -2)
+                {
+                    fila[count] = dat.apSigDato.ToString();
+                }
+                else
+                {
+                    fila[count] = "-1";
+                }
 
                 if (dat == ent.listaDatos[0])
                 {
@@ -1575,7 +1706,10 @@ namespace ArchivosTarea2
                     datoAnterior = dat;
                 }
 
-                filas.Add(fila);
+                if (dat.apSigDato != -3 && dat.apSigDato != -4)
+                {
+                    filas.Add(fila);
+                }
                 fila = new string[atributosVigentes.Count + 1];
                 count = 0;
             }
@@ -1584,11 +1718,47 @@ namespace ArchivosTarea2
             {
                 dataGridView1.Rows.Add(arr);
             }
+
+            datosVigentes.Clear();
+
+            foreach (Dato dat in ent.listaDatos)
+            {
+                if (dat.apSigDato != -3 && dat.apSigDato != -4)
+                {
+                    datosVigentes.Add(dat);
+                }
+            }
         }
 
-        private Dato regresa_dato_llave_primaria(Entidad e, dynamic llave)
+        private dynamic regresa_llave_primaria(string textboxtext)
+        {
+            dynamic llaveEncontrada = 0;
+            char tipo = atrLlave.tipo;
+
+            switch(tipo)
+            {
+                case 'I': llaveEncontrada = Convert.ToInt32(textboxtext);
+                    break;
+                case 'L': llaveEncontrada = Convert.ToInt64(textboxtext);
+                    break;
+                case 'D': llaveEncontrada = Convert.ToDouble(textboxtext);
+                    break;
+                case 'F': llaveEncontrada = Convert.ToSingle(textboxtext);
+                    break;
+                case 'C': llaveEncontrada = Convert.ToChar(textboxtext);
+                    break;
+                case 'S': llaveEncontrada = Convert.ToString(textboxtext);
+                    break;
+            }
+
+            return llaveEncontrada;
+        }
+
+        private Dato regresa_dato_llave_primaria(Entidad e, String llave)
         {
             Dato dato = new Dato();
+            dynamic llaveComparar = 0;
+            bool breakLoop = false;
 
             foreach(Dato dtr in e.listaDatos)
             {
@@ -1596,26 +1766,154 @@ namespace ArchivosTarea2
                 {
                     dynamic datoComparar = 0;
                     char tipo = this.atrLlave.tipo;
+                    int indexLlave = dtr.indice_llave_primaria();
 
                     switch(tipo)
                     {
-                        case 'C':
+                        case 'C': datoComparar = Convert.ToChar(dtr.datos[indexLlave]);
+                            llaveComparar = Convert.ToChar(llave);
+                            if (Convert.ToChar(dtr.datos[indexLlave]) == llaveComparar)
+                            {
+                                dato = dtr;
+                                breakLoop = true;
+                            }
                             break;
-                        case 'D':
+                        case 'D': datoComparar = Convert.ToDouble(dtr.datos[indexLlave]);
+                            llaveComparar = Convert.ToDouble(llave);
+                            if (Convert.ToDouble(dtr.datos[indexLlave]) == llaveComparar)
+                            {
+                                dato = dtr;
+                                breakLoop = true;
+                            }
                             break;
-                        case 'I':
+                        case 'I': datoComparar = Convert.ToInt32(dtr.datos[indexLlave]);
+                            llaveComparar = Convert.ToInt32(llave);
+                            if (Convert.ToInt32(dtr.datos[indexLlave]) == llaveComparar)
+                            {
+                                dato = dtr;
+                                breakLoop = true;
+                            }
                             break;
-                        case 'F':
+                        case 'F': datoComparar = Convert.ToSingle(dtr.datos[indexLlave]);
+                            llaveComparar = Convert.ToSingle(llave);
+                            if (Convert.ToSingle(dtr.datos[indexLlave]) == llaveComparar)
+                            {
+                                dato = dtr;
+                                breakLoop = true;
+                            }
                             break;
-                        case 'L':
+                        case 'L': datoComparar = Convert.ToInt64(dtr.datos[indexLlave]);
+                            llaveComparar = Convert.ToInt64(llave);
+                            if (Convert.ToInt64(dtr.datos[indexLlave]) == llaveComparar)
+                            {
+                                dato = dtr;
+                                breakLoop = true;
+                            }
                             break;
-                        case 'S':
+                        case 'S': datoComparar = Convert.ToString(dtr.datos[indexLlave]);
+                            llaveComparar = Convert.ToString(llave);
+                            if (Convert.ToString(dtr.datos[indexLlave]) == llaveComparar)
+                            {
+                                dato = dtr;
+                                breakLoop = true;
+                            }
                             break;
+                    }
+                   
+                    if(breakLoop == true)
+                    {
+                        break;
                     }
                 }
             }
 
             return dato;
+        }
+
+        // Boton para eliminar un dato
+        private void button5_Click(object sender, EventArgs e)
+        {
+            if(textBox1.Text.Length > 0)
+            {
+                Dato datoEliminar = regresa_dato_llave_primaria(ent, textBox1.Text.ToString());
+
+                if(datoEliminar.datos.Count > 0)
+                {
+                    datoEliminar.apSigDato = -3;
+
+                    for (int i = 0; i < this.ent.listaDatos.Count; i++)
+                    {
+                        // Si era el unico
+                        if (datoEliminar == this.ent.listaDatos[i] && this.ent.listaDatos.Count == 1)
+                        {
+                            this.ent.apDatos = -2;
+                        }
+                        // Si era el ultimo
+                        else if (datoEliminar == this.ent.listaDatos[i] && i == this.ent.listaDatos.Count - 1)
+                        {
+                            datoEliminar.apSigDato = -4;
+                            for (int a = i - 1; a > 0; a--)
+                            {
+                                if (this.ent.listaDatos[a].apSigDato != -3 && this.ent.listaDatos[a].apSigDato != -4)
+                                {
+                                    this.ent.listaDatos[a].apSigDato = -2;
+                                    break;
+                                }
+                            }
+                        }
+                        // Si era el primero
+                        else if (datoEliminar == this.ent.listaDatos[i] && i == 0 && this.ent.listaDatos.Count > 1)
+                        {
+                            for (int b = i + 1; b < this.ent.listaDatos.Count; b++)
+                            {
+                                if (this.ent.listaDatos[b].apSigDato != -3 && this.ent.listaDatos[b].apSigDato != -4)
+                                {
+                                    this.ent.apDatos = this.ent.listaDatos[b].posDato;
+                                    break;
+                                }
+                            }
+                        }
+                        // Si esta entre 2 datos
+                        else if (datoEliminar == this.ent.listaDatos[i])
+                        {
+                            Dato datoAnt = new Dato();
+                            Dato datoSuc = new Dato();
+                            for (int a = i - 1; a > 0; a--)
+                            {
+                                if (this.ent.listaDatos[a].apSigDato != -3)
+                                {
+                                    datoAnt = this.ent.listaDatos[a];
+                                    break;
+                                }
+                            }
+                            for (int b = i + 1; b < this.ent.listaDatos.Count; b++)
+                            {
+                                if (this.ent.listaDatos[b].apSigDato != -3 && this.ent.listaDatos[b].apSigDato != -4)
+                                {
+                                    datoSuc = this.ent.listaDatos[b];
+                                    break;
+                                }
+                            }
+                            datoAnt.apSigDato = datoSuc.posDato;
+                        }
+                    }
+                    this.bandChanged = true;
+                }
+                else
+                {
+                    MessageBox.Show("Error, llave primaria no encontrada.");
+                }
+            }
+            else
+            {
+                MessageBox.Show("Error, no se ha introducido una llave primaria");
+            }
+        }
+
+        // Boton para modificar un dato
+        private void button3_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

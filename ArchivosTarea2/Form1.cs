@@ -66,7 +66,7 @@ namespace ArchivosTarea2
             if(textBox1.Text.Length > 0)
             {
                 // Si el archivo no existe, se crea
-                if (File.Exists(@"C:\Users\DanielCorona\Documents\Visual Studio 2013\Projects\ArchivosTarea2\ArchivosTarea2\bin\Debug\" + textBox1.Text) == false)
+                if (File.Exists(@"C:\Users\DanielCorona\Documents\Visual Studio 2013\Projects\ArchivosTarea2Respaldo\ArchivosTarea2\ArchivosTarea2\bin\Debug\" + textBox1.Text) == false)
                 {
                     // Funcion que creara el archivo binario
                     crea_archivo(textBox1.Text);
@@ -108,7 +108,7 @@ namespace ArchivosTarea2
             if(seAbrio == true && textBox2.Text.Length > 0 && textBox2.Text.Length < 29)
             {
                 // Si el archivo especificado no existe, se crea
-                if (File.Exists(@"C:\Users\DanielCorona\Documents\Visual Studio 2013\Projects\ArchivosTarea2\ArchivosTarea2\bin\Debug\" + 
+                if (File.Exists(@"C:\Users\DanielCorona\Documents\Visual Studio 2013\Projects\ArchivosTarea2Respaldo\ArchivosTarea2\ArchivosTarea2\bin\Debug\" + 
                     textBox1.Text) == false)
                 {
                     crea_archivo(textBox1.Text);
@@ -656,7 +656,7 @@ namespace ArchivosTarea2
                     {
                         lee_atributos_de_entidad(streamR, reader, nEntidad);
 
-                        if (nEntidad.apDatos > 0)
+                        if (nEntidad.apDatos != -1)
                         {
                             lee_datos_de_entidad(streamR, reader, nEntidad);
                         }
@@ -981,7 +981,7 @@ namespace ArchivosTarea2
 
             ent.listaDatos.Add(dataRead);
 
-            if(dataRead.apSigDato > -1)
+            if(dataRead.apSigDato != -1 && dataRead.apSigDato != -4)
             {
                 lee_datos_de_entidad(f, r, ent);
             }
@@ -1929,7 +1929,7 @@ namespace ArchivosTarea2
             }
         }
 
-        // Boton que abre una ventana donde se insertaran los datos
+        // Boton que abre una ventana donde se insertaran los datos de forma secuencial ordenada
         private void button9_Click(object sender, EventArgs e)
         {
             if(textBox2.Text.Length > 0 && validacion(textBox2.Text) == true)
@@ -1989,6 +1989,11 @@ namespace ArchivosTarea2
             }
 
             return hayLlave;
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
