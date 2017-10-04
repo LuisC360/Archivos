@@ -19,11 +19,18 @@ namespace ArchivosTarea2
         // El indice del atributo llave primaria
         public int keyIndex = 0;
 
+        /// <summary>
+        /// Construccion de una nueva instancia de la clase Dato.
+        /// </summary>
         public Dato()
         {
 
         }
 
+        /// <summary>
+        /// Construccion de una nueva instancia de la clase Dato.
+        /// </summary>
+        /// <param name="e">La entidad en la que se insertara el dato.</param>
         public Dato(Entidad e)
         {
             foreach(Atributo at in e.listaAtributos)

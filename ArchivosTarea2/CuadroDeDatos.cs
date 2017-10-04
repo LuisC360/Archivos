@@ -22,7 +22,10 @@ namespace ArchivosTarea2
         public bool bandChanged = false;
         List<Dato> datosVigentes = new List<Dato>();
         /** NOTA: Intentarlo con una lista tipo dynamic **/
+        dynamic valorMasBajo = 0;
+        List<dynamic> valores = new List<dynamic>();
 
+        //
         int valorMasBajoInt = 0;
         List<int> valoresInt = new List<int>(); 
 
@@ -40,6 +43,7 @@ namespace ArchivosTarea2
 
         string valorMasBajoString = "";
         List<string> valoresString = new List<string>();
+        //
 
         Dato datoValorMasBajo = new Dato();
         int posDatoValorMasBajo = 0;
@@ -1469,10 +1473,10 @@ namespace ArchivosTarea2
         }
 
         /// <summary>
-        /// 
+        /// Metodo que regresa el tipo de dato acorde al valor dado por el atributo.
         /// </summary>
-        /// <param name="tatr"></param>
-        /// <returns></returns>
+        /// <param name="tatr">El caracter que define el tipo de atributo de cada valor del dato.</param>
+        /// <returns>El tipo de dato del valor del dato.</returns>
         private dynamic valida_atributo(char tatr)
         {
             var tipoAtr = typeof(int);
@@ -1497,10 +1501,10 @@ namespace ArchivosTarea2
         }
 
         /// <summary>
-        /// 
+        /// Metodo que encontrara el valor mas bajo de la lista de datos de la entidad. Funcionara dependiendo del tipo de dato.
         /// </summary>
-        /// <param name="indice"></param>
-        /// <returns></returns>
+        /// <param name="indice">El indice de la llave primaria de la lista de atributos de la entidad.</param>
+        /// <returns>El dato con el valor de llave primaria mas bajo.</returns>
         private Dato encuentra_dato_valor_mas_bajo(int indice)
         {
             Dato bajo = new Dato();
@@ -1611,10 +1615,10 @@ namespace ArchivosTarea2
         }
 
         /// <summary>
-        /// 
+        /// Metodo que extrae el valor del dato mas bajo de acuerdo a los valores de llave primaria.
         /// </summary>
-        /// <param name="indice"></param>
-        /// <returns></returns>
+        /// <param name="indice">El indice de la llave primaria de la lista de atributos de la entidad.</param>
+        /// <returns>El valor mas bajo de llave primaria encontrada en la lista de datos.</returns>
         private dynamic encuentra_valor_mas_bajo(int indice)
         {
             dynamic lowestVal = 0;
@@ -1765,7 +1769,7 @@ namespace ArchivosTarea2
         /// <summary>
         /// Metodo que actualiza las listas de datos vigentes (que no han sido eliminados) y de datos en la entidad.
         /// </summary>
-        /// <param name="datosOrdenados"></param>
+        /// <param name="datosOrdenados">La lista con los datos ya ordenados.</param>
         private void actualiza_listas(List<Dato> datosOrdenados)
         {
             datosVigentes.Clear();
@@ -1819,10 +1823,10 @@ namespace ArchivosTarea2
         }
 
         /// <summary>
-        /// 
+        /// Metodo que regresa el valor de la llave primaria escrita en el textBox.
         /// </summary>
-        /// <param name="textboxtext"></param>
-        /// <returns></returns>
+        /// <param name="textboxtext">El texto contenido en el textBox.</param>
+        /// <returns>El valor de la llave primaria escrito en el textBox.</returns>
         private dynamic regresa_llave_primaria(string textboxtext)
         {
             dynamic llaveEncontrada = 0;
@@ -1848,11 +1852,11 @@ namespace ArchivosTarea2
         }
 
         /// <summary>
-        /// 
+        /// Metodo que regresa el dato que tiene el valor de llave primaria escrita en el textBox.
         /// </summary>
-        /// <param name="e"></param>
-        /// <param name="llave"></param>
-        /// <returns></returns>
+        /// <param name="e">La entidad que contiene la lista con el dato.</param>
+        /// <param name="llave">El valor de llave primaria escrito en el textBox.</param>
+        /// <returns>El dato que tiene ese valor de llave primaria.</returns>
         private Dato regresa_dato_llave_primaria(Entidad e, String llave)
         {
             Dato dato = new Dato();
