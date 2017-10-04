@@ -710,6 +710,11 @@ namespace ArchivosTarea2
                         apAt = -1;
                     }
 
+                    if(ent.apDatos < -1)
+                    {
+                        apDat = -1;
+                    }
+
                     fila = new string[] { nombreEntidad, apAt.ToString(), apDat.ToString(), posInic.ToString(), apSigAt.ToString() };
 
                     nombreEntidad = "";
@@ -1945,8 +1950,9 @@ namespace ArchivosTarea2
                         if(cuadroDatos == DialogResult.Cancel)
                         {
                             posicionMemoria = datosEntidad.posMemoria;
-                            ent.apDatos = datosEntidad.apDatos;
+                            // ent.apDatos = datosEntidad.apDatos;
                             ent.listaDatos = datosEntidad.ent.listaDatos;
+                            ent.apDatos = datosEntidad.ent.apDatos;
                             int indiceLlave = datosEntidad.indiceLlave;
                             List<Dato> ordenada = ent.listaDatos.OrderBy(o=>o.datos[indiceLlave]).ToList();
                             ent.listaDatos = ordenada;

@@ -76,7 +76,7 @@ namespace ArchivosTarea2
             tamDato = tamDat;
 
             // Si la lista no esta vacia
-            if(ent.listaDatos.Count > 0)
+            if(datosVigentes.Count > 0)
             {
                 pobla_dataGrid();
             }
@@ -239,7 +239,7 @@ namespace ArchivosTarea2
 
             switch(attr.tipo)
             {
-                case 'I': foreach (Dato dt in ent.listaDatos)
+                case 'I': foreach (Dato dt in datosVigentes)
                           {
                               if (dt.apSigDato != -3 && dt.apSigDato != -4)
                               {
@@ -247,7 +247,7 @@ namespace ArchivosTarea2
                               }
                           }
                           break;
-                case 'F': foreach (Dato dt in ent.listaDatos)
+                case 'F': foreach (Dato dt in datosVigentes)
                           {
                               if (dt.apSigDato != -3 && dt.apSigDato != -4)
                               {
@@ -255,7 +255,7 @@ namespace ArchivosTarea2
                               }
                           }
                           break;
-                case 'D': foreach (Dato dt in ent.listaDatos)
+                case 'D': foreach (Dato dt in datosVigentes)
                           {
                               if (dt.apSigDato != -3 && dt.apSigDato != -4)
                               {
@@ -263,7 +263,7 @@ namespace ArchivosTarea2
                               }
                           }
                           break;
-                case 'L': foreach (Dato dt in ent.listaDatos)
+                case 'L': foreach (Dato dt in datosVigentes)
                           {
                               if (dt.apSigDato != -3 && dt.apSigDato != -4)
                               {
@@ -271,7 +271,7 @@ namespace ArchivosTarea2
                               }
                           }
                           break;
-                case 'C': foreach (Dato dt in ent.listaDatos)
+                case 'C': foreach (Dato dt in datosVigentes)
                           {
                               if (dt.apSigDato != -3 && dt.apSigDato != -4)
                               {
@@ -279,7 +279,7 @@ namespace ArchivosTarea2
                               }
                           }
                           break;
-                case 'S': foreach(Dato dt in ent.listaDatos)
+                case 'S': foreach(Dato dt in datosVigentes)
                           {
                               if (dt.apSigDato != -3 && dt.apSigDato != -4)
                               {
@@ -295,7 +295,7 @@ namespace ArchivosTarea2
             }
 
             // Si la lista tiene mas de 1 atributo, se calculara el valor mas bajo 
-            if(ent.listaDatos.Count > 1)
+            if(datosVigentes.Count > 1)
             {
                 switch(attr.tipo)
                 {
@@ -317,7 +317,7 @@ namespace ArchivosTarea2
             }
 
             // Ahora se validara el dato mediante su llave primaria
-            if (ent.listaDatos.Count == 0)
+            if (datosVigentes.Count == 0)
             {
                 nuevoDato.posDato = posMemoria;
                 posMemoria += tamDato;
@@ -353,7 +353,7 @@ namespace ArchivosTarea2
             }
             else
             {
-                foreach (Dato dat in ent.listaDatos)
+                foreach (Dato dat in datosVigentes)
                 {
                     if (dat.apSigDato != -3 && dat.apSigDato != -4)
                     {
@@ -431,7 +431,7 @@ namespace ArchivosTarea2
                                     List<int> sustraendos = new List<int>();
                                     Dato datoPredecesor = new Dato();
 
-                                    foreach (Dato dt in ent.listaDatos)
+                                    foreach (Dato dt in datosVigentes)
                                     {
                                         if (dt.apSigDato != -3 && dt.apSigDato != -4)
                                         {
@@ -452,7 +452,7 @@ namespace ArchivosTarea2
                                     {
                                         if (valoresResta[i] == valorRestaMenor)
                                         {
-                                            foreach (Dato data in ent.listaDatos)
+                                            foreach (Dato data in datosVigentes)
                                             {
                                                 if (data.apSigDato != -3 && data.apSigDato != -4)
                                                 {
@@ -505,7 +505,7 @@ namespace ArchivosTarea2
                                     var valorMasGrande = valoresInt.Max();
 
                                     // Buscamos el dato con ese valor
-                                    foreach (Dato dt in ent.listaDatos)
+                                    foreach (Dato dt in datosVigentes)
                                     {
                                         if (dt.apSigDato != -3 && dt.apSigDato != -4)
                                         {
@@ -586,7 +586,7 @@ namespace ArchivosTarea2
                                     List<float> sustraendos = new List<float>();
                                     Dato datoPredecesor = new Dato();
 
-                                    foreach (Dato dt in ent.listaDatos)
+                                    foreach (Dato dt in datosVigentes)
                                     {
                                         if (dt.apSigDato != -3 && dt.apSigDato != -4)
                                         {
@@ -607,7 +607,7 @@ namespace ArchivosTarea2
                                     {
                                         if (valoresResta[i] == valorRestaMenor)
                                         {
-                                            foreach (Dato data in ent.listaDatos)
+                                            foreach (Dato data in datosVigentes)
                                             {
                                                 if (data.apSigDato != -3 && data.apSigDato != -4)
                                                 {
@@ -660,7 +660,7 @@ namespace ArchivosTarea2
                                     var valorMasGrande = valoresFloat.Max();
 
                                     // Buscamos el dato con ese valor
-                                    foreach (Dato dt in ent.listaDatos)
+                                    foreach (Dato dt in datosVigentes)
                                     {
                                         if (dt.apSigDato != -3 && dt.apSigDato != -4)
                                         {
@@ -741,7 +741,7 @@ namespace ArchivosTarea2
                                     List<double> sustraendos = new List<double>();
                                     Dato datoPredecesor = new Dato();
 
-                                    foreach (Dato dt in ent.listaDatos)
+                                    foreach (Dato dt in datosVigentes)
                                     {
                                         if (dt.apSigDato != -3 && dt.apSigDato != -4)
                                         {
@@ -762,7 +762,7 @@ namespace ArchivosTarea2
                                     {
                                         if (valoresResta[i] == valorRestaMenor)
                                         {
-                                            foreach (Dato data in ent.listaDatos)
+                                            foreach (Dato data in datosVigentes)
                                             {
                                                 if (data.apSigDato != -3 && data.apSigDato != -4)
                                                 {
@@ -815,7 +815,7 @@ namespace ArchivosTarea2
                                     var valorMasGrande = valoresDouble.Max();
 
                                     // Buscamos el dato con ese valor
-                                    foreach (Dato dt in ent.listaDatos)
+                                    foreach (Dato dt in datosVigentes)
                                     {
                                         if (dt.apSigDato != -3 && dt.apSigDato != -4)
                                         {
@@ -896,7 +896,7 @@ namespace ArchivosTarea2
                                     List<long> sustraendos = new List<long>();
                                     Dato datoPredecesor = new Dato();
 
-                                    foreach (Dato dt in ent.listaDatos)
+                                    foreach (Dato dt in datosVigentes)
                                     {
                                         if (dt.apSigDato != -3 && dt.apSigDato != -4)
                                         {
@@ -917,7 +917,7 @@ namespace ArchivosTarea2
                                     {
                                         if (valoresResta[i] == valorRestaMenor)
                                         {
-                                            foreach (Dato data in ent.listaDatos)
+                                            foreach (Dato data in datosVigentes)
                                             {
                                                 if (data.apSigDato != -3 && data.apSigDato != -4)
                                                 {
@@ -970,7 +970,7 @@ namespace ArchivosTarea2
                                     var valorMasGrande = valoresLong.Max();
 
                                     // Buscamos el dato con ese valor
-                                    foreach (Dato dt in ent.listaDatos)
+                                    foreach (Dato dt in datosVigentes)
                                     {
                                         if (dt.apSigDato != -3 && dt.apSigDato != -4)
                                         {
@@ -1057,7 +1057,7 @@ namespace ArchivosTarea2
                                 List<int> sustraendos = new List<int>();
                                 Dato datoPredecesor = new Dato();
 
-                                foreach (Dato dt in ent.listaDatos)
+                                foreach (Dato dt in datosVigentes)
                                 {
                                     if (dt.apSigDato != -3 && dt.apSigDato != -4)
                                     {
@@ -1078,7 +1078,7 @@ namespace ArchivosTarea2
                                 {
                                     if (valoresResta[i] == valorRestaMenor)
                                     {
-                                        foreach (Dato data in ent.listaDatos)
+                                        foreach (Dato data in datosVigentes)
                                         {
                                             if (data.apSigDato != -3 && data.apSigDato != -4)
                                             {
@@ -1131,7 +1131,7 @@ namespace ArchivosTarea2
                                 var valorMasGrande = valoresChar.Max();
 
                                 // Buscamos el dato con ese valor
-                                foreach (Dato dt in ent.listaDatos)
+                                foreach (Dato dt in datosVigentes)
                                 {
                                     if (dt.apSigDato != -3 && dt.apSigDato != -4)
                                     {
@@ -1237,7 +1237,7 @@ namespace ArchivosTarea2
 
                                 List<string> listaRespaldo = new List<string>();
 
-                                foreach (Dato d in ent.listaDatos)
+                                foreach (Dato d in datosVigentes)
                                 {
                                     if (d.apSigDato != -3 && d.apSigDato != -4)
                                     {
@@ -1314,7 +1314,7 @@ namespace ArchivosTarea2
                                 var valorMasGrande = valoresString.Max();
 
                                 // Buscamos el dato con ese valor
-                                foreach (Dato dt in ent.listaDatos)
+                                foreach (Dato dt in datosVigentes)
                                 {
                                     if (dt.apSigDato != -3 && dt.apSigDato != -4)
                                     {
@@ -1361,6 +1361,7 @@ namespace ArchivosTarea2
             }
 
             bandChanged = true;
+            toolStripStatusLabel1.Text = "Dato añadido con exito.";
         }
 
         private void rellena_dataGrid()
@@ -1484,7 +1485,7 @@ namespace ArchivosTarea2
             List<dynamic> listaValores = new List<dynamic>();
             List<string> listaRespaldo = new List<string>();
 
-            foreach (Dato dat in ent.listaDatos)
+            foreach (Dato dat in datosVigentes)
             {
                 if (dat.apSigDato != -3 && dat.apSigDato != -4)
                 {
@@ -1592,7 +1593,7 @@ namespace ArchivosTarea2
             List<dynamic> listaValores = new List<dynamic>();
             List<string> listaRespaldo = new List<string>();
 
-            foreach(Dato dat in ent.listaDatos)
+            foreach(Dato dat in datosVigentes)
             {
                 if (dat.apSigDato != -3 && dat.apSigDato != -4)
                 {
@@ -1636,6 +1637,8 @@ namespace ArchivosTarea2
         private void button2_Click(object sender, EventArgs e)
         {
             List<Dato> ordenada = new List<Dato>();
+
+            indiceLlave = regresa_indice_llave_primaria();
 
             if (attr.tipo != 'S')
             {
@@ -1695,17 +1698,6 @@ namespace ArchivosTarea2
                     fila[count] = "-1";
                 }
 
-                if (dat == ent.listaDatos[0])
-                {
-                    dat.posDato = ent.apDatos;
-                    datoAnterior = dat;
-                }
-                else
-                {
-                    dat.posDato = datoAnterior.apSigDato;
-                    datoAnterior = dat;
-                }
-
                 if (dat.apSigDato != -3 && dat.apSigDato != -4)
                 {
                     filas.Add(fila);
@@ -1721,12 +1713,19 @@ namespace ArchivosTarea2
 
             datosVigentes.Clear();
 
-            foreach (Dato dat in ent.listaDatos)
+            foreach (Dato dat in ordenada)
             {
                 if (dat.apSigDato != -3 && dat.apSigDato != -4)
                 {
                     datosVigentes.Add(dat);
                 }
+            }
+
+            ent.listaDatos.Clear();
+
+            foreach(Dato dat in ordenada)
+            {
+                ent.listaDatos.Add(dat);
             }
         }
 
@@ -1830,6 +1829,28 @@ namespace ArchivosTarea2
             return dato;
         }
 
+        private int regresa_indice_llave_primaria()
+        {
+            int indexLlave = 0;
+
+            foreach(Atributo atri in ent.listaAtributos)
+            {
+                if(atri.apSigAtributo != -2 && atri.apSigAtributo != 4)
+                {
+                    if(atri.esLlavePrimaria == false)
+                    {
+                        indexLlave++;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+
+            return indexLlave;
+        }
+
         // Boton para eliminar un dato
         private void button5_Click(object sender, EventArgs e)
         {
@@ -1847,30 +1868,57 @@ namespace ArchivosTarea2
                         if (datoEliminar == this.ent.listaDatos[i] && this.ent.listaDatos.Count == 1)
                         {
                             this.ent.apDatos = -2;
+                            break;
                         }
                         // Si era el ultimo
                         else if (datoEliminar == this.ent.listaDatos[i] && i == this.ent.listaDatos.Count - 1)
                         {
                             datoEliminar.apSigDato = -4;
+                            bool encontrado = false;
+
                             for (int a = i - 1; a > 0; a--)
                             {
                                 if (this.ent.listaDatos[a].apSigDato != -3 && this.ent.listaDatos[a].apSigDato != -4)
                                 {
                                     this.ent.listaDatos[a].apSigDato = -2;
+                                    encontrado = true;
                                     break;
                                 }
+                            }
+
+                            if(encontrado == true)
+                            {
+                                break;
+                            }
+                            else
+                            {
+                                this.ent.apDatos = -2;
+                                break;
                             }
                         }
                         // Si era el primero
                         else if (datoEliminar == this.ent.listaDatos[i] && i == 0 && this.ent.listaDatos.Count > 1)
                         {
+                            bool encontrado = false;
+
                             for (int b = i + 1; b < this.ent.listaDatos.Count; b++)
                             {
                                 if (this.ent.listaDatos[b].apSigDato != -3 && this.ent.listaDatos[b].apSigDato != -4)
                                 {
                                     this.ent.apDatos = this.ent.listaDatos[b].posDato;
+                                    encontrado = true;
                                     break;
                                 }
+                            }
+
+                            if(encontrado == true)
+                            {
+                                break;
+                            }
+                            else 
+                            {
+                                this.ent.apDatos = -2;
+                                break;
                             }
                         }
                         // Si esta entre 2 datos
@@ -1894,10 +1942,30 @@ namespace ArchivosTarea2
                                     break;
                                 }
                             }
-                            datoAnt.apSigDato = datoSuc.posDato;
+
+                            if(datoAnt.datos.Count > 0 && datoSuc.datos.Count > 0)
+                            {
+                                datoAnt.apSigDato = datoSuc.posDato;
+                            }
+                            else if(datoAnt.datos.Count > 0 && datoSuc.datos.Count == 0)
+                            {
+                                datoAnt.apSigDato = -2;
+                            }
+                            else if(datoSuc.datos.Count > 0 && datoAnt.datos.Count == 0)
+                            {
+                                ent.apDatos = datoSuc.posDato;
+                            }
+                            else
+                            {
+                                ent.apDatos = -2;
+                            }
+                            
+                            break;
                         }
                     }
                     this.bandChanged = true;
+
+                    toolStripStatusLabel1.Text = "Dato eliminado con exito.";
                 }
                 else
                 {
