@@ -47,6 +47,13 @@ namespace ArchivosTarea2
         Atributo attr = new Atributo();
         public int indiceLlave = 0;
 
+        /// <summary>
+        /// Constructor del cuadro de datos.
+        /// </summary>
+        /// <param name="e">La entidad en la que se insertaran datos.</param>
+        /// <param name="pMem">La posicion de memoria actual.</param>
+        /// <param name="apDat">El apuntador a datos de la entidad.</param>
+        /// <param name="tamDat">El tamaño del dato en bytes.</param>
         public CuadroDeDatos(Entidad e, long pMem, long apDat, long tamDat)
         {
             ent = e;
@@ -1364,6 +1371,9 @@ namespace ArchivosTarea2
             toolStripStatusLabel1.Text = "Dato añadido con exito.";
         }
 
+        /// <summary>
+        /// Metodo que inicia los nombres y la cantidad de columnas necesarias en el dataGridView.
+        /// </summary>
         private void rellena_dataGrid()
         {
             dataGridView1.ColumnCount = numAtributos + 1;
@@ -1398,6 +1408,9 @@ namespace ArchivosTarea2
             dataGridView1.Columns[j].Name = "Ap. Sig. Dato";
         }
 
+        /// <summary>
+        /// Metodo que rellena filas del dataGrid con los datos que contiene la entidad.
+        /// </summary>
         private void pobla_dataGrid()
         {
             List<String[]> filas = new List<string[]>();
@@ -1455,6 +1468,11 @@ namespace ArchivosTarea2
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tatr"></param>
+        /// <returns></returns>
         private dynamic valida_atributo(char tatr)
         {
             var tipoAtr = typeof(int);
@@ -1478,6 +1496,11 @@ namespace ArchivosTarea2
             return tipoAtr;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="indice"></param>
+        /// <returns></returns>
         private Dato encuentra_dato_valor_mas_bajo(int indice)
         {
             Dato bajo = new Dato();
@@ -1587,6 +1610,11 @@ namespace ArchivosTarea2
             return bajo;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="indice"></param>
+        /// <returns></returns>
         private dynamic encuentra_valor_mas_bajo(int indice)
         {
             dynamic lowestVal = 0;
@@ -1636,34 +1664,15 @@ namespace ArchivosTarea2
         // Boton que actualiza el dataGridView 
         private void button2_Click(object sender, EventArgs e)
         {
-            List<Dato> ordenada = new List<Dato>();
+            ordena_datos();
+        }
 
-            indiceLlave = regresa_indice_llave_primaria();
-
-            if (attr.tipo != 'S')
-            {
-                ordenada = ent.listaDatos.OrderBy(o => o.datos[indiceLlave]).ToList();
-            }
-            else
-            {
-                List<Dato> listaRespaldo = new List<Dato>();
-
-                int c = 0;
-                foreach(Dato dat in ent.listaDatos)
-                {
-                    listaRespaldo.Add(dat);
-
-                    if (ent.listaDatos[c].datos[indiceLlave] is char[])
-                    {
-                        String s = new string((char[])ent.listaDatos[c].datos[indiceLlave]);
-                        s.Replace("\0", "");
-                        listaRespaldo[c].datos[indiceLlave] = s;
-                        c++;
-                    }
-                }
-                
-                ordenada = listaRespaldo.OrderBy(o => o.datos[indiceLlave]).ToList();
-            }
+        /// <summary>
+        /// Metodo con el cual se actualizara el dataGridView de visualizacion de datos.
+        /// </summary>
+        private void ordena_datos()
+        {
+            List<Dato> ordenada = ordena_lista_por_llave(ent.listaDatos);
 
             dataGridView1.Rows.Clear();
 
@@ -1711,9 +1720,57 @@ namespace ArchivosTarea2
                 dataGridView1.Rows.Add(arr);
             }
 
+            actualiza_listas(ordenada);
+        }
+
+        /// <summary>
+        /// Metodo con el cual se ordenara la lista de datos de la entidad mediante su llave primaria. El orden sera ascendente.
+        /// </summary>
+        /// <param name="listaD">La lista de datos de la entidad.</param>
+        /// <returns>La misma lista de datos, pero ordenada segun su llave primaria.</returns>
+        private List<Dato> ordena_lista_por_llave(List<Dato> listaD)
+        {
+            List<Dato> ordenada = new List<Dato>();
+
+            indiceLlave = regresa_indice_llave_primaria();
+
+            if (attr.tipo != 'S')
+            {
+                ordenada = ent.listaDatos.OrderBy(o => o.datos[indiceLlave]).ToList();
+            }
+            else
+            {
+                List<Dato> listaRespaldo = new List<Dato>();
+
+                int c = 0;
+                foreach (Dato dat in ent.listaDatos)
+                {
+                    listaRespaldo.Add(dat);
+
+                    if (ent.listaDatos[c].datos[indiceLlave] is char[])
+                    {
+                        String s = new string((char[])ent.listaDatos[c].datos[indiceLlave]);
+                        s.Replace("\0", "");
+                        listaRespaldo[c].datos[indiceLlave] = s;
+                        c++;
+                    }
+                }
+
+                ordenada = listaRespaldo.OrderBy(o => o.datos[indiceLlave]).ToList();
+            }
+
+            return ordenada;
+        }
+
+        /// <summary>
+        /// Metodo que actualiza las listas de datos vigentes (que no han sido eliminados) y de datos en la entidad.
+        /// </summary>
+        /// <param name="datosOrdenados"></param>
+        private void actualiza_listas(List<Dato> datosOrdenados)
+        {
             datosVigentes.Clear();
 
-            foreach (Dato dat in ordenada)
+            foreach (Dato dat in datosOrdenados)
             {
                 if (dat.apSigDato != -3 && dat.apSigDato != -4)
                 {
@@ -1723,12 +1780,49 @@ namespace ArchivosTarea2
 
             ent.listaDatos.Clear();
 
-            foreach(Dato dat in ordenada)
+            foreach (Dato dat in datosOrdenados)
             {
                 ent.listaDatos.Add(dat);
             }
         }
 
+        /// <summary>
+        /// Metodo que actualiza los apuntadores de los datos en la lista de la entidad, en este caso, la lista ya estara ordenada de
+        /// acuerdo a la llave primaria.
+        /// </summary>
+        /// <param name="listaOrdenada">La lista de datos ya ordenada.</param>
+        private void actualiza_lista_datos(List<Dato> listaOrdenada)
+        {
+            Dato datoAnterior = new Dato();
+
+            foreach(Dato dat in listaOrdenada)
+            {
+                if(dat.apSigDato != -3 && dat.apSigDato != -4)
+                {
+                    if(datoAnterior.datos.Count == 0)
+                    {
+                        ent.apDatos = dat.posDato;
+                        datoAnterior = dat;
+                    }
+                    else
+                    {
+                        datoAnterior.apSigDato = dat.posDato;
+                        datoAnterior = dat;
+                    }
+
+                    if(dat == listaOrdenada[listaOrdenada.Count - 1])
+                    {
+                        dat.apSigDato = -1;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="textboxtext"></param>
+        /// <returns></returns>
         private dynamic regresa_llave_primaria(string textboxtext)
         {
             dynamic llaveEncontrada = 0;
@@ -1753,6 +1847,12 @@ namespace ArchivosTarea2
             return llaveEncontrada;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="e"></param>
+        /// <param name="llave"></param>
+        /// <returns></returns>
         private Dato regresa_dato_llave_primaria(Entidad e, String llave)
         {
             Dato dato = new Dato();
@@ -1829,6 +1929,10 @@ namespace ArchivosTarea2
             return dato;
         }
 
+        /// <summary>
+        /// Metodo que devuelve el indice de la llave primaria en la lista de atributos de la entidad.
+        /// </summary>
+        /// <returns>El indice de la llave primaria de la lista de atributos de la entidad.</returns>
         private int regresa_indice_llave_primaria()
         {
             int indexLlave = 0;
@@ -1856,7 +1960,7 @@ namespace ArchivosTarea2
         {
             if(textBox1.Text.Length > 0)
             {
-                Dato datoEliminar = regresa_dato_llave_primaria(ent, textBox1.Text.ToString());
+                Dato datoEliminar = regresa_dato_llave_primaria(ent, textBox1.Text);
 
                 if(datoEliminar.datos.Count > 0)
                 {
@@ -1981,7 +2085,46 @@ namespace ArchivosTarea2
         // Boton para modificar un dato
         private void button3_Click(object sender, EventArgs e)
         {
+            if(textBox1.Text.Length > 0)
+            {
+                Dato datoModificar = regresa_dato_llave_primaria(ent, textBox1.Text);
 
+                if(datoModificar.datos.Count > 0)
+                {
+                    int idiceKey = regresa_indice_llave_primaria();
+                    bool llaveCambiada = false;
+
+                    using(ModificaDato modificador = new ModificaDato(ent, datoModificar, idiceKey))
+                    {
+                        var cuadroModifica = modificador.ShowDialog();
+
+                        if(cuadroModifica == DialogResult.OK)
+                        {
+                            datoModificar = modificador.dat;
+                            llaveCambiada = modificador.llavePrimariaCambiada;
+
+                            // Si se cambio la llave primaria, hay que invocar al metodo que reordena la lista
+                            if(llaveCambiada == true)
+                            {
+                                ordena_datos();
+                                actualiza_lista_datos(ent.listaDatos);
+                                ordena_datos();
+                            }
+
+                            this.bandChanged = true;
+                            toolStripStatusLabel1.Text = "Dato modificado con exito.";
+                        }
+                    }                  
+                }
+                else
+                {
+                    MessageBox.Show("Error, llave primaria no encontrada.");
+                }
+            }
+            else
+            {
+                MessageBox.Show("Error, no se ha introducido una llave primaria.");
+            }
         }
     }
 }

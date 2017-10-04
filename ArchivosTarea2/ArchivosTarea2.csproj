@@ -66,6 +66,12 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="Indice.cs" />
+    <Compile Include="ModificaDato.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ModificaDato.Designer.cs">
+      <DependentUpon>ModificaDato.cs</DependentUpon>
+    </Compile>
     <Compile Include="ModificadorAtributo.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -88,6 +94,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ModificaDato.resx">
+      <DependentUpon>ModificaDato.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ModificadorAtributo.resx">
       <DependentUpon>ModificadorAtributo.cs</DependentUpon>
