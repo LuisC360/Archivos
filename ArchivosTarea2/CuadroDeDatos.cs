@@ -1723,14 +1723,13 @@ namespace ArchivosTarea2
         /// </summary>
         private void ordena_datos()
         {
-            List<Dato> ordenada = ordena_lista_por_llave(ent.listaDatos);
+            List<Dato> ordenada = ordena_lista_por_llave();
 
             dataGridView1.Rows.Clear();
 
             List<String[]> filas = new List<string[]>();
             String[] fila = new string[atributosVigentes.Count + 2];
             int count = 0;
-            Dato datoAnterior = new Dato();
 
             foreach (Dato dat in ordenada)
             {
@@ -1781,7 +1780,7 @@ namespace ArchivosTarea2
         /// </summary>
         /// <param name="listaD">La lista de datos de la entidad.</param>
         /// <returns>La misma lista de datos, pero ordenada segun su llave primaria.</returns>
-        private List<Dato> ordena_lista_por_llave(List<Dato> listaD)
+        private List<Dato> ordena_lista_por_llave()
         {
             List<Dato> ordenada = new List<Dato>();
 

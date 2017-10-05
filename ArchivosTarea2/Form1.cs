@@ -328,8 +328,6 @@ namespace ArchivosTarea2
 
                     for (int i = 0; i < entidades.Count; i++ )
                     {
-                        Entidad analiza = entidades[i];
-
                         // Si la entidad a eliminar es la primera o la unica
                         if(entidades[0] == entidadEliminar)
                         {
@@ -842,7 +840,6 @@ namespace ArchivosTarea2
 
             if(apSigAt != -1 && apSigAt != -4)
             {
-                // f.Seek(apSigAt, SeekOrigin.Begin);
                 lee_atributos_de_entidad(f, r, ent);
             }
         }
@@ -948,7 +945,6 @@ namespace ArchivosTarea2
                             return;
                         }
                     }
-                    long pos = r.BaseStream.Position;
                 }
                 else
                 {

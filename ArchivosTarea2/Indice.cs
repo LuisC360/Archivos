@@ -10,8 +10,6 @@ namespace ArchivosTarea2
     {
         dynamic valorInicial;
         dynamic valorFinal;
-        long apSigIndice = 0;
-        long apDatos = 0;
 
         public Indice()
         {
