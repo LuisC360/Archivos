@@ -47,6 +47,10 @@ namespace ArchivosTarea2
             }
         }
 
+        /// <summary>
+        /// Metodo que regresara el atributo que sea la llave primaria.
+        /// </summary>
+        /// <returns>El atributo que sea la llave primaria.</returns>
         public Atributo regresa_llave_primaria()
         {
             Atributo llave = new Atributo();
@@ -62,6 +66,10 @@ namespace ArchivosTarea2
             return llave;
         }
 
+        /// <summary>
+        /// Metodo que devuelve el indice de la llave primaria en la lista de atributos de la entidad.
+        /// </summary>
+        /// <returns>El indice de la llave primaria de la lista de atributos.</returns>
         public int indice_llave_primaria()
         {
             int index = 0;

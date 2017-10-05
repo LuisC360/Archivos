@@ -18,6 +18,9 @@ namespace ArchivosTarea2
         public long newBytes { get; set; }
         public int esLlave { get; set; }
 
+        /// <summary>
+        /// Construccion de la ventana para modificar un atributo.
+        /// </summary>
         public ModificadorAtributo()
         {
             InitializeComponent();
@@ -26,6 +29,7 @@ namespace ArchivosTarea2
             rellena_lista_tipo();
         }
 
+        // Boton para aceptar los cambios.
         private void button1_Click(object sender, EventArgs e)
         {
             this.newNombre = textBox1.Text;
@@ -36,6 +40,10 @@ namespace ArchivosTarea2
             this.Close();
         }
 
+        /// <summary>
+        /// Metodo que rellena los comboBox con su informacion respectiva. El primero sera llenado con los tipos de dato disponibles, y el
+        /// segundo con banderas de si el atributo sera o no llave primaria.
+        /// </summary>
         public void rellena_lista_tipo()
         {
             char[] tipos = { 'I', 'F', 'C', 'S', 'D', 'L', 'B' };
@@ -54,6 +62,11 @@ namespace ArchivosTarea2
             comboBox2.Items.Add("No");
         }
 
+        /// <summary>
+        /// Metodo con el que se elegira el nuevo numero de bytes del atributo dependiendo de lo que se haya seleccionado en el primer
+        /// textBox.
+        /// </summary>
+        /// <returns>El nuevo numero de bytes del atributo.</returns>
         public long escoje_num_bytes()
         {
             long numBytes = 0;

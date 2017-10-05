@@ -276,7 +276,7 @@ namespace ArchivosTarea2
             dataGridView1.Rows.Clear();
             dataGridView1.Refresh();
 
-            dataGridView1.ColumnCount = atributosVigentes + 1;
+            dataGridView1.ColumnCount = atributosVigentes + 2;
             dataGridView1.ColumnHeadersVisible = true;
 
             for(int i = 0; i < atributosVigentes; i++)
@@ -285,10 +285,11 @@ namespace ArchivosTarea2
                 dataGridView1.Columns[i].Name = nombreAtr;
             }
 
-            dataGridView1.Columns[atributosVigentes].Name = "Ap. Sig. Dato.";
+            dataGridView1.Columns[atributosVigentes].Name = "Pos. Dato";
+            dataGridView1.Columns[atributosVigentes + 1].Name = "Ap. Sig. Dato.";
 
             // Rellena el dataGridView con la informacion del dato a modificar
-            String[] fila = new string[atributosVigentes + 1];
+            String[] fila = new string[atributosVigentes + 2];
             int count = 0;
 
             for(int j = 0; j < atributosVigentes; j++)
@@ -308,7 +309,8 @@ namespace ArchivosTarea2
                         break;
                     case 'C': dato = Convert.ToChar(dato);
                         break;
-                    case 'S': dato = Convert.ToString(dato);
+                    case 'S': String nString = new string(dato); 
+                        dato = nString;
                         break;
                 }
 
@@ -316,6 +318,8 @@ namespace ArchivosTarea2
                 count++;
             }
 
+            fila[count] = dat.posDato.ToString();
+            count++;
             fila[count] = dat.apSigDato.ToString();
 
             dataGridView1.Rows.Add(fila);

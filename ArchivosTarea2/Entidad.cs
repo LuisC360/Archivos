@@ -17,6 +17,10 @@ namespace ArchivosTarea2
         public List<Atributo> listaAtributos = new List<Atributo>();
         public List<Dato> listaDatos = new List<Dato>();
 
+        /// <summary>
+        /// Construccion de una nueva instancia de la clase Entidad.
+        /// </summary>
+        /// <param name="n">El nombre de la entidad.</param>
         public Entidad(String n)
         {
             for (int i = 0; i < n.Length; i++ )
@@ -25,6 +29,14 @@ namespace ArchivosTarea2
             }
         }
 
+        /// <summary>
+        /// Construccion de una nueva instancia de la clase Entidad.
+        /// </summary>
+        /// <param name="n">El nombre de la entidad.</param>
+        /// <param name="apAt">El apuntador a atributos de la entidad.</param>
+        /// <param name="apDat">El apuntador a datos de la entidad.</param>
+        /// <param name="posIn">La posicion inicial de la entidad.</param>
+        /// <param name="posSigEnt">El apuntador a la siguiente entidad.</param>
         public Entidad(char[] n, long apAt, long apDat, long posIn, long posSigEnt)
         {
             nombre = n;
@@ -34,6 +46,9 @@ namespace ArchivosTarea2
             apSigEntidad = posSigEnt;
         }
 
+        /// <summary>
+        /// Construccion de una nueva instancia de la clase Entidad.
+        /// </summary>
         public Entidad()
         {
 

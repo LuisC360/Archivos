@@ -16,6 +16,13 @@ namespace ArchivosTarea2
         public Boolean esLlavePrimaria;
         public long apSigAtributo = -1;
 
+        /// <summary>
+        /// Construccion de una nueva instancia de la clase Atributo.
+        /// </summary>
+        /// <param name="nom">El nombre del atributo.</param>
+        /// <param name="t">El tipo de dato del atributo.</param>
+        /// <param name="by">El numero de bytes del atributo.</param>
+        /// <param name="esLl">Bandera que representa si el atributo es llave primaria o no.</param>
         public Atributo(String nom, String t, long by, String esLl)
         {
             for (int i = 0; i < nom.Length; i++)
@@ -35,6 +42,15 @@ namespace ArchivosTarea2
             }
         }
 
+        /// <summary>
+        /// Construccion de una nueva instancia de la clase Atributo.
+        /// </summary>
+        /// <param name="nom">El nombre del atributo.</param>
+        /// <param name="t">El tipo de dato del atributo.</param>
+        /// <param name="by">El tamaño en bytes del atributo.</param>
+        /// <param name="posAt">La posicion en memoria del atributo.</param>
+        /// <param name="esLl">Bandera que indica si el atributo es o no llave primaria.</param>
+        /// <param name="apSig">El apuntador al siguiente atributo.</param>
         public Atributo(char[] nom, char t, long by, long posAt, bool esLl, long apSig)
         {
             nombre = nom;
@@ -45,6 +61,9 @@ namespace ArchivosTarea2
             apSigAtributo = apSig;
         }
 
+        /// <summary>
+        /// Construccion de una nueva instancia de la clase Atributo.
+        /// </summary>
         public Atributo()
         {
 

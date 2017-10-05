@@ -89,10 +89,9 @@ namespace ArchivosTarea2
             // Si la lista no esta vacia
             if(datosVigentes.Count > 0)
             {
+                pon_posiciones_dato();
                 pobla_dataGrid();
             }
-
-            button4.Enabled = false;
         }
 
         // Boton para añadir un dato
@@ -109,7 +108,7 @@ namespace ArchivosTarea2
             valoresChar = new List<char>();
 
             // Recorremos cada celda de la fila del dataGridView sobre la que se inserto el valor
-            for (int i = 0; i < dataGridView1.CurrentRow.Cells.Count - 1; i++ )
+            for (int i = 0; i < dataGridView1.CurrentRow.Cells.Count - 2; i++ )
             {
                 // Verifica que la celda no este vacia
                 if (dataGridView1.CurrentRow.Cells[i].ToString() != "")
@@ -164,18 +163,21 @@ namespace ArchivosTarea2
                         try
                         {
                             resultado = Convert.ChangeType(this.dataGridView1.Rows[celdaSeleccionada].Cells[i].Value, typeof(string));
+                            String res = resultado.ToString();
 
-                            if (resultado.ToString().Length > (atr.bytes / 2))
+                            if (res.Length > (atr.bytes / 2))
                             {
-                                resultado.ToString().Remove((Convert.ToInt32(atr.bytes) / 2), resultado.ToString().Length);
-                                return;
+                                int start = Convert.ToInt32(atr.bytes);
+                                start = start / 2;
+                                int count = res.Length - start;
+                                res = res.Remove(start, count);
                             }
 
-                            datos.Add(resultado.ToString().ToLower());
+                            datos.Add(res.ToLower());
                         }
                         catch
                         {
-                            MessageBox.Show("Error, tipo de dato incompatible / campo vacio");
+                            MessageBox.Show("Error, valor de cadena excedida.");
                             incompatible = true;
                             return;
                         }
@@ -360,7 +362,8 @@ namespace ArchivosTarea2
                               break;
                 }
 
-                dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato;
+                dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.posDato;
+                dataGridView1.CurrentRow.Cells[atributosVigentes.Count + 1].Value = nuevoDato.apSigDato;
             }
             else
             {
@@ -420,13 +423,14 @@ namespace ArchivosTarea2
                                     posDatoValorMasBajo = ent.listaDatos.IndexOf(nuevoDato);
                                     datoValorMasBajo = nuevoDato;
 
-                                    dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato;
+                                    dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.posDato;
+                                    dataGridView1.CurrentRow.Cells[atributosVigentes.Count + 1].Value = nuevoDato.apSigDato;
 
                                     for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
                                     {
                                         if (dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == dat.datos[indiceLlave].ToString())
                                         {
-                                            dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = dat.apSigDato;
+                                            dataGridView1.Rows[dg].Cells[atributosVigentes.Count + 1].Value = dat.apSigDato;
                                             break;
                                         }
                                     }
@@ -483,13 +487,14 @@ namespace ArchivosTarea2
                                     ent.listaDatos.Add(nuevoDato);
                                     datosVigentes.Add(nuevoDato);
 
-                                    dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato;
+                                    dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.posDato;
+                                    dataGridView1.CurrentRow.Cells[atributosVigentes.Count + 1].Value = nuevoDato.apSigDato;
 
                                     for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
                                     {
                                         if (dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == dat.datos[indiceLlave].ToString())
                                         {
-                                            dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = dat.apSigDato;
+                                            dataGridView1.Rows[dg].Cells[atributosVigentes.Count + 1].Value = dat.apSigDato;
                                             break;
                                         }
                                     }
@@ -498,7 +503,7 @@ namespace ArchivosTarea2
                                     {
                                         if (dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == datoPredecesor.datos[indiceLlave].ToString())
                                         {
-                                            dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = datoPredecesor.apSigDato;
+                                            dataGridView1.Rows[dg].Cells[atributosVigentes.Count + 1].Value = datoPredecesor.apSigDato;
                                             break;
                                         }
                                     }
@@ -532,13 +537,14 @@ namespace ArchivosTarea2
                                     ent.listaDatos.Add(nuevoDato);
                                     datosVigentes.Add(nuevoDato);
 
-                                    dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato;
+                                    dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.posDato;
+                                    dataGridView1.CurrentRow.Cells[atributosVigentes.Count + 1].Value = nuevoDato.apSigDato;
 
                                     for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
                                     {
                                         if (dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == datoValorMasGrande.datos[indiceLlave].ToString())
                                         {
-                                            dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = datoValorMasGrande.apSigDato;
+                                            dataGridView1.Rows[dg].Cells[atributosVigentes.Count + 1].Value = datoValorMasGrande.apSigDato;
                                             break;
                                         }
                                     }
@@ -575,13 +581,14 @@ namespace ArchivosTarea2
                                     posDatoValorMasBajo = ent.listaDatos.IndexOf(nuevoDato);
                                     datoValorMasBajo = nuevoDato;
 
-                                    dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato;
+                                    dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.posDato;
+                                    dataGridView1.CurrentRow.Cells[atributosVigentes.Count + 1].Value = nuevoDato.apSigDato;
 
                                     for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
                                     {
                                         if (dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == dat.datos[indiceLlave].ToString())
                                         {
-                                            dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = dat.apSigDato;
+                                            dataGridView1.Rows[dg].Cells[atributosVigentes.Count + 1].Value = dat.apSigDato;
                                             break;
                                         }
                                     }
@@ -638,13 +645,14 @@ namespace ArchivosTarea2
                                     ent.listaDatos.Add(nuevoDato);
                                     datosVigentes.Add(nuevoDato);
 
-                                    dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato;
+                                    dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.posDato;
+                                    dataGridView1.CurrentRow.Cells[atributosVigentes.Count + 1].Value = nuevoDato.apSigDato;
 
                                     for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
                                     {
                                         if (dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == dat.datos[indiceLlave].ToString())
                                         {
-                                            dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = dat.apSigDato;
+                                            dataGridView1.Rows[dg].Cells[atributosVigentes.Count + 1].Value = dat.apSigDato;
                                             break;
                                         }
                                     }
@@ -653,7 +661,7 @@ namespace ArchivosTarea2
                                     {
                                         if (dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == datoPredecesor.datos[indiceLlave].ToString())
                                         {
-                                            dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = datoPredecesor.apSigDato;
+                                            dataGridView1.Rows[dg].Cells[atributosVigentes.Count + 1].Value = datoPredecesor.apSigDato;
                                             break;
                                         }
                                     }
@@ -687,13 +695,14 @@ namespace ArchivosTarea2
                                     ent.listaDatos.Add(nuevoDato);
                                     datosVigentes.Add(nuevoDato);
 
-                                    dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato;
+                                    dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.posDato;
+                                    dataGridView1.CurrentRow.Cells[atributosVigentes.Count + 1].Value = nuevoDato.apSigDato;
 
                                     for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
                                     {
                                         if (dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == datoValorMasGrande.datos[indiceLlave].ToString())
                                         {
-                                            dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = datoValorMasGrande.apSigDato;
+                                            dataGridView1.Rows[dg].Cells[atributosVigentes.Count + 1].Value = datoValorMasGrande.apSigDato;
                                             break;
                                         }
                                     }
@@ -730,13 +739,14 @@ namespace ArchivosTarea2
                                     posDatoValorMasBajo = ent.listaDatos.IndexOf(nuevoDato);
                                     datoValorMasBajo = nuevoDato;
 
-                                    dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato;
+                                    dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.posDato;
+                                    dataGridView1.CurrentRow.Cells[atributosVigentes.Count + 1].Value = nuevoDato.apSigDato;
 
                                     for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
                                     {
                                         if (dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == dat.datos[indiceLlave].ToString())
                                         {
-                                            dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = dat.apSigDato;
+                                            dataGridView1.Rows[dg].Cells[atributosVigentes.Count + 1].Value = dat.apSigDato;
                                             break;
                                         }
                                     }
@@ -793,13 +803,14 @@ namespace ArchivosTarea2
                                     ent.listaDatos.Add(nuevoDato);
                                     datosVigentes.Add(nuevoDato);
 
-                                    dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato;
+                                    dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.posDato;
+                                    dataGridView1.CurrentRow.Cells[atributosVigentes.Count + 1].Value = nuevoDato.apSigDato;
 
                                     for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
                                     {
                                         if (dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == dat.datos[indiceLlave].ToString())
                                         {
-                                            dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = dat.apSigDato;
+                                            dataGridView1.Rows[dg].Cells[atributosVigentes.Count + 1].Value = dat.apSigDato;
                                             break;
                                         }
                                     }
@@ -808,7 +819,7 @@ namespace ArchivosTarea2
                                     {
                                         if (dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == datoPredecesor.datos[indiceLlave].ToString())
                                         {
-                                            dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = datoPredecesor.apSigDato;
+                                            dataGridView1.Rows[dg].Cells[atributosVigentes.Count + 1].Value = datoPredecesor.apSigDato;
                                             break;
                                         }
                                     }
@@ -842,13 +853,14 @@ namespace ArchivosTarea2
                                     ent.listaDatos.Add(nuevoDato);
                                     datosVigentes.Add(nuevoDato);
 
-                                    dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato;
+                                    dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.posDato;
+                                    dataGridView1.CurrentRow.Cells[atributosVigentes.Count + 1].Value = nuevoDato.apSigDato;
 
                                     for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
                                     {
                                         if (dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == datoValorMasGrande.datos[indiceLlave].ToString())
                                         {
-                                            dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = datoValorMasGrande.apSigDato;
+                                            dataGridView1.Rows[dg].Cells[atributosVigentes.Count + 1].Value = datoValorMasGrande.apSigDato;
                                             break;
                                         }
                                     }
@@ -885,13 +897,14 @@ namespace ArchivosTarea2
                                     posDatoValorMasBajo = ent.listaDatos.IndexOf(nuevoDato);
                                     datoValorMasBajo = nuevoDato;
 
-                                    dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato;
+                                    dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.posDato;
+                                    dataGridView1.CurrentRow.Cells[atributosVigentes.Count + 1].Value = nuevoDato.apSigDato;
 
                                     for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
                                     {
                                         if (dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == dat.datos[indiceLlave].ToString())
                                         {
-                                            dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = dat.apSigDato;
+                                            dataGridView1.Rows[dg].Cells[atributosVigentes.Count + 1].Value = dat.apSigDato;
                                             break;
                                         }
                                     }
@@ -948,13 +961,14 @@ namespace ArchivosTarea2
                                     ent.listaDatos.Add(nuevoDato);
                                     datosVigentes.Add(nuevoDato);
 
-                                    dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato;
+                                    dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.posDato;
+                                    dataGridView1.CurrentRow.Cells[atributosVigentes.Count + 1].Value = nuevoDato.apSigDato;
 
                                     for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
                                     {
                                         if (dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == dat.datos[indiceLlave].ToString())
                                         {
-                                            dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = dat.apSigDato;
+                                            dataGridView1.Rows[dg].Cells[atributosVigentes.Count + 1].Value = dat.apSigDato;
                                             break;
                                         }
                                     }
@@ -963,7 +977,7 @@ namespace ArchivosTarea2
                                     {
                                         if (dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == datoPredecesor.datos[indiceLlave].ToString())
                                         {
-                                            dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = datoPredecesor.apSigDato;
+                                            dataGridView1.Rows[dg].Cells[atributosVigentes.Count + 1].Value = datoPredecesor.apSigDato;
                                             break;
                                         }
                                     }
@@ -997,13 +1011,14 @@ namespace ArchivosTarea2
                                     ent.listaDatos.Add(nuevoDato);
                                     datosVigentes.Add(nuevoDato);
 
-                                    dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato;
+                                    dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.posDato;
+                                    dataGridView1.CurrentRow.Cells[atributosVigentes.Count + 1].Value = nuevoDato.apSigDato;
 
                                     for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
                                     {
                                         if (dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == datoValorMasGrande.datos[indiceLlave].ToString())
                                         {
-                                            dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = datoValorMasGrande.apSigDato;
+                                            dataGridView1.Rows[dg].Cells[atributosVigentes.Count + 1].Value = datoValorMasGrande.apSigDato;
                                             break;
                                         }
                                     }
@@ -1046,13 +1061,14 @@ namespace ArchivosTarea2
                                 posDatoValorMasBajo = ent.listaDatos.IndexOf(nuevoDato);
                                 datoValorMasBajo = nuevoDato;
 
-                                dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato;
+                                dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.posDato;
+                                dataGridView1.CurrentRow.Cells[atributosVigentes.Count + 1].Value = nuevoDato.apSigDato;
 
                                 for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
                                 {
                                     if (dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == dat.datos[indiceLlave].ToString())
                                     {
-                                        dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = dat.apSigDato;
+                                        dataGridView1.Rows[dg].Cells[atributosVigentes.Count + 1].Value = dat.apSigDato;
                                         break;
                                     }
                                 }
@@ -1109,13 +1125,14 @@ namespace ArchivosTarea2
                                 ent.listaDatos.Add(nuevoDato);
                                 datosVigentes.Add(nuevoDato);
 
-                                dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato;
+                                dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.posDato;
+                                dataGridView1.CurrentRow.Cells[atributosVigentes.Count + 1].Value = nuevoDato.apSigDato;
 
                                 for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
                                 {
                                     if (dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == dat.datos[indiceLlave].ToString())
                                     {
-                                        dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = dat.apSigDato;
+                                        dataGridView1.Rows[dg].Cells[atributosVigentes.Count + 1].Value = dat.apSigDato;
                                         break;
                                     }
                                 }
@@ -1124,7 +1141,7 @@ namespace ArchivosTarea2
                                 {
                                     if (dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == datoPredecesor.datos[indiceLlave].ToString())
                                     {
-                                        dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = datoPredecesor.apSigDato;
+                                        dataGridView1.Rows[dg].Cells[atributosVigentes.Count + 1].Value = datoPredecesor.apSigDato;
                                         break;
                                     }
                                 }
@@ -1158,13 +1175,14 @@ namespace ArchivosTarea2
                                 ent.listaDatos.Add(nuevoDato);
                                 datosVigentes.Add(nuevoDato);
 
-                                dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato;
+                                dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.posDato;
+                                dataGridView1.CurrentRow.Cells[atributosVigentes.Count + 1].Value = nuevoDato.apSigDato;
 
                                 for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
                                 {
                                     if (dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString() == datoValorMasGrande.datos[indiceLlave].ToString())
                                     {
-                                        dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = datoValorMasGrande.apSigDato;
+                                        dataGridView1.Rows[dg].Cells[atributosVigentes.Count + 1].Value = datoValorMasGrande.apSigDato;
                                         break;
                                     }
                                 }
@@ -1219,7 +1237,8 @@ namespace ArchivosTarea2
                                 posDatoValorMasBajo = ent.listaDatos.IndexOf(nuevoDato);
                                 datoValorMasBajo = nuevoDato;
 
-                                dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato;
+                                dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.posDato;
+                                dataGridView1.CurrentRow.Cells[atributosVigentes.Count + 1].Value = nuevoDato.apSigDato;
 
                                 for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
                                 {
@@ -1233,7 +1252,7 @@ namespace ArchivosTarea2
 
                                     if (String.Compare(str1, str2) == 0)
                                     {
-                                        dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = dat.apSigDato;
+                                        dataGridView1.Rows[dg].Cells[atributosVigentes.Count + 1].Value = dat.apSigDato;
                                         break;
                                     }
                                 }
@@ -1277,7 +1296,8 @@ namespace ArchivosTarea2
                                 ent.listaDatos.Add(nuevoDato);
                                 datosVigentes.Add(nuevoDato);
 
-                                dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato;
+                                dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.posDato;
+                                dataGridView1.CurrentRow.Cells[atributosVigentes.Count + 1].Value = nuevoDato.apSigDato;
 
                                 for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
                                 {
@@ -1291,7 +1311,7 @@ namespace ArchivosTarea2
 
                                     if (String.Compare(str1, str2) == 0)
                                     {
-                                        dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = dat.apSigDato;
+                                        dataGridView1.Rows[dg].Cells[atributosVigentes.Count + 1].Value = dat.apSigDato;
                                         break;
                                     }
                                 }
@@ -1308,7 +1328,7 @@ namespace ArchivosTarea2
 
                                     if (String.Compare(str1, str2) == 0)
                                     {
-                                        dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = datoPredecesor.apSigDato;
+                                        dataGridView1.Rows[dg].Cells[atributosVigentes.Count + 1].Value = datoPredecesor.apSigDato;
                                         break;
                                     }
                                 }
@@ -1341,7 +1361,8 @@ namespace ArchivosTarea2
                                 ent.listaDatos.Add(nuevoDato);
                                 datosVigentes.Add(nuevoDato);
 
-                                dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.apSigDato;
+                                dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.posDato;
+                                dataGridView1.CurrentRow.Cells[atributosVigentes.Count + 1].Value = nuevoDato.apSigDato;
 
                                 for (int dg = 0; dg < dataGridView1.Rows.Count - 1; dg++)
                                 {
@@ -1355,7 +1376,7 @@ namespace ArchivosTarea2
 
                                     if (String.Compare(str1, str2) == 0)
                                     {
-                                        dataGridView1.Rows[dg].Cells[atributosVigentes.Count].Value = datoValorMasGrande.apSigDato;
+                                        dataGridView1.Rows[dg].Cells[atributosVigentes.Count + 1].Value = datoValorMasGrande.apSigDato;
                                         break;
                                     }
                                 }
@@ -1372,7 +1393,30 @@ namespace ArchivosTarea2
             }
 
             bandChanged = true;
+            ordena_datos();
             toolStripStatusLabel1.Text = "Dato añadido con exito.";
+        }
+
+        /// <summary>
+        /// Metodo que nos ayudara a poner las posiciones del dato a los datos de la lista correspondiente en la entidad.
+        /// </summary>
+        private void pon_posiciones_dato()
+        {
+            Dato datoAnterior = new Dato();
+
+            foreach(Dato dat in ent.listaDatos)
+            {
+                if(dat == ent.listaDatos[0])
+                {
+                    dat.posDato = ent.apDatos;
+                    datoAnterior = dat;
+                }
+                else
+                {
+                    dat.posDato = datoAnterior.apSigDato;
+                    datoAnterior = dat;
+                }
+            }
         }
 
         /// <summary>
@@ -1380,7 +1424,7 @@ namespace ArchivosTarea2
         /// </summary>
         private void rellena_dataGrid()
         {
-            dataGridView1.ColumnCount = numAtributos + 1;
+            dataGridView1.ColumnCount = numAtributos + 2;
             dataGridView1.ColumnHeadersVisible = true;
             int j = 0;
 
@@ -1409,6 +1453,8 @@ namespace ArchivosTarea2
                 }
             }
 
+            dataGridView1.Columns[j].Name = "Pos. Dato.";
+            j++;
             dataGridView1.Columns[j].Name = "Ap. Sig. Dato";
         }
 
@@ -1418,7 +1464,7 @@ namespace ArchivosTarea2
         private void pobla_dataGrid()
         {
             List<String[]> filas = new List<string[]>();
-            String[] fila = new string[atributosVigentes.Count + 1];
+            String[] fila = new string[atributosVigentes.Count + 2];
             int count = 0;
             Dato datoAnterior = new Dato();
 
@@ -1438,6 +1484,9 @@ namespace ArchivosTarea2
                     }
                     count++;
                 }
+                fila[count] = dat.posDato.ToString();
+                count++;
+
                 if (dat.apSigDato != -2)
                 {
                     fila[count] = dat.apSigDato.ToString();
@@ -1462,7 +1511,7 @@ namespace ArchivosTarea2
                 {
                     filas.Add(fila);
                 }
-                fila = new string[atributosVigentes.Count + 1];
+                fila = new string[atributosVigentes.Count + 2];
                 count = 0;
             }
 
@@ -1681,7 +1730,7 @@ namespace ArchivosTarea2
             dataGridView1.Rows.Clear();
 
             List<String[]> filas = new List<string[]>();
-            String[] fila = new string[atributosVigentes.Count + 1];
+            String[] fila = new string[atributosVigentes.Count + 2];
             int count = 0;
             Dato datoAnterior = new Dato();
 
@@ -1701,6 +1750,8 @@ namespace ArchivosTarea2
                     }
                     count++;
                 }
+                fila[count] = dat.posDato.ToString();
+                count++;
 
                 if (dat.apSigDato != -2)
                 {
@@ -1715,7 +1766,7 @@ namespace ArchivosTarea2
                 {
                     filas.Add(fila);
                 }
-                fila = new string[atributosVigentes.Count + 1];
+                fila = new string[atributosVigentes.Count + 2];
                 count = 0;
             }
 
@@ -2117,6 +2168,10 @@ namespace ArchivosTarea2
 
                             this.bandChanged = true;
                             toolStripStatusLabel1.Text = "Dato modificado con exito.";
+                        }
+                        else if(cuadroModifica == DialogResult.Cancel)
+                        {
+
                         }
                     }                  
                 }
