@@ -34,7 +34,7 @@ namespace ArchivosTarea2
                                     '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0' ,'\0' ,'\n'};
         public long apAtributos = 0;
         public long apDatos = 0;
-        public long posInicial = 0;
+        public long posInicial;
         public long apSigEntidad = 0;
         // Booleano para verificar que se abrio un archivo
         Boolean seAbrio = false;
@@ -177,8 +177,6 @@ namespace ArchivosTarea2
                             entidadesLeidas = new List<Entidad>();
 
                             manejo_dataGrid(textBox1.Text);
-
-                            // posicionMemoria = posicionMemoria + tamEntidad;
 
                             toolStripStatusLabel1.Text = "Archivo abierto con exito.";
                         }
@@ -496,7 +494,7 @@ namespace ArchivosTarea2
         /// <param name="entidadSeleccionada">La entidad que contiene a la lista de atributos</param>
         /// <param name="at">El atributo al que se le pretende cambiar el nombre</param>
         /// <returns></returns>
-        bool es_mismo_atributo(String nombreAtributo, Entidad entidadSeleccionada, Atributo at)
+        static bool es_mismo_atributo(String nombreAtributo, Entidad entidadSeleccionada, Atributo at)
         {
             bool esElMismo = false;
 

@@ -17,7 +17,7 @@ namespace ArchivosTarea2
         // El atributo considerado como llave primaria
         public Atributo atLlave = new Atributo();
         // El indice del atributo llave primaria
-        public int keyIndex = 0;
+        public int keyIndex;
 
         /// <summary>
         /// Construccion de una nueva instancia de la clase Dato.

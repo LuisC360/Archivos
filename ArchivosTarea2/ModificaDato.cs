@@ -18,7 +18,7 @@ namespace ArchivosTarea2
         List<Atributo> listaAtributosVigentes = new List<Atributo>();
         int atributosVigentes = 0;
         int indexLlavePrimaria = 0;      
-        Dato datoRespaldo;
+        readonly Dato datoRespaldo;
 
         /// <summary>
         /// Constructor de la ventana de modificacion de un dato seleccionado.

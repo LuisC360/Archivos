@@ -15,27 +15,25 @@ namespace ArchivosTarea2
         public Entidad ent;
         int numAtributos = 0;
         Atributo atrLlave;
-        List<Atributo> atributosVigentes = new List<Atributo>();
+        readonly List<Atributo> atributosVigentes = new List<Atributo>();
         public long posMemoria = 0;
         long tamDato = 0;
         public long apDatos = 0;
         public bool bandChanged = false;
         List<Dato> datosVigentes = new List<Dato>();
         /** NOTA: Intentarlo con una lista tipo dynamic **/
-        dynamic valorMasBajo = 0;
-        List<dynamic> valores = new List<dynamic>();
 
         //
-        int valorMasBajoInt = 0;
+        int valorMasBajoInt;
         List<int> valoresInt = new List<int>(); 
 
-        float valorMasBajoFloat = 0;
+        float valorMasBajoFloat;
         List<float> valoresFloat = new List<float>();
 
-        double valorMasBajoDouble = 0;
+        double valorMasBajoDouble;
         List<double> valoresDouble = new List<double>();
 
-        long valorMasBajoLong = 0;
+        long valorMasBajoLong;
         List<long> valoresLong = new List<long>();
 
         char valorMasBajoChar = ' ';
