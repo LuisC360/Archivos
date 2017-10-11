@@ -8,7 +8,7 @@ namespace ArchivosTarea2
 {
     public class Dato
     {
-        public long posDato = 0;
+        public long posDato;
         public long apSigDato = -1;
         // Los atributos que posee el dato
         public List<Atributo> listaAtributosDato = new List<Atributo>();

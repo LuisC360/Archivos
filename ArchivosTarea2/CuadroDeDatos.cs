@@ -13,14 +13,14 @@ namespace ArchivosTarea2
     public partial class CuadroDeDatos : Form
     {
         public Entidad ent;
-        int numAtributos = 0;
+        readonly int numAtributos;
         Atributo atrLlave;
         readonly List<Atributo> atributosVigentes = new List<Atributo>();
         public long posMemoria = 0;
-        long tamDato = 0;
-        public long apDatos = 0;
+        long tamDato;
+        public long apDatos;
         public bool bandChanged = false;
-        List<Dato> datosVigentes = new List<Dato>();
+        readonly List<Dato> datosVigentes = new List<Dato>();
         /** NOTA: Intentarlo con una lista tipo dynamic **/
 
         //
@@ -40,11 +40,11 @@ namespace ArchivosTarea2
         List<char> valoresChar = new List<char>();
 
         string valorMasBajoString = "";
-        List<string> valoresString = new List<string>();
+        readonly List<string> valoresString = new List<string>();
         //
 
         Dato datoValorMasBajo = new Dato();
-        int posDatoValorMasBajo = 0;
+        int posDatoValorMasBajo;
 
         Atributo attr = new Atributo();
         public int indiceLlave = 0;
@@ -1524,7 +1524,7 @@ namespace ArchivosTarea2
         /// </summary>
         /// <param name="tatr">El caracter que define el tipo de atributo de cada valor del dato.</param>
         /// <returns>El tipo de dato del valor del dato.</returns>
-        private dynamic valida_atributo(char tatr)
+        private static dynamic valida_atributo(char tatr)
         {
             var tipoAtr = typeof(int);
 
@@ -1871,35 +1871,6 @@ namespace ArchivosTarea2
         }
 
         /// <summary>
-        /// Metodo que regresa el valor de la llave primaria escrita en el textBox.
-        /// </summary>
-        /// <param name="textboxtext">El texto contenido en el textBox.</param>
-        /// <returns>El valor de la llave primaria escrito en el textBox.</returns>
-        private dynamic regresa_llave_primaria(string textboxtext)
-        {
-            dynamic llaveEncontrada = 0;
-            char tipo = atrLlave.tipo;
-
-            switch(tipo)
-            {
-                case 'I': llaveEncontrada = Convert.ToInt32(textboxtext);
-                    break;
-                case 'L': llaveEncontrada = Convert.ToInt64(textboxtext);
-                    break;
-                case 'D': llaveEncontrada = Convert.ToDouble(textboxtext);
-                    break;
-                case 'F': llaveEncontrada = Convert.ToSingle(textboxtext);
-                    break;
-                case 'C': llaveEncontrada = Convert.ToChar(textboxtext);
-                    break;
-                case 'S': llaveEncontrada = Convert.ToString(textboxtext);
-                    break;
-            }
-
-            return llaveEncontrada;
-        }
-
-        /// <summary>
         /// Metodo que regresa el dato que tiene el valor de llave primaria escrita en el textBox.
         /// </summary>
         /// <param name="e">La entidad que contiene la lista con el dato.</param>
@@ -2121,6 +2092,8 @@ namespace ArchivosTarea2
                     }
                     this.bandChanged = true;
 
+                    ordena_datos();
+
                     toolStripStatusLabel1.Text = "Dato eliminado con exito.";
                 }
                 else
@@ -2160,6 +2133,10 @@ namespace ArchivosTarea2
                             {
                                 ordena_datos();
                                 actualiza_lista_datos(ent.listaDatos);
+                                ordena_datos();
+                            }
+                            else
+                            {
                                 ordena_datos();
                             }
 

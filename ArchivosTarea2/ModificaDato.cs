@@ -16,8 +16,8 @@ namespace ArchivosTarea2
         public Dato dat;
         public bool llavePrimariaCambiada = false;
         List<Atributo> listaAtributosVigentes = new List<Atributo>();
-        int atributosVigentes = 0;
-        int indexLlavePrimaria = 0;      
+        int atributosVigentes;
+        int indexLlavePrimaria;      
         readonly Dato datoRespaldo;
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace ArchivosTarea2
             int celdaSeleccionada = dataGridView1.CurrentRow.Index;
             bool incompatible = false;
 
-            for (int i = 0; i < dataGridView1.CurrentRow.Cells.Count - 1; i++)
+            for (int i = 0; i < dataGridView1.CurrentRow.Cells.Count - 2; i++)
             {
                 if (dataGridView1.CurrentRow.Cells[i].ToString() != "")
                 {
@@ -91,6 +91,12 @@ namespace ArchivosTarea2
                                 if(valA != valB)
                                 {
                                     llavePrimariaCambiada = true;
+
+                                    if(verifica_llave_primaria(resultado, dat) == true)
+                                    {
+                                        MessageBox.Show("Error, llave primaria duplicada.");
+                                        return;
+                                    }
                                 }
                             }
                         }
@@ -123,6 +129,12 @@ namespace ArchivosTarea2
                                 if (valA != valB)
                                 {
                                     llavePrimariaCambiada = true;
+
+                                    if (verifica_llave_primaria(resultado, dat) == true)
+                                    {
+                                        MessageBox.Show("Error, llave primaria duplicada.");
+                                        return;
+                                    }
                                 }
                             }
                         }
@@ -138,14 +150,17 @@ namespace ArchivosTarea2
                         try
                         {
                             resultado = Convert.ChangeType(this.dataGridView1.Rows[celdaSeleccionada].Cells[i].Value, typeof(string));
+                            String res = resultado.ToString();
 
-                            if (resultado.ToString().Length > (at.bytes / 2))
+                            if (res.Length > (at.bytes / 2))
                             {
-                                resultado.ToString().Remove((Convert.ToInt32(at.bytes) / 2), resultado.ToString().Length);
-                                return;
+                                int start = Convert.ToInt32(at.bytes);
+                                start = start / 2;
+                                int count = res.Length - start;
+                                res = res.Remove(start, count);
                             }
 
-                            dat.datos[i] = resultado.ToString().ToLower();
+                            dat.datos[i] = res.ToLower();
 
                             if (casillaLlavePrimaria == true)
                             {
@@ -155,6 +170,12 @@ namespace ArchivosTarea2
                                 if (valA.Equals(valB) == false)
                                 {
                                     llavePrimariaCambiada = true;
+
+                                    if (verifica_llave_primaria(resultado, dat) == true)
+                                    {
+                                        MessageBox.Show("Error, llave primaria duplicada.");
+                                        return;
+                                    }
                                 }
                             }
                         }
@@ -180,6 +201,12 @@ namespace ArchivosTarea2
                                 if (valA != valB)
                                 {
                                     llavePrimariaCambiada = true;
+
+                                    if (verifica_llave_primaria(resultado, dat) == true)
+                                    {
+                                        MessageBox.Show("Error, llave primaria duplicada.");
+                                        return;
+                                    }
                                 }
                             }
                         }
@@ -205,6 +232,12 @@ namespace ArchivosTarea2
                                 if (valA != valB)
                                 {
                                     llavePrimariaCambiada = true;
+
+                                    if (verifica_llave_primaria(resultado, dat) == true)
+                                    {
+                                        MessageBox.Show("Error, llave primaria duplicada.");
+                                        return;
+                                    }
                                 }
                             }
                         }
@@ -230,6 +263,12 @@ namespace ArchivosTarea2
                                 if (valA != valB)
                                 {
                                     llavePrimariaCambiada = true;
+
+                                    if (verifica_llave_primaria(resultado, dat) == true)
+                                    {
+                                        MessageBox.Show("Error, llave primaria duplicada.");
+                                        return;
+                                    }
                                 }
                             }
                         }
@@ -309,8 +348,7 @@ namespace ArchivosTarea2
                         break;
                     case 'C': dato = Convert.ToChar(dato);
                         break;
-                    case 'S': String nString = new string(dato); 
-                        dato = nString;
+                    case 'S': dato = Convert.ToString(dato);
                         break;
                 }
 
@@ -323,6 +361,32 @@ namespace ArchivosTarea2
             fila[count] = dat.apSigDato.ToString();
 
             dataGridView1.Rows.Add(fila);
+        }
+
+        /// <summary>
+        /// Metodo con el que se validara si la nueva llave primaria no existe dentro de la lista de datos de la entidad.
+        /// </summary>
+        /// <param name="llave">El nuevo valor de llave primaria del dato modificado.</param>
+        /// <returns>Bandera que indica si la llave primaria esta duplicada.</returns>
+        private bool verifica_llave_primaria(dynamic llave, Dato modificado)
+        {
+            bool duplicada = false;
+
+            foreach(Dato dat in ent.listaDatos)
+            {
+                if (dat != modificado)
+                {
+                    dynamic llaveComparar = dat.datos[indexLlavePrimaria];
+
+                    if (llaveComparar == llave)
+                    {
+                        duplicada = true;
+                        break;
+                    }
+                }
+            }
+
+            return duplicada;
         }
 
         /// <summary>

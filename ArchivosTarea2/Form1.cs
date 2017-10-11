@@ -14,34 +14,40 @@ namespace ArchivosTarea2
     public partial class Form1 : Form
     {
         // La lista de entidades (por modificar)
-        public List<object> data = new List<object>();
+        List<object> data = new List<object>();
         // Para lectura
         List<Entidad> entidades = new List<Entidad>();
         // Lista que contendra los tipos de dato disponibles
-        public List<char> tiposDato = new List<char>();
+        List<char> tiposDato = new List<char>();
         // Lista para entidades leidas
         List<Entidad> entidadesLeidas = new List<Entidad>();
         // Tamaño de una entidad
-        public int tamEntidad = 62;
+        int tamEntidad = 62;
         // Tamaño de un atributo
-        public int tamAtributo = 56;
+        int tamAtributo = 56;
         // Tamaño de un dato
-        public int tamDato = 8;
+        int tamDato = 8;
         // Valores que posee una entidad (para lectura de archivo)
-        public char[] nombre = { '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0',  
+        char[] nombre = { '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0',  
                                     '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0' ,'\0' ,'\n'};
-        public char[] nombreAT = { '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0',  
+        char[] nombreAT = { '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0',  
                                     '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0' ,'\0' ,'\n'};
-        public long apAtributos = 0;
-        public long apDatos = 0;
-        public long posInicial;
-        public long apSigEntidad = 0;
+        long apAtributos;
+        long apDatos;
+        long posInicial;
+        long apSigEntidad;
         // Booleano para verificar que se abrio un archivo
-        Boolean seAbrio = false;
+        Boolean seAbrio;
         // Numero que nos ayudara a saber en que posicion en memoria nos encontramos
-        public long posicionMemoria = 8;
+        long posicionMemoria = 8;
         Entidad entidadEliminada;
         Atributo atributoEliminado;
+        // El rango para los archivos secuuenciales indexados
+        long rango;
+        // Tipos de archivo que se manejaran. Para el caso de secuencial ordenado, sera el caso por defecto.
+        bool secIndexado = false;
+        bool hashEstatica = false;
+        bool multiLlave = false;
 
         public Form1()
         {
@@ -458,7 +464,7 @@ namespace ArchivosTarea2
         /// <param name="nombreAtributo">El nombre del atributo que se desea insertar</param>
         /// <param name="entidadSeleccionada">La entidad que contiene la lista de atributos sobre la que se hara la busqueda</param>
         /// <returns>Un booleano que indica si el atributo ya existe o no</returns>
-        bool valida_atributo(String nombreAtributo, Entidad entidadSeleccionada)
+        static bool valida_atributo(String nombreAtributo, Entidad entidadSeleccionada)
         {
             bool yaExiste = false;
 
@@ -627,6 +633,13 @@ namespace ArchivosTarea2
                     long header = reader.ReadInt64();
                     data.Add(header);
                     bandCabecera = true;
+                }
+
+                if(secIndexado == true)
+                {
+                    long rang = reader.ReadInt64();
+                    rango = rang;
+                    button9.Enabled = false;
                 }
 
                 if (reader.BaseStream.Position != reader.BaseStream.Length)
@@ -1044,6 +1057,11 @@ namespace ArchivosTarea2
                 }
             }
 
+            if(secIndexado == true)
+            {
+                writer.Write(rango);
+            }
+
             for (int j = 0; j < entidades.Count; j++)
             {
                 for (int k = 0; k < entidades[j].nombre.Length; k++)
@@ -1146,6 +1164,15 @@ namespace ArchivosTarea2
             stream.Close();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="e"></param>
+        /// <param name="nombre"></param>
+        /// <param name="apAt"></param>
+        /// <param name="apD"></param>
+        /// <param name="posE"></param>
+        /// <param name="apSE"></param>
         public void actualiza_archivo_entidad(Entidad e, char[] nombre, long apAt, long apD, long posE, long apSE)
         {
             FileStream streamR = new FileStream(textBox1.Text, FileMode.OpenOrCreate, FileAccess.ReadWrite);
@@ -1871,6 +1898,11 @@ namespace ArchivosTarea2
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="e"></param>
+        /// <returns></returns>
         bool is_unico_atributo(Entidad e)
         {
             bool unicaEntidad = false;
@@ -1937,6 +1969,8 @@ namespace ArchivosTarea2
 
                 if(ent.apAtributos > -1 && hay_llave_primaria(ent) == true)
                 {
+                    button10.Enabled = false;
+
                     using (CuadroDeDatos datosEntidad = new CuadroDeDatos(ent, posicionMemoria, ent.apDatos, tamDato))
                     {
                         var cuadroDatos = datosEntidad.ShowDialog();
@@ -1994,6 +2028,26 @@ namespace ArchivosTarea2
         private void Form1_Load(object sender, EventArgs e)
         {
 
+        }
+
+        // Boton que abre una ventana donde se insertaran los datos de forma secuencial indexada.
+        private void button10_Click(object sender, EventArgs e)
+        {
+            if (textBox2.Text.Length > 0 && validacion(textBox2.Text) == true)
+            {
+                Entidad ent = busca_entidad(textBox2.Text);
+
+                if (ent.apAtributos > -1 && hay_llave_primaria(ent) == true)
+                {
+                    button9.Enabled = false;
+
+                    
+                }
+                else
+                {
+                    toolStripStatusLabel1.Text = "Error, esta entidad no tiene atributos o llave primaria.";
+                }
+            }
         }
     }
 }
