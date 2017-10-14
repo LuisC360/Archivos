@@ -14,8 +14,10 @@ namespace ArchivosTarea2
         public long apDatos = -1;
         public long posEntidad = 0;
         public long apSigEntidad = -1;
+        public long apIndices = -1;
         public List<Atributo> listaAtributos = new List<Atributo>();
         public List<Dato> listaDatos = new List<Dato>();
+        public List<Indice> listaIndices = new List<Indice>();
 
         /// <summary>
         /// Construccion de una nueva instancia de la clase Entidad.

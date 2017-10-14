@@ -16,10 +16,10 @@ namespace ArchivosTarea2
         readonly int numAtributos;
         Atributo atrLlave;
         readonly List<Atributo> atributosVigentes = new List<Atributo>();
-        public long posMemoria = 0;
+        public long posMemoria;
         long tamDato;
         public long apDatos;
-        public bool bandChanged = false;
+        public bool bandChanged;
         readonly List<Dato> datosVigentes = new List<Dato>();
         /** NOTA: Intentarlo con una lista tipo dynamic **/
 
@@ -2145,7 +2145,7 @@ namespace ArchivosTarea2
                         }
                         else if(cuadroModifica == DialogResult.Cancel)
                         {
-
+                            // Si se cancela el cuadro de datos, no se modificara la informacion que se haya cambiado.
                         }
                     }                  
                 }

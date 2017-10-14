@@ -18,6 +18,8 @@ namespace ArchivosTarea2
         public long apSigIndice { get; set; }
         // Apuntador a los datos.
         public long apDatos { get; set; }
+        // Lista de datos relacionados a este indice
+        public List<Dato> datosIndice = new List<Dato>();
 
         public Indice()
         {
@@ -45,27 +47,27 @@ namespace ArchivosTarea2
             apDatos = apD;
         }
 
-        public dynamic get_valInicial()
+        public dynamic regresa_valInicial()
         {
             return valorInicial;
         }
 
-        public dynamic get_valFinal()
+        public dynamic regresa_valFinal()
         {
             return valorFinal;
         }
 
-        public long get_posIndice()
+        public long regresa_posIndice()
         {
             return posIndice;
         }
 
-        public long get_apSigIndice()
+        public long regresa_apSigIndice()
         {
             return apSigIndice;
         }
 
-        public long get_apDatos()
+        public long regresa_apDatos()
         {
             return apDatos;
         }

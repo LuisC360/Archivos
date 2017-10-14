@@ -24,7 +24,7 @@ namespace ArchivosTarea2
         // Tamaño de una entidad
         int tamEntidad = 62;
         // Tamaño de un atributo
-        int tamAtributo = 56;
+        readonly int tamAtributo = 56;
         // Tamaño de un dato
         int tamDato = 8;
         // Valores que posee una entidad (para lectura de archivo)
@@ -32,10 +32,6 @@ namespace ArchivosTarea2
                                     '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0' ,'\0' ,'\n'};
         char[] nombreAT = { '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0',  
                                     '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0' ,'\0' ,'\n'};
-        long apAtributos;
-        long apDatos;
-        long posInicial;
-        long apSigEntidad;
         // Booleano para verificar que se abrio un archivo
         Boolean seAbrio;
         // Numero que nos ayudara a saber en que posicion en memoria nos encontramos
@@ -45,9 +41,9 @@ namespace ArchivosTarea2
         // El rango para los archivos secuuenciales indexados
         long rango;
         // Tipos de archivo que se manejaran. Para el caso de secuencial ordenado, sera el caso por defecto.
-        bool secIndexado = false;
-        bool hashEstatica = false;
-        bool multiLlave = false;
+        bool secIndexado;
+        bool hashEstatica;
+        bool multiLlave;
 
         public Form1()
         {
@@ -60,6 +56,8 @@ namespace ArchivosTarea2
             comboBox2.DropDownStyle = ComboBoxStyle.DropDownList;
             rellena_lista_tipo();
             toolStripStatusLabel1.Text = "Listo.";
+            dataGridView1.ReadOnly = true;
+            dataGridView2.ReadOnly = true;
         }
 
         // Boton para abrir archivo
@@ -77,13 +75,17 @@ namespace ArchivosTarea2
                     // Funcion que creara el archivo binario
                     crea_archivo(textBox1.Text);
 
+                    secIndexado = false;
+                    hashEstatica = false;
+                    multiLlave = false;
+
                     // Funcion que nos auxiliara con el manejo del dataGridView
                     manejo_dataGrid(textBox1.Text);
 
                     textBox2.ReadOnly = false;
                     textBox3.ReadOnly = false;
                     comboBox1.Enabled = true;
-                    comboBox2.Enabled = true;
+                    comboBox2.Enabled = true;                   
                     
                     toolStripStatusLabel1.Text = "Archivo creado con exito.";
                 }
@@ -635,11 +637,16 @@ namespace ArchivosTarea2
                     bandCabecera = true;
                 }
 
-                if(secIndexado == true)
+                try
                 {
                     long rang = reader.ReadInt64();
                     rango = rang;
+                    posicionMemoria = 16;
                     button9.Enabled = false;
+                }
+                catch
+                {
+
                 }
 
                 if (reader.BaseStream.Position != reader.BaseStream.Length)
@@ -1091,7 +1098,8 @@ namespace ArchivosTarea2
                     }
                 }
 
-                if(entidades[j].apDatos != -1)
+                // Si el archivo es secuencial ordenado
+                if(entidades[j].apDatos != -1 && secIndexado == false && hashEstatica == false && multiLlave == false)
                 {
                     for(int n = 0; n < entidades[j].listaDatos.Count;n++)
                     {
@@ -1157,6 +1165,11 @@ namespace ArchivosTarea2
 
                         writer.Write(entidades[j].listaDatos[n].apSigDato);
                     }
+                }
+                // Si el archivo es secuencial indexado
+                else if(entidades[j].apIndices != -1 && secIndexado == true)
+                {
+
                 }
             }
 
@@ -1283,7 +1296,7 @@ namespace ArchivosTarea2
         /// </summary>
         /// <param name="ent">La entidad que tiene la lista de atributos a ser verificada.</param>
         /// <returns>Un booleano que nos indicara que ya se tiene un atributo como llave primaria.</returns>
-        bool verifica_llave_primaria(Entidad ent)
+        static bool verifica_llave_primaria(Entidad ent)
         {
             bool yaTieneLlave = false;
 
@@ -1344,9 +1357,6 @@ namespace ArchivosTarea2
                                             entidadEncontrada.listaAtributos[entidadEncontrada.listaAtributos.Count - 2].apSigAtributo = 
                                                 nuevoAtributo.posAtributo;
 
-                                            // actualiza_archivo_entidad(entidadEncontrada, entidadEncontrada.nombre, entidadEncontrada.apAtributos, 
-                                                //entidadEncontrada.apDatos, entidadEncontrada.posEntidad, entidadEncontrada.apSigEntidad);
-
                                             escribe_archivo(textBox1.Text);
 
                                             manejo_dataGrid(textBox1.Text);
@@ -1365,9 +1375,6 @@ namespace ArchivosTarea2
                                             entidadEncontrada.listaAtributos.Add(nuevoAtributo);
                                             entidadEncontrada.apAtributos = nuevoAtributo.posAtributo;
 
-                                            //actualiza_archivo_entidad(entidadEncontrada, entidadEncontrada.nombre, entidadEncontrada.apAtributos, entidadEncontrada.apDatos, 
-                                                //entidadEncontrada.posEntidad, entidadEncontrada.apSigEntidad);
-                                            
                                             escribe_archivo(textBox1.Text);
 
                                             manejo_dataGrid(textBox1.Text);
@@ -1903,7 +1910,7 @@ namespace ArchivosTarea2
         /// </summary>
         /// <param name="e"></param>
         /// <returns></returns>
-        bool is_unico_atributo(Entidad e)
+        static bool is_unico_atributo(Entidad e)
         {
             bool unicaEntidad = false;
             int contador = 0;
@@ -1978,7 +1985,6 @@ namespace ArchivosTarea2
                         if(cuadroDatos == DialogResult.Cancel)
                         {
                             posicionMemoria = datosEntidad.posMemoria;
-                            // ent.apDatos = datosEntidad.apDatos;
                             ent.listaDatos = datosEntidad.ent.listaDatos;
                             ent.apDatos = datosEntidad.ent.apDatos;
                             int indiceLlave = datosEntidad.indiceLlave;
@@ -2009,7 +2015,7 @@ namespace ArchivosTarea2
         /// </summary>
         /// <param name="ent">La entidad que tiene la lista de atributos donde se buscara la llave primaria.</param>
         /// <returns>Un booleano que indica si se tiene una llave primaria o no.</returns>
-        private bool hay_llave_primaria(Entidad ent)
+        private static bool hay_llave_primaria(Entidad ent)
         {
             bool hayLlave = false;
 
@@ -2025,11 +2031,6 @@ namespace ArchivosTarea2
             return hayLlave;
         }
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-        }
-
         // Boton que abre una ventana donde se insertaran los datos de forma secuencial indexada.
         private void button10_Click(object sender, EventArgs e)
         {
@@ -2040,7 +2041,7 @@ namespace ArchivosTarea2
                 if (ent.apAtributos > -1 && hay_llave_primaria(ent) == true)
                 {
                     button9.Enabled = false;
-
+                    secIndexado = true;
                     
                 }
                 else

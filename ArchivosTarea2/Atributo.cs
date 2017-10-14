@@ -11,8 +11,8 @@ namespace ArchivosTarea2
         public char[] nombre = { '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0',  
                                     '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0' ,'\0' ,'\n'};
         public char tipo;
-        public long bytes = 0;
-        public long posAtributo = 0;
+        public long bytes;
+        public long posAtributo;
         public Boolean esLlavePrimaria;
         public long apSigAtributo = -1;
 
