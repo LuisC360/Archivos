@@ -442,7 +442,7 @@ namespace ArchivosTarea2
                         }
                     } while (intervaloEncontrado == false);
                     break;
-                case 'S':
+                case 'S': valor = Convert.ToString(d.datos[indiceLlave]);
                     break;
                 default: // No hay mas tipos de datos que pueden ser llave primaria, asi que esto se dejara vacio.
                     break;
