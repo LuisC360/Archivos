@@ -32,7 +32,7 @@ namespace ArchivosTarea2
             posMemoria = pMem;
             tamDato = tamDat;
 
-            foreach(Atributo atr in ent.listaAtributos)
+            foreach (Atributo atr in ent.listaAtributos)
             {
                 if (atr.apSigAtributo != -2 && atr.apSigAtributo != -4)
                 {
@@ -41,11 +41,11 @@ namespace ArchivosTarea2
                 }
             }
 
-            foreach(Indice ind in ent.listaIndices)
+            foreach (Indice ind in ent.listaIndices)
             {
                 long apSig = ind.regresa_apSigIndice();
 
-                if(apSig != -2 && apSig != -4)
+                if (apSig != -2 && apSig != -4)
                 {
                     numIndices++;
                 }
@@ -83,13 +83,13 @@ namespace ArchivosTarea2
             dataGridView1.ColumnHeadersVisible = true;
             int j = 0;
 
-            for(int i = 0; i < ent.listaIndices.Count; i++)
+            for (int i = 0; i < ent.listaIndices.Count; i++)
             {
                 long apSig = ent.listaIndices[i].regresa_apSigIndice();
 
-                if(apSig != -2 && apSig != -4)
+                if (apSig != -2 && apSig != -4)
                 {
-                    
+
                 }
             }
         }
@@ -97,9 +97,9 @@ namespace ArchivosTarea2
         // Boton que define el rango, dependiendo de que tipo de dato sea la llave primaria.
         private void button1_Click(object sender, EventArgs e)
         {
-            if(textBox1.Text.Length > 0)
+            if (textBox1.Text.Length > 0)
             {
-                try 
+                try
                 {
                     rango = long.Parse(textBox1.Text);
                     textBox1.ReadOnly = true;
@@ -111,7 +111,7 @@ namespace ArchivosTarea2
             }
             else
             {
-                toolStripStatusLabel1.Text = "Error, introduzca un valor de rango.";    
+                toolStripStatusLabel1.Text = "Error, introduzca un valor de rango.";
             }
         }
 
@@ -123,9 +123,9 @@ namespace ArchivosTarea2
             bool incompatible = false;
             List<object> datos = new List<object>();
 
-            for(int i = 0; i < dataGridView1.CurrentRow.Cells.Count; i++)
+            for (int i = 0; i < dataGridView1.CurrentRow.Cells.Count; i++)
             {
-                if(dataGridView1.CurrentRow.Cells[i].ToString() != "")
+                if (dataGridView1.CurrentRow.Cells[i].ToString() != "")
                 {
                     Atributo atr = atributosVigentes[i];
                     char tipoAtr = atr.tipo;
@@ -294,7 +294,7 @@ namespace ArchivosTarea2
         private void inserta_dato_indice(Dato dat)
         {
             // Si no hay indices en la lista de indices de la entidad.
-            if(ent.apIndices == -1)
+            if (ent.apIndices == -1)
             {
                 ent.listaIndices.Add(crea_indice(dat));
             }
@@ -316,7 +316,7 @@ namespace ArchivosTarea2
             dynamic valFin = 0;
             bool intervaloEncontrado = false;
 
-            switch(tipo)
+            switch (tipo)
             {
                 case 'I': valor = Convert.ToInt32(d.datos[indiceLlave]);
                     Convert.ChangeType(valIni, typeof(int));
@@ -325,8 +325,9 @@ namespace ArchivosTarea2
                     valIni = 0;
                     valFin = valIni + rango;
 
-                    do{
-                        if(valFin > valor && valor > valIni)
+                    do
+                    {
+                        if (valFin > valor && valor > valIni)
                         {
                             nuevoIndice.srt_valorInicial(valIni);
                             nuevoIndice.srt_valorFinal(valFin);
@@ -341,7 +342,7 @@ namespace ArchivosTarea2
                             valIni += rango;
                             valFin += rango;
                         }
-                    }while(intervaloEncontrado == false);
+                    } while (intervaloEncontrado == false);
                     break;
                 case 'L': valor = Convert.ToInt64(d.datos[indiceLlave]);
                     Convert.ChangeType(valIni, typeof(long));
@@ -350,8 +351,9 @@ namespace ArchivosTarea2
                     valIni = 0;
                     valFin = valIni + rango;
 
-                    do{
-                        if(valFin > valor && valor > valIni)
+                    do
+                    {
+                        if (valFin > valor && valor > valIni)
                         {
                             nuevoIndice.srt_valorInicial(valIni);
                             nuevoIndice.srt_valorFinal(valFin);
@@ -366,7 +368,7 @@ namespace ArchivosTarea2
                             valIni += rango;
                             valFin += rango;
                         }
-                    }while(intervaloEncontrado == false);
+                    } while (intervaloEncontrado == false);
                     break;
                 case 'F': valor = Convert.ToSingle(d.datos[indiceLlave]);
                     Convert.ChangeType(valIni, typeof(float));
@@ -375,8 +377,9 @@ namespace ArchivosTarea2
                     valIni = 0;
                     valFin = valIni + rango;
 
-                    do{
-                        if(valFin > valor && valor > valIni)
+                    do
+                    {
+                        if (valFin > valor && valor > valIni)
                         {
                             nuevoIndice.srt_valorInicial(valIni);
                             nuevoIndice.srt_valorFinal(valFin);
@@ -391,7 +394,7 @@ namespace ArchivosTarea2
                             valIni += rango;
                             valFin += rango;
                         }
-                    }while(intervaloEncontrado == false);
+                    } while (intervaloEncontrado == false);
                     break;
                 case 'D': valor = Convert.ToDouble(d.datos[indiceLlave]);
                     Convert.ChangeType(valIni, typeof(double));
@@ -400,8 +403,9 @@ namespace ArchivosTarea2
                     valIni = 0;
                     valFin = valIni + rango;
 
-                    do{
-                        if(valFin > valor && valor > valIni)
+                    do
+                    {
+                        if (valFin > valor && valor > valIni)
                         {
                             nuevoIndice.srt_valorInicial(valIni);
                             nuevoIndice.srt_valorFinal(valFin);
@@ -413,7 +417,7 @@ namespace ArchivosTarea2
                             valIni += rango;
                             valFin += rango;
                         }
-                    }while(intervaloEncontrado == false);
+                    } while (intervaloEncontrado == false);
                     break;
                 case 'C': valor = Convert.ToChar(d.datos[indiceLlave]);
                     Convert.ChangeType(valIni, typeof(char));
@@ -422,8 +426,9 @@ namespace ArchivosTarea2
                     valIni = 'a';
                     valFin = valIni + rango;
 
-                    do{
-                        if(valFin > valor && valor > valIni)
+                    do
+                    {
+                        if (valFin > valor && valor > valIni)
                         {
                             nuevoIndice.srt_valorInicial(valIni);
                             nuevoIndice.srt_valorFinal(valFin);
@@ -435,7 +440,7 @@ namespace ArchivosTarea2
                             valIni += rango;
                             valFin += rango;
                         }
-                    }while(intervaloEncontrado == false);
+                    } while (intervaloEncontrado == false);
                     break;
                 default: // No hay mas tipos de datos que pueden ser llave primaria, asi que esto se dejara vacio.
                     break;
