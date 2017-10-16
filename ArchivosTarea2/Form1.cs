@@ -646,7 +646,8 @@ namespace ArchivosTarea2
                 }
                 catch
                 {
-
+                    // Si el archivo no tiene escrito el rango, eso significa que no es un archivo secuencial indexado y leera entonces
+                    // el nombre de la primera entidad
                 }
 
                 if (reader.BaseStream.Position != reader.BaseStream.Length)
