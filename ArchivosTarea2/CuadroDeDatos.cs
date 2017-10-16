@@ -47,7 +47,7 @@ namespace ArchivosTarea2
         int posDatoValorMasBajo;
 
         Atributo attr = new Atributo();
-        public int indiceLlave;
+        public int indiceLlave = 0;
 
         /// <summary>
         /// Constructor del cuadro de datos.

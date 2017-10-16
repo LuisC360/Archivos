@@ -47,16 +47,6 @@ namespace ArchivosTarea2
             apDatos = apD;
         }
 
-        public void srt_valorInicial(dynamic vI)
-        {
-            valorInicial = vI;
-        }
-
-        public void srt_valorFinal(dynamic vF)
-        {
-            valorFinal = vF;
-        }
-
         public dynamic regresa_valInicial()
         {
             return valorInicial;
