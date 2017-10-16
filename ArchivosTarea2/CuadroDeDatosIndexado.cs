@@ -443,6 +443,7 @@ namespace ArchivosTarea2
                     } while (intervaloEncontrado == false);
                     break;
                 case 'S': valor = Convert.ToString(d.datos[indiceLlave]);
+                    Convert.ChangeType(valIni, typeof(string));
                     break;
                 default: // No hay mas tipos de datos que pueden ser llave primaria, asi que esto se dejara vacio.
                     break;
