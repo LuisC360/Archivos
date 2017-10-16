@@ -442,6 +442,8 @@ namespace ArchivosTarea2
                         }
                     } while (intervaloEncontrado == false);
                     break;
+                case 'S':
+                    break;
                 default: // No hay mas tipos de datos que pueden ser llave primaria, asi que esto se dejara vacio.
                     break;
             }
