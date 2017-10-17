@@ -282,6 +282,8 @@ namespace ArchivosTarea2
                     break;
                 case 'L': tipoAtr = typeof(long);
                     break;
+                default: // No hay ningun otro tipo de dato, por lo que el default estara vacio.
+                    break;
             }
 
             return tipoAtr;
@@ -444,6 +446,7 @@ namespace ArchivosTarea2
                     break;
                 case 'S': valor = Convert.ToString(d.datos[indiceLlave]);
                     Convert.ChangeType(valIni, typeof(string));
+                    Convert.ChangeType(valFin, typeof(string));
                     break;
                 default: // No hay mas tipos de datos que pueden ser llave primaria, asi que esto se dejara vacio.
                     break;
@@ -467,6 +470,18 @@ namespace ArchivosTarea2
         public bool regresa_seCambio()
         {
             return bandChanged;
+        }
+
+        public List<Indice> regresa_listaIndices()
+        {
+            return ent.listaIndices;
+        }
+
+        // Boton que cierra el cuadro actual.
+        private void button6_Click(object sender, EventArgs e)
+        {
+            this.DialogResult = DialogResult.OK;
+            this.Close();
         }
     }
 }

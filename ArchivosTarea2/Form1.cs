@@ -2044,6 +2044,23 @@ namespace ArchivosTarea2
                     button9.Enabled = false;
                     secIndexado = true;
                     
+                    using(CuadroDeDatosIndexado datosIndexado = new CuadroDeDatosIndexado(ent, posicionMemoria, tamDato))
+                    {
+                        var cuadroIndice = datosIndexado.ShowDialog();
+
+                        if(cuadroIndice == DialogResult.Cancel || cuadroIndice == DialogResult.OK)
+                        {
+                            posicionMemoria = datosIndexado.regresa_posMemoria();
+                            ent.listaIndices = datosIndexado.regresa_listaIndices();
+
+                            if(datosIndexado.regresa_seCambio() == true)
+                            {
+                                // Escribe archivo
+
+                                // Manejo dataGrid
+                            }
+                        }
+                    }
                 }
                 else
                 {

@@ -298,6 +298,8 @@ namespace ArchivosTarea2
                               }
                           }
                           break;
+                default:  // No hay ningun otro tipo de dato, por lo que este default ira vacio.
+                          break;
             }
             
             foreach(Object obj in datos)
@@ -321,6 +323,8 @@ namespace ArchivosTarea2
                     case 'C': valorMasBajoChar = encuentra_valor_mas_bajo(indiceLlave);
                         break;
                     case 'S': valorMasBajoString = encuentra_valor_mas_bajo(indiceLlave);
+                        break;
+                    default: // No hay ningun otro tipo de dato, por lo que este default ira vacio.
                         break;
                 }
 
@@ -358,6 +362,8 @@ namespace ArchivosTarea2
                     case 'S': valorMasBajoString = Convert.ToString(nuevoDato.datos[indiceLlave]);
                               posDatoValorMasBajo = 0;
                               break;
+                    default: // No hay ningun otro tipo de dato, por lo que este default ira vacio.
+                              break;
                 }
 
                 dataGridView1.CurrentRow.Cells[atributosVigentes.Count].Value = nuevoDato.posDato;
@@ -393,6 +399,8 @@ namespace ArchivosTarea2
                                     break;
                                 case 'L': datoG = Convert.ToInt64(dat.datos[indiceLlave]);
                                     datoH = Convert.ToInt64(nuevoDato.datos[indiceLlave]);
+                                    break;
+                                default: // Default vacio.
                                     break;
                             }
 
@@ -1542,6 +1550,8 @@ namespace ArchivosTarea2
                     break;
                 case 'L': tipoAtr = typeof(long);
                     break;
+                default: // No hay ningun otro tipo de dato, por lo que este default ira vacio.
+                    break;
             }
 
             return tipoAtr;
@@ -1648,6 +1658,8 @@ namespace ArchivosTarea2
                                 bajo = dt;
                                 encontrado = true;
                             }
+                            break;
+                        default: // No hay ningun otro tipo de dato, por lo que este default ira vacio.
                             break;
                     }
                 }
@@ -1939,6 +1951,8 @@ namespace ArchivosTarea2
                                 dato = dtr;
                                 breakLoop = true;
                             }
+                            break;
+                        default: // Default vacio.
                             break;
                     }
                    
