@@ -19,18 +19,18 @@ namespace ArchivosTarea2
         readonly List<Atributo> atributosVigentes = new List<Atributo>();
         public long posMemoria { get; set; }
         long tamDato;
-        long rango;
+        public long rango { get; set; }
         long tamIndice = 40;
         public bool bandChanged { get; set; }
         readonly List<Indice> indicesVigentes = new List<Indice>();
-        Atributo attrLlave = new Atributo();
         int indiceLlave;
 
-        public CuadroDeDatosIndexado(Entidad e, long pMem, long tamDat)
+        public CuadroDeDatosIndexado(Entidad e, long pMem, long tamDat, long rang)
         {
             ent = e;
             posMemoria = pMem;
             tamDato = tamDat;
+            rango = rang;
 
             foreach (Atributo atr in ent.listaAtributos)
             {
@@ -55,7 +55,12 @@ namespace ArchivosTarea2
 
             inicia_dataGridIndices();
 
-            //if()
+            inicia_dataGridDatos();
+             
+            if(rango > 0)
+            {
+                button1.Enabled = false;
+            }
 
             dataGridView1.ReadOnly = true;
         }
@@ -74,7 +79,31 @@ namespace ArchivosTarea2
 
         private void inicia_dataGridDatos()
         {
+            dataGridView2.ColumnCount = numAtributos + 2;
+            dataGridView2.ColumnHeadersVisible = true;
+            int j = 0;
 
+            for(int i = 0; i < ent.listaAtributos.Count; i++)
+            {
+                if(ent.listaAtributos[i].apSigAtributo != -2 && ent.listaAtributos[i].apSigAtributo != -4)
+                {
+                    char[] nombre = new char[30];
+
+                    for (int k = 0; k < ent.listaAtributos[i].nombre.Length; k++)
+                    {
+                        nombre[k] = ent.listaAtributos[i].nombre[k];
+                    }
+
+                    string nombreAtributo = new string(nombre);
+
+                    dataGridView2.Columns[j].Name = nombreAtributo;
+                    j++;
+                }
+            }
+
+            dataGridView2.Columns[j].Name = "Pos. Dato.";
+            j++;
+            dataGridView2.Columns[j].Name = "Ap. Sig. Dato";
         }
 
         private void rellena_dataGridIndices()
@@ -97,12 +126,14 @@ namespace ArchivosTarea2
         // Boton que define el rango, dependiendo de que tipo de dato sea la llave primaria.
         private void button1_Click(object sender, EventArgs e)
         {
-            if (textBox1.Text.Length > 0)
+            if (textBox1.Text.Length > 0 && rango == 0)
             {
                 try
                 {
                     rango = long.Parse(textBox1.Text);
                     textBox1.ReadOnly = true;
+                    button1.Enabled = false;
+                    bandChanged = true;
                 }
                 catch
                 {
@@ -119,13 +150,13 @@ namespace ArchivosTarea2
         // existe dicho indice, se va a crear, para despues insertar el dato en el indice.
         private void button5_Click(object sender, EventArgs e)
         {
-            int celdaSeleccionada = dataGridView1.CurrentRow.Index;
+            int celdaSeleccionada = dataGridView2.CurrentRow.Index;
             bool incompatible = false;
             List<object> datos = new List<object>();
 
-            for (int i = 0; i < dataGridView1.CurrentRow.Cells.Count; i++)
+            for (int i = 0; i < dataGridView2.CurrentRow.Cells.Count; i++)
             {
-                if (dataGridView1.CurrentRow.Cells[i].ToString() != "")
+                if (dataGridView2.CurrentRow.Cells[i].ToString() != "")
                 {
                     Atributo atr = atributosVigentes[i];
                     char tipoAtr = atr.tipo;
@@ -139,7 +170,7 @@ namespace ArchivosTarea2
                     {
                         try
                         {
-                            resultado = Convert.ChangeType(this.dataGridView1.Rows[celdaSeleccionada].Cells[i].Value, typeof(int));
+                            resultado = Convert.ChangeType(this.dataGridView2.Rows[celdaSeleccionada].Cells[i].Value, typeof(int));
                             datos.Add(resultado);
                         }
                         catch
@@ -153,7 +184,7 @@ namespace ArchivosTarea2
                     {
                         try
                         {
-                            resultado = Convert.ChangeType(this.dataGridView1.Rows[celdaSeleccionada].Cells[i].Value, typeof(char));
+                            resultado = Convert.ChangeType(this.dataGridView2.Rows[celdaSeleccionada].Cells[i].Value, typeof(char));
 
                             if (resultado.ToString().Length > 1)
                             {
@@ -174,7 +205,7 @@ namespace ArchivosTarea2
                     {
                         try
                         {
-                            resultado = Convert.ChangeType(this.dataGridView1.Rows[celdaSeleccionada].Cells[i].Value, typeof(string));
+                            resultado = Convert.ChangeType(this.dataGridView2.Rows[celdaSeleccionada].Cells[i].Value, typeof(string));
                             String res = resultado.ToString();
 
                             if (res.Length > (atr.bytes / 2))
@@ -198,7 +229,7 @@ namespace ArchivosTarea2
                     {
                         try
                         {
-                            resultado = Convert.ChangeType(this.dataGridView1.Rows[celdaSeleccionada].Cells[i].Value, typeof(float));
+                            resultado = Convert.ChangeType(this.dataGridView2.Rows[celdaSeleccionada].Cells[i].Value, typeof(float));
                             datos.Add(resultado);
                         }
                         catch
@@ -212,7 +243,7 @@ namespace ArchivosTarea2
                     {
                         try
                         {
-                            resultado = Convert.ChangeType(this.dataGridView1.Rows[celdaSeleccionada].Cells[i].Value, typeof(double));
+                            resultado = Convert.ChangeType(this.dataGridView2.Rows[celdaSeleccionada].Cells[i].Value, typeof(double));
                             datos.Add(resultado);
                         }
                         catch
@@ -226,7 +257,7 @@ namespace ArchivosTarea2
                     {
                         try
                         {
-                            resultado = Convert.ChangeType(this.dataGridView1.Rows[celdaSeleccionada].Cells[i].Value, typeof(long));
+                            resultado = Convert.ChangeType(this.dataGridView2.Rows[celdaSeleccionada].Cells[i].Value, typeof(long));
                             datos.Add(resultado);
                         }
                         catch
@@ -465,6 +496,11 @@ namespace ArchivosTarea2
         public long regresa_posMemoria()
         {
             return posMemoria;
+        }
+
+        public long regresa_rango()
+        {
+            return rango;
         }
 
         public bool regresa_seCambio()

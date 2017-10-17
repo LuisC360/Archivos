@@ -637,19 +637,6 @@ namespace ArchivosTarea2
                     bandCabecera = true;
                 }
 
-                try
-                {
-                    long rang = reader.ReadInt64();
-                    rango = rang;
-                    posicionMemoria = 16;
-                    button9.Enabled = false;
-                }
-                catch
-                {
-                    // Si el archivo no tiene escrito el rango, eso significa que no es un archivo secuencial indexado y leera entonces
-                    // el nombre de la primera entidad
-                }
-
                 if (reader.BaseStream.Position != reader.BaseStream.Length)
                 {
                     for (int i = 0; i < nombre.Length; i++)
@@ -1056,12 +1043,17 @@ namespace ArchivosTarea2
             FileStream stream = new FileStream(archivo, FileMode.Create, FileAccess.Write);
             BinaryWriter writer = new BinaryWriter(stream);
             long cabecera = 8;
+            long cabeceraIndexado = 16;
 
             for (int i = 0; i < data.Count; i++)
             {
-                if (i == 0)
+                if (i == 0 && secIndexado == false)
                 {
                     writer.Write(cabecera);
+                }
+                else if(i == 0 && secIndexado == true)
+                {
+                    writer.Write(cabeceraIndexado);
                 }
             }
 
@@ -2044,20 +2036,23 @@ namespace ArchivosTarea2
                     button9.Enabled = false;
                     secIndexado = true;
                     
-                    using(CuadroDeDatosIndexado datosIndexado = new CuadroDeDatosIndexado(ent, posicionMemoria, tamDato))
+                    using(CuadroDeDatosIndexado datosIndexado = new CuadroDeDatosIndexado(ent, posicionMemoria, tamDato, rango))
                     {
                         var cuadroIndice = datosIndexado.ShowDialog();
 
                         if(cuadroIndice == DialogResult.Cancel || cuadroIndice == DialogResult.OK)
                         {
-                            posicionMemoria = datosIndexado.regresa_posMemoria();
-                            ent.listaIndices = datosIndexado.regresa_listaIndices();
+                            //posicionMemoria = datosIndexado.regresa_posMemoria();
+                            //ent.listaIndices = datosIndexado.regresa_listaIndices();
+                            rango = datosIndexado.regresa_rango();
 
                             if(datosIndexado.regresa_seCambio() == true)
                             {
                                 // Escribe archivo
+                                escribe_archivo(textBox1.Text);
 
                                 // Manejo dataGrid
+                                manejo_dataGrid(textBox1.Text);
                             }
                         }
                     }
