@@ -18,6 +18,8 @@ namespace ArchivosTarea2
         public Atributo atLlave = new Atributo();
         // El indice del atributo llave primaria
         public int keyIndex;
+        // El indice ligado al dato.
+        Indice ind;
 
         /// <summary>
         /// Construccion de una nueva instancia de la clase Dato.
@@ -45,6 +47,29 @@ namespace ArchivosTarea2
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Constructor de una nueva isntancia de la clase Dato.
+        /// </summary>
+        /// <param name="e">La entidad en la que se insertara el dato.</param>
+        /// <param name="i">El indice ligado al dato.</param>
+        public Dato(Entidad e, Indice i)
+        {
+            foreach (Atributo at in e.listaAtributos)
+            {
+                if (at.apSigAtributo != -2 && at.apSigAtributo != -4)
+                {
+                    listaAtributosDato.Add(at);
+
+                    if (at.esLlavePrimaria == true)
+                    {
+                        atLlave = at;
+                    }
+                }
+            }
+
+            ind = i;
         }
 
         /// <summary>

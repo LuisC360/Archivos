@@ -51,6 +51,24 @@ namespace ArchivosTarea2
         /// <summary>
         /// Construccion de una nueva instancia de la clase Entidad.
         /// </summary>
+        /// <param name="n">El nombre de la entidad.</param>
+        /// <param name="apAt">El apuntador a atributos de la entidad.</param>
+        /// <param name="apInd">El apuntador a indices de la entidad.</param>
+        /// <param name="posIn">La posicion inicial de la entidad.</param>
+        /// <param name="posSigEnt">El apuntador a la siguiente entidad.</param>
+        /// <param name="dif">Parametro que solo sirve para diferenciar el constructor de entidad.</param>
+        public Entidad(char[] n, long apAt, long apInd, long posIn, long posSigEnt, int dif)
+        {
+            nombre = n;
+            apAtributos = apAt;
+            apIndices = apInd;
+            posEntidad = posIn;
+            apSigEntidad = posSigEnt;
+        }
+
+        /// <summary>
+        /// Construccion de una nueva instancia de la clase Entidad.
+        /// </summary>
         public Entidad()
         {
 
