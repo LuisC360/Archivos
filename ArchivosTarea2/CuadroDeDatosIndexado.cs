@@ -528,8 +528,6 @@ namespace ArchivosTarea2
                         }
                     }
                     break;
-                default: // DEFAULT VACIO
-                    break;
              }
          
              // Si no se encontro un indice apropiado para este dato, hay que crearlo.
@@ -685,9 +683,6 @@ namespace ArchivosTarea2
                             break;
                         }
                     }
-                    break;
-                default:    
-                    // DEFAULT VACIO.
                     break;
             }
 
@@ -1075,6 +1070,25 @@ namespace ArchivosTarea2
                         // DEFAULT VACIO
                         break;
                 }
+
+                // Recorremos la lista de indices en busqueda de el que contenga el rango adecuado.
+                foreach(Indice ind in ent.listaIndices)
+                {
+                    dynamic vI = ind.regresa_valInicial();
+                    dynamic vF = ind.regresa_valFinal();
+
+                    if(atrLlave.tipo != 'S')
+                    {
+                        if(vF > valorBuscar && valorBuscar > vI)
+                        {
+
+                        }
+                    }
+                    else
+                    {
+
+                    }
+                }
             }
             else
             {
@@ -1091,7 +1105,6 @@ namespace ArchivosTarea2
         // Boton que muestra los datos ligados a un indice.
         private void button4_Click(object sender, EventArgs e)
         {
-            int celdaSeleccionada = dataGridView1.CurrentRow.Index;
             dynamic valorInicial = dataGridView1.CurrentRow.Cells[0].Value;
 
             Indice muestraIndice = busca_indice(valorInicial);

@@ -2159,7 +2159,6 @@ namespace ArchivosTarea2
                                         else if (at.esLlavePrimaria == false && verifica_llave_primaria(entidadEncontrada) == true &&
                                             esLlave == true)
                                         {
-                                            //toolStripStatusLabel1.Text = "Error, no se puede tener mas de una llave primaria.";
                                             at.esLlavePrimaria = false;
                                         }
                                         // Si no sera la llave primaria
@@ -2525,36 +2524,6 @@ namespace ArchivosTarea2
             {
                 toolStripStatusLabel1.Text = "Error, no se ha especificado un nombre de atributo.";
             }
-        }
-
-        /// <summary>
-        /// Metodo que validara si solo tenemos un atributo en la lista de atributos de la entidad.
-        /// </summary>
-        /// <param name="e">La entidad que contiene la lista de atributos que se buscara.</param>
-        /// <returns>Booleano que indica si la entidad tiene solo un atributo o no.</returns>
-        static bool is_unico_atributo(Entidad e)
-        {
-            bool unicaEntidad = false;
-            int contador = 0;
-
-            foreach(Atributo atr in e.listaAtributos)
-            {
-                if(atr.apSigAtributo != -2 && atr.apSigAtributo != -4)
-                {
-
-                }
-                else
-                {
-                    contador++;
-                }
-            }
-
-            if(contador == 1)
-            {
-                unicaEntidad = true;
-            }
-
-            return unicaEntidad;
         }
 
         // Boton que muestra los atributos de una entidad escrita en el textBox correspondiente
