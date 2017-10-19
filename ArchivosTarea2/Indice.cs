@@ -23,7 +23,7 @@ namespace ArchivosTarea2
 
         public Indice()
         {
-
+            apSigIndice = -1;
         }
 
         public Indice(dynamic vI, dynamic vF)

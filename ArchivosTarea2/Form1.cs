@@ -673,11 +673,11 @@ namespace ArchivosTarea2
 
         /// <summary>
         /// En esta funcion se haran 3 cosas importantes:
-        /// 1- Refrescar e inicializar ambos dataGridView
-        /// 2- Leer el archivo binario especificado en el parametro "archivo"
-        /// 3- Poblar el dataGridView con los datos del archivo en el orden correspondiente
+        /// 1- Refrescar e inicializar ambos dataGridView.
+        /// 2- Leer el archivo binario especificado en el parametro "archivo".
+        /// 3- Poblar el dataGridView con los datos del archivo en el orden correspondiente.
         /// </summary>
-        /// <param name="archivo">Nombre del archivo a abrirse</param>
+        /// <param name="archivo">Nombre del archivo a abrirse.</param>
         public void manejo_dataGrid(String archivo)
         {
             posicionMemoria = 8;
@@ -824,9 +824,12 @@ namespace ArchivosTarea2
         }
 
         /// <summary>
-        /// 
+        /// En esta funcion se haran 3 cosas importantes:
+        /// 1- Refrescar e inicializar ambos dataGridView.
+        /// 2- Leer el archivo binario indexado especificado en el parametro "archivo".
+        /// 3. Poblar el dataGridView con los daros del archivo en el orden correspondiente.
         /// </summary>
-        /// <param name="archivo"></param>
+        /// <param name="archivo">Nombre del archivo a abrirse.</param>
         public void manejo_dataGrid_indexado(String archivo)
         {
             posicionMemoria = 16;
@@ -898,7 +901,7 @@ namespace ArchivosTarea2
 
                         if (nEntidad.apIndices != -1)
                         {
-                            
+                            lee_indices_de_entidad(streamR, reader, nEntidad);
                         }
                     }
                     else
@@ -1368,7 +1371,6 @@ namespace ArchivosTarea2
                 }
                 else
                 {
-                    // Seek
                     switch(atr.tipo)
                     {
                         case 'I': r.ReadInt32();
@@ -1642,7 +1644,7 @@ namespace ArchivosTarea2
                 }
 
                 writer.Write(entidades[j].apAtributos);
-                writer.Write(entidades[j].apDatos);
+                writer.Write(entidades[j].apIndices);
                 writer.Write(entidades[j].posEntidad);
                 writer.Write(entidades[j].apSigEntidad);
 
@@ -1745,6 +1747,8 @@ namespace ArchivosTarea2
                                         }
                                     }
                                 }
+
+                                writer.Write(entidades[j].listaIndices[l].datosIndice[n].apSigDato);
                             }
                         }
                     }
@@ -2526,8 +2530,8 @@ namespace ArchivosTarea2
         /// <summary>
         /// Metodo que validara si solo tenemos un atributo en la lista de atributos de la entidad.
         /// </summary>
-        /// <param name="e"></param>
-        /// <returns></returns>
+        /// <param name="e">La entidad que contiene la lista de atributos que se buscara.</param>
+        /// <returns>Booleano que indica si la entidad tiene solo un atributo o no.</returns>
         static bool is_unico_atributo(Entidad e)
         {
             bool unicaEntidad = false;
@@ -2594,8 +2598,6 @@ namespace ArchivosTarea2
 
                 if(ent.apAtributos > -1 && hay_llave_primaria(ent) == true)
                 {
-                    button10.Enabled = false;
-
                     using (CuadroDeDatos datosEntidad = new CuadroDeDatos(ent, posicionMemoria, ent.apDatos, tamDato))
                     {
                         var cuadroDatos = datosEntidad.ShowDialog();
@@ -2666,17 +2668,18 @@ namespace ArchivosTarea2
 
                         if(cuadroIndice == DialogResult.Cancel || cuadroIndice == DialogResult.OK)
                         {
-                            //posicionMemoria = datosIndexado.regresa_posMemoria();
-                            //ent.listaIndices = datosIndexado.regresa_listaIndices();
+                            ent.apIndices = datosIndexado.regresa_apuntador_listas();
+                            posicionMemoria = datosIndexado.regresa_posMemoria();
+                            ent.listaIndices = datosIndexado.regresa_listaIndices();
                             rango = datosIndexado.regresa_rango();
 
                             if(datosIndexado.regresa_seCambio() == true)
                             {
                                 // Escribe archivo
-                                escribe_archivo(textBox1.Text);
+                                escribe_archivo_indexado(textBox1.Text);
 
                                 // Manejo dataGrid
-                                manejo_dataGrid(textBox1.Text);
+                                manejo_dataGrid_indexado(textBox1.Text);
                             }
                         }
                     }

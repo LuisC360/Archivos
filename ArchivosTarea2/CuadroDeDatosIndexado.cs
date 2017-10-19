@@ -31,6 +31,7 @@ namespace ArchivosTarea2
             posMemoria = pMem;
             tamDato = tamDat;
             rango = rang;
+            int indLlave = 0;
 
             foreach (Atributo atr in ent.listaAtributos)
             {
@@ -38,6 +39,16 @@ namespace ArchivosTarea2
                 {
                     numAtributos++;
                     atributosVigentes.Add(atr);
+
+                    if(atr.esLlavePrimaria == true)
+                    {
+                        atrLlave = atr;
+                        indiceLlave = indLlave;
+                    }
+                    else
+                    {
+                        indLlave++;
+                    }
                 }
             }
 
@@ -48,6 +59,7 @@ namespace ArchivosTarea2
                 if (apSig != -2 && apSig != -4)
                 {
                     numIndices++;
+                    indicesVigentes.Add(ind);
                 }
             }
 
@@ -56,9 +68,13 @@ namespace ArchivosTarea2
             inicia_dataGridIndices();
 
             inicia_dataGridDatos();
+
+            rellena_dataGridIndices();
              
             if(rango > 0)
             {
+                textBox1.Text = rango.ToString();
+                textBox1.Enabled = false;
                 button1.Enabled = false;
             }
 
@@ -110,16 +126,37 @@ namespace ArchivosTarea2
         {
             dataGridView1.ColumnCount = 5;
             dataGridView1.ColumnHeadersVisible = true;
+
+            string[] fila = new string[5];
+            List<String[]> filas = new List<string[]>();
             int j = 0;
 
             for (int i = 0; i < ent.listaIndices.Count; i++)
             {
                 long apSig = ent.listaIndices[i].regresa_apSigIndice();
 
+                // Si el indice no fue eliminado
                 if (apSig != -2 && apSig != -4)
                 {
+                    fila[j] = ent.listaIndices[i].regresa_valInicial().ToString();
+                    j++;
+                    fila[j] = ent.listaIndices[i].regresa_valFinal().ToString();
+                    j++;
+                    fila[j] = ent.listaIndices[i].regresa_posIndice().ToString();
+                    j++;
+                    fila[j] = ent.listaIndices[i].regresa_apSigIndice().ToString();
+                    j++;
+                    fila[j] = ent.listaIndices[i].regresa_apDatos().ToString();
 
+                    j = 0;
+                    filas.Add(fila);
+                    fila = new string[5];
                 }
+            }
+
+            foreach(string[] f in filas)
+            {
+                dataGridView1.Rows.Add(f);
             }
         }
 
@@ -154,7 +191,7 @@ namespace ArchivosTarea2
             bool incompatible = false;
             List<object> datos = new List<object>();
 
-            for (int i = 0; i < dataGridView2.CurrentRow.Cells.Count; i++)
+            for (int i = 0; i < dataGridView2.CurrentRow.Cells.Count - 2; i++)
             {
                 if (dataGridView2.CurrentRow.Cells[i].ToString() != "")
                 {
@@ -277,17 +314,17 @@ namespace ArchivosTarea2
                 {
                     toolStripStatusLabel1.Text = "Error, no se pueden dejar campos vacios.";
                     break;
-                }
-
-                Dato nuevoDato = new Dato(ent);
-
-                foreach (Object obj in datos)
-                {
-                    nuevoDato.datos.Add(obj);
-                }
-
-                inserta_dato_indice(nuevoDato);
+                }                
             }
+
+            Dato nuevoDato = new Dato(ent);
+
+            foreach (Object obj in datos)
+            {
+                nuevoDato.datos.Add(obj);
+            }
+
+            inserta_dato_indice(nuevoDato);
         }
 
         /// <summary>
@@ -329,19 +366,473 @@ namespace ArchivosTarea2
             // Si no hay indices en la lista de indices de la entidad.
             if (ent.apIndices == -1)
             {
-                ent.listaIndices.Add(crea_indice(dat));
+                Indice nuevo = crea_indice(dat);               
+                actualiza_dataGrid_indices();
+                actualiza_dataGrid_datos(nuevo);
             }
             else
             {
                 // Se buscara el indice cuyo intervalo acepte el dato que se desea insertar.
+                Indice encontrado = busca_indice(dat);
+                actualiza_dataGrid_indices();
+                actualiza_dataGrid_datos(encontrado);
+            }
+
+            bandChanged = true;
+        }
+
+        /// <summary>
+        /// Metodo que nos ayudara a buscar un indice sobre el que podamos meter nuestro dato nuevo. Si no cabe en ningun indice, entonces
+        /// se creara uno nuevo.
+        /// </summary>
+        /// <param name="dat">El nuevo dato que se desea insertar.</param>
+        private Indice busca_indice(Dato dat)
+        {
+            bool encontro = false;
+            Indice indiceEncontrado = new Indice();
+
+            switch (atrLlave.tipo)
+            {
+                case 'I':
+                    int valorI = Convert.ToInt32(dat.datos[indiceLlave]);
+
+                    foreach (Indice ind in ent.listaIndices)
+                    {
+                        int valorInicial = Convert.ToInt32(ind.regresa_valInicial());
+                        int valorFinal = Convert.ToInt32(ind.regresa_valFinal());
+
+                        // Si se encontro el indice
+                        if (valorFinal >= valorI && valorI >= valorInicial)
+                        {
+                            // Validar que no exista un dato con la misma llave primaria
+                            if(valida_llave_primaria(ind, dat) == false)
+                            {
+                                ind.datosIndice.Add(dat);
+                                posMemoria = posMemoria + tamDato;
+                                indiceEncontrado = ind;
+                                encontro = true;
+                            }
+                            else
+                            {
+                                toolStripStatusLabel1.Text = "Error, llave primaria repetida.";
+                            }
+                            break;
+                        }
+                    }
+                    break;
+                case 'L':
+                    long valorL = Convert.ToInt64(dat.datos[indiceLlave]);
+
+                    foreach (Indice ind in ent.listaIndices)
+                    {
+                        long valorInicial = Convert.ToInt64(ind.regresa_valInicial());
+                        long valorFinal = Convert.ToInt64(ind.regresa_valFinal());
+
+                        // Si se encontro el indice
+                        if (valorFinal >= valorL && valorL >= valorInicial)
+                        {
+                            // Validar que no exista un dato con la misma llave primaria
+                            if(valida_llave_primaria(ind, dat) == false)
+                            {
+                                ind.datosIndice.Add(dat);
+                                posMemoria = posMemoria + tamDato;
+                                indiceEncontrado = ind;
+                                encontro = true;
+                            }
+                            else
+                            {
+                                toolStripStatusLabel1.Text = "Error, llave primaria repetida.";
+                            }
+                            break;
+                        }
+                    }
+                    break;
+                case 'F':
+                    float valorF = Convert.ToSingle(dat.datos[indiceLlave]);
+
+                    foreach (Indice ind in ent.listaIndices)
+                    {
+                        float valorInicial = Convert.ToSingle(ind.regresa_valInicial());
+                        float valorFinal = Convert.ToSingle(ind.regresa_valFinal());
+
+                        // Si se encontro el indice
+                        if (valorFinal >= valorF && valorF >= valorInicial)
+                        {
+                            // Validar que no exista un dato con la misma llave primaria
+                            if(valida_llave_primaria(ind, dat) == false)
+                            {
+                                ind.datosIndice.Add(dat);
+                                posMemoria = posMemoria + tamDato;
+                                indiceEncontrado = ind;
+                                encontro = true;
+                            }
+                            else
+                            {
+                                toolStripStatusLabel1.Text = "Error, llave primaria repetida.";
+                            }
+                            break;
+                        }
+                    }
+                    break;
+                case 'D':
+                    double valorD = Convert.ToDouble(dat.datos[indiceLlave]);
+
+                    foreach (Indice ind in ent.listaIndices)
+                    {
+                        double valorInicial = Convert.ToDouble(ind.regresa_valInicial());
+                        double valorFinal = Convert.ToDouble(ind.regresa_valFinal());
+
+                        // Si se encontro el indice
+                        if (valorFinal >= valorD && valorD >= valorInicial)
+                        {
+                            // Validar que no exista un dato con la misma llave primaria
+                            if(valida_llave_primaria(ind, dat) == false)
+                            {
+                                ind.datosIndice.Add(dat);
+                                posMemoria = posMemoria + tamDato;
+                                indiceEncontrado = ind;
+                                encontro = true;
+                            }
+                            else
+                            {
+                                toolStripStatusLabel1.Text = "Error, llave primaria repetida.";
+                            }
+                            break;
+                        }
+                    }
+                    break;
+                case 'C':
+                    char valor = Convert.ToChar(dat.datos[indiceLlave]);
+
+                    foreach (Indice ind in ent.listaIndices)
+                    {
+                        char valorInicial = Convert.ToChar(ind.regresa_valInicial());
+                        char valorFinal = Convert.ToChar(ind.regresa_valFinal());
+
+                        // Si se encontro el indice
+                        if (valorFinal >= valor && valor >= valorInicial)
+                        {
+                            // Validar que no exista un dato con la misma llave primaria
+                            if(valida_llave_primaria(ind, dat) == false)
+                            {
+                                ind.datosIndice.Add(dat);
+                                posMemoria = posMemoria + tamDato;
+                                indiceEncontrado = ind;
+                                encontro = true;
+                            }
+                            else
+                            {
+                                toolStripStatusLabel1.Text = "Error, llave primaria repetida.";
+                            }
+                            break;
+                        }
+                    }
+                    break;
+                default: // DEFAULT VACIO
+                    break;
+             }
+         
+             // Si no se encontro un indice apropiado para este dato, hay que crearlo.
+             if(encontro == false)
+             {
+                 indiceEncontrado = crea_indice(dat);
+             }
+
+             return indiceEncontrado;
+        }
+
+        /// <summary>
+        /// Metodo que actualiza el dataGrid de los datos correspondientes a un indice.
+        /// </summary>
+        /// <param name="i">El indice que contiene la lista de datos.</param>
+        private void actualiza_dataGrid_datos(Indice i)
+        {
+            dataGridView2.Rows.Clear();
+
+            List<String[]> filas = new List<string[]>();
+            String[] fila = new string[atributosVigentes.Count + 2];
+            int count = 0;
+
+            foreach(Dato dat in i.datosIndice)
+            {
+                foreach(object obj in dat.datos)
+                {
+                    if(obj is char[])
+                    {
+                        char[] arr = (char[])obj;
+                        String objeto = new string(arr);
+                        fila[count] = objeto;
+                    }
+                    else
+                    {
+                        fila[count] = obj.ToString();
+                    }
+                    count++;
+                }
+                fila[count] = dat.posDato.ToString();
+                count++;
+
+                if (dat.apSigDato != -2)
+                {
+                    fila[count] = dat.apSigDato.ToString();
+                }
+                else
+                {
+                    fila[count] = "-1";
+                }
+
+                if (dat.apSigDato != -3 && dat.apSigDato != -4)
+                {
+                    filas.Add(fila);
+                }
+                fila = new string[atributosVigentes.Count + 2];
+                count = 0;
+            }
+
+            foreach (string[] arr in filas)
+            {
+                dataGridView2.Rows.Add(arr);
             }
         }
 
+        /// <summary>
+        /// Metodo con el que se validara que el dato que se desea insertar en la lista de datos del indice no este repetido, respecto a su
+        /// llave primaria.
+        /// </summary>
+        /// <param name="ind">El indice que tiene la lista de datos sobre la que se desea insertar el dato.</param>
+        /// <param name="dat">El dato que se desea insertar en la lista de datos del indice.</param>
+        /// <returns>Booleano que indica si la llave primaria del dato existe o no.</returns>
+        private bool valida_llave_primaria(Indice ind, Dato dat)
+        {
+            bool yaExiste = false;
+
+            switch(atrLlave.tipo)
+            {
+                case 'I':
+                    foreach(Dato d in ind.datosIndice)
+                    {
+                        int datoComparar = Convert.ToInt32(d.datos[indiceLlave]);
+                        int datoInsertar = Convert.ToInt32(dat.datos[indiceLlave]);
+
+                        if(datoComparar == datoInsertar)
+                        {
+                            yaExiste = true;
+                            break;
+                        }
+                    }
+                    break;
+                case 'L':
+                    foreach(Dato d in ind.datosIndice)
+                    {
+                        long datoComparar = Convert.ToInt64(d.datos[indiceLlave]);
+                        long datoInsertar = Convert.ToInt64(dat.datos[indiceLlave]);
+
+                        if(datoComparar == datoInsertar)
+                        {
+                            yaExiste = true;
+                            break;
+                        }
+                    }
+                    break;
+                case 'F':
+                    foreach(Dato d in ind.datosIndice)
+                    {
+                        float datoComparar = Convert.ToSingle(d.datos[indiceLlave]);
+                        float datoInsertar = Convert.ToSingle(dat.datos[indiceLlave]);
+
+                        if(datoComparar == datoInsertar)
+                        {
+                            yaExiste = true;
+                            break;
+                        }
+                    }
+                    break;
+                case 'D':
+                    foreach(Dato d in ind.datosIndice)
+                    {
+                        double datoComparar = Convert.ToDouble(d.datos[indiceLlave]);
+                        double datoInsertar = Convert.ToDouble(dat.datos[indiceLlave]);
+
+                        if(datoComparar == datoInsertar)
+                        {
+                            yaExiste = true;
+                            break;
+                        }
+                    }
+                    break;
+                case 'C':
+                    foreach(Dato d in ind.datosIndice)
+                    {
+                        char datoComparar = Convert.ToChar(d.datos[indiceLlave]);
+                        char datoInsertar = Convert.ToChar(dat.datos[indiceLlave]);
+
+                        if(datoComparar == datoInsertar)
+                        {
+                            yaExiste = true;
+                            break;
+                        }
+                    }
+                    break;
+                case 'S':
+                    foreach(Dato d in ind.datosIndice)
+                    {
+                        String datoComparar = Convert.ToString(d.datos[indiceLlave]);
+                        String datoInsertar = Convert.ToString(dat.datos[indiceLlave]);
+
+                        if(datoComparar == datoInsertar)
+                        {
+                            yaExiste = true;
+                            break;
+                        }
+                    }
+                    break;
+                default:    
+                    // DEFAULT VACIO.
+                    break;
+            }
+
+            return yaExiste;
+        }
+
+        /// <summary>
+        /// Metodo que actualizara el dataGrid de los indices, ordenandolos de forma ascendente.
+        /// </summary>
+        private void actualiza_dataGrid_indices()
+        {
+            List<Indice> ordenada = ordena_indices(ent);
+
+            dataGridView1.Rows.Clear();
+
+            List<String[]> filas = new List<string[]>();
+            String[] fila = new string[5];
+            int count = 0;
+
+            foreach(Indice ind in ordenada)
+            {
+                long vI = ind.regresa_valInicial();
+                long vF = ind.regresa_valFinal();
+                long pI = ind.regresa_posIndice();
+                long aS = ind.regresa_apSigIndice();
+                long aD = ind.regresa_apDatos();
+
+                fila[count] = vI.ToString();
+                count++;
+                fila[count] = vF.ToString();
+                count++;
+                fila[count] = pI.ToString();
+                count++;
+                if (aS != -3)
+                {
+                    fila[count] = aS.ToString();
+                }
+                else
+                {
+                    fila[count] = "-1";
+                }
+                count++;
+                fila[count] = aD.ToString();
+
+                if (aS != -2 && aS != -4)
+                {
+                    filas.Add(fila);
+                }
+
+                fila = new string[5];
+                count = 0;
+            }
+
+            foreach (string[] arr in filas)
+            {
+                dataGridView1.Rows.Add(arr);
+            }
+
+            actualiza_listas(ordenada);
+        }
+
+        /// <summary>
+        /// Metodos con el que se actualizara la lista de indices vigentes (que no han sido eliminados) y de indices de la entidad.
+        /// </summary>
+        /// <param name="indicesOrdenados">La lista con los indices ya ordenados.</param>
+        private void actualiza_listas(List<Indice> indicesOrdenados)
+        {
+            indicesVigentes.Clear();
+
+            foreach (Indice ind in indicesOrdenados)
+            {
+                long sigInd = ind.regresa_apSigIndice();
+
+                if (sigInd != -3 && sigInd != -4)
+                {
+                    indicesVigentes.Add(ind);
+                }
+            }
+
+            ent.listaIndices.Clear();
+
+            foreach (Indice ind in indicesOrdenados)
+            {
+                ent.listaIndices.Add(ind);
+            }
+        }
+
+        /// <summary>
+        /// Funcion que ordena los indices de la lista de indices de la entidad, de acuerdo a un orden ascendente.
+        /// </summary>
+        /// <param name="e">La entidad que contiene la lista de indices.</param>
+        private List<Indice> ordena_indices(Entidad e)
+        {
+            List<Indice> ordenada = new List<Indice>();
+
+            switch(atrLlave.tipo)
+            {
+                case 'I':
+                    ordenada = e.listaIndices.OrderBy(o => Convert.ToInt32(o.regresa_valInicial())).ToList();
+                    break;
+                case 'L':
+                    ordenada = e.listaIndices.OrderBy(o => Convert.ToInt64(o.regresa_valInicial())).ToList();
+                    break;
+                case 'F':
+                    ordenada = e.listaIndices.OrderBy(o => Convert.ToSingle(o.regresa_valInicial())).ToList();
+                    break;
+                case 'D':
+                    ordenada = e.listaIndices.OrderBy(o => Convert.ToDouble(o.regresa_valInicial())).ToList();
+                    break;
+                case 'C':
+                    ordenada = e.listaIndices.OrderBy(o => Convert.ToChar(o.regresa_valInicial())).ToList();
+                    break;
+                case 'S':
+                    ordenada = e.listaIndices.OrderBy(o => Convert.ToString(o.regresa_valInicial())).ToList();
+                    break;
+                default:
+                    // DEFAULT VACIO
+                    break;
+            }
+
+            for(int i = 0; i < ordenada.Count; i++)
+            {
+                if(i == 0)
+                {
+                    ent.apIndices = ordenada[i].regresa_posIndice();
+                }
+
+                if((i+1) < ordenada.Count)
+                {
+                    ordenada[i].srt_apSigIndice(ordenada[i+1].regresa_posIndice());
+                }
+            }
+
+            return ordenada;
+        }
+
+        /// <summary>
+        /// Metodo que crea un nuevo indice en donde se insertara un dato. El rango sera determinado por el tipo de dato de la llave
+        /// primaria.
+        /// </summary>
+        /// <param name="d">El dato que sera insertado.</param>
+        /// <returns>El nuevo indice con el dato insertado.</returns>
         private Indice crea_indice(Dato d)
         {
             Indice nuevoIndice = new Indice();
-            atrLlave = d.regresa_llave_primaria();
-            indiceLlave = d.indice_llave_primaria();
 
             char tipo = atrLlave.tipo;
             dynamic valor;
@@ -355,18 +846,22 @@ namespace ArchivosTarea2
                     Convert.ChangeType(valIni, typeof(int));
                     Convert.ChangeType(valFin, typeof(int));
 
-                    valIni = 0;
-                    valFin = valIni + rango;
+                    valIni = 1;
+                    valFin = rango;
 
                     do
                     {
-                        if (valFin > valor && valor > valIni)
+                        if (valFin >= valor && valor >= valIni)
                         {
                             nuevoIndice.srt_valorInicial(valIni);
                             nuevoIndice.srt_valorFinal(valFin);
                             nuevoIndice.srt_posIndice(posMemoria);
                             posMemoria = posMemoria + tamIndice;
+                            d.posDato = posMemoria;
+                            posMemoria = posMemoria + tamDato;
                             nuevoIndice.srt_apDatos(d.posDato);
+                            nuevoIndice.datosIndice.Add(d);
+                            ent.apIndices = nuevoIndice.regresa_posIndice();
 
                             intervaloEncontrado = true;
                         }
@@ -381,18 +876,22 @@ namespace ArchivosTarea2
                     Convert.ChangeType(valIni, typeof(long));
                     Convert.ChangeType(valFin, typeof(long));
 
-                    valIni = 0;
-                    valFin = valIni + rango;
+                    valIni = 1;
+                    valFin = rango;
 
                     do
                     {
-                        if (valFin > valor && valor > valIni)
+                        if (valFin >= valor && valor >= valIni)
                         {
                             nuevoIndice.srt_valorInicial(valIni);
                             nuevoIndice.srt_valorFinal(valFin);
                             nuevoIndice.srt_posIndice(posMemoria);
                             posMemoria = posMemoria + tamIndice;
+                            d.posDato = posMemoria;
+                            posMemoria = posMemoria + tamDato;
                             nuevoIndice.srt_apDatos(d.posDato);
+                            nuevoIndice.datosIndice.Add(d);
+                            ent.apIndices = nuevoIndice.regresa_posIndice();
 
                             intervaloEncontrado = true;
                         }
@@ -407,18 +906,22 @@ namespace ArchivosTarea2
                     Convert.ChangeType(valIni, typeof(float));
                     Convert.ChangeType(valFin, typeof(float));
 
-                    valIni = 0;
-                    valFin = valIni + rango;
+                    valIni = 1;
+                    valFin = rango;
 
                     do
                     {
-                        if (valFin > valor && valor > valIni)
+                        if (valFin >= valor && valor >= valIni)
                         {
                             nuevoIndice.srt_valorInicial(valIni);
                             nuevoIndice.srt_valorFinal(valFin);
                             nuevoIndice.srt_posIndice(posMemoria);
                             posMemoria = posMemoria + tamIndice;
+                            d.posDato = posMemoria;
+                            posMemoria = posMemoria + tamDato;
                             nuevoIndice.srt_apDatos(d.posDato);
+                            nuevoIndice.datosIndice.Add(d);
+                            ent.apIndices = nuevoIndice.regresa_posIndice();
 
                             intervaloEncontrado = true;
                         }
@@ -433,17 +936,24 @@ namespace ArchivosTarea2
                     Convert.ChangeType(valIni, typeof(double));
                     Convert.ChangeType(valFin, typeof(double));
 
-                    valIni = 0;
-                    valFin = valIni + rango;
+                    valIni = 1;
+                    valFin = rango;
 
                     do
                     {
-                        if (valFin > valor && valor > valIni)
+                        if (valFin >= valor && valor >= valIni)
                         {
                             nuevoIndice.srt_valorInicial(valIni);
                             nuevoIndice.srt_valorFinal(valFin);
                             nuevoIndice.srt_posIndice(posMemoria);
                             posMemoria = posMemoria + tamIndice;
+                            d.posDato = posMemoria;
+                            posMemoria = posMemoria + tamDato;
+                            nuevoIndice.srt_apDatos(d.posDato);
+                            nuevoIndice.datosIndice.Add(d);
+                            ent.apIndices = nuevoIndice.regresa_posIndice();
+
+                            intervaloEncontrado = true;
                         }
                         else
                         {
@@ -461,12 +971,19 @@ namespace ArchivosTarea2
 
                     do
                     {
-                        if (valFin > valor && valor > valIni)
+                        if (valFin >= valor && valor >= valIni)
                         {
                             nuevoIndice.srt_valorInicial(valIni);
                             nuevoIndice.srt_valorFinal(valFin);
                             nuevoIndice.srt_posIndice(posMemoria);
                             posMemoria = posMemoria + tamIndice;
+                            d.posDato = posMemoria;
+                            posMemoria = posMemoria + tamDato;
+                            nuevoIndice.srt_apDatos(d.posDato);
+                            nuevoIndice.datosIndice.Add(d);
+                            ent.apIndices = nuevoIndice.regresa_posIndice();
+
+                            intervaloEncontrado = true;
                         }
                         else
                         {
@@ -478,6 +995,9 @@ namespace ArchivosTarea2
                 case 'S': valor = Convert.ToString(d.datos[indiceLlave]);
                     Convert.ChangeType(valIni, typeof(string));
                     Convert.ChangeType(valFin, typeof(string));
+
+                    valIni = 'a';
+
                     break;
                 default: // No hay mas tipos de datos que pueden ser llave primaria, asi que esto se dejara vacio.
                     break;
@@ -485,12 +1005,15 @@ namespace ArchivosTarea2
 
             toolStripStatusLabel1.Text = "Indice creado y dato insertado con exito.";
 
+            indicesVigentes.Add(nuevoIndice);
+            ent.listaIndices.Add(nuevoIndice);
+
             return nuevoIndice;
         }
 
-        public Entidad regresa_entidad()
+        public long regresa_apuntador_listas()
         {
-            return ent;
+            return ent.apIndices;
         }
 
         public long regresa_posMemoria()
@@ -518,6 +1041,80 @@ namespace ArchivosTarea2
         {
             this.DialogResult = DialogResult.OK;
             this.Close();
+        }
+
+        // Boton para modificar un dato.
+        private void button2_Click(object sender, EventArgs e)
+        {
+            if(textBox2.Text.Length > 0)
+            {
+                dynamic valorBuscar = 0;
+
+                // Convertimos el valor escrito en el textBox al tipo de dato correspondiente al de la llave primaria
+                switch(atrLlave.tipo)
+                {
+                    case 'I':
+                        valorBuscar = Int32.Parse(textBox2.Text);
+                        break;
+                    case 'F':
+                        valorBuscar = float.Parse(textBox2.Text);
+                        break;
+                    case 'L':
+                        valorBuscar = Int64.Parse(textBox2.Text);
+                        break;
+                    case 'D':
+                        valorBuscar = Double.Parse(textBox2.Text);
+                        break;
+                    case 'C':
+                        valorBuscar = Char.Parse(textBox2.Text);
+                        break;
+                    case 'S':
+                        valorBuscar = textBox2.Text;
+                        break;
+                    default:
+                        // DEFAULT VACIO
+                        break;
+                }
+            }
+            else
+            {
+                toolStripStatusLabel1.Text = "Error, no se ha introducido una llave primaria.";
+            }
+        }
+
+        // Boton para eliminar un dato (y quiza hasta el indice si se da el caso).
+        private void button3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        // Boton que muestra los datos ligados a un indice.
+        private void button4_Click(object sender, EventArgs e)
+        {
+            int celdaSeleccionada = dataGridView1.CurrentRow.Index;
+            dynamic valorInicial = dataGridView1.CurrentRow.Cells[0].Value;
+
+            Indice muestraIndice = busca_indice(valorInicial);
+
+            actualiza_dataGrid_datos(muestraIndice);
+        }
+
+        private Indice busca_indice(dynamic vI)
+        {
+            Indice encontrar = new Indice();
+
+            foreach(Indice ind in ent.listaIndices)
+            {
+                dynamic valorInicialComparar = ind.regresa_valInicial();
+                String compare = valorInicialComparar.ToString();
+
+                if (compare == vI)
+                {
+                    encontrar = ind;
+                }
+            }
+
+            return encontrar;
         }
     }
 }
