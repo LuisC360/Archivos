@@ -76,11 +76,11 @@ namespace ArchivosTarea2
                     {
                         var cuadroTipo = selTip.ShowDialog();
 
-                        if(selTip.DialogResult == DialogResult.OK)
+                        if(cuadroTipo == DialogResult.OK)
                         {
                             tipo = selTip.regresa_tipo();
                         }
-                        else if(selTip.DialogResult == DialogResult.Cancel)
+                        else if(cuadroTipo == DialogResult.Cancel)
                         {
                             toolStripStatusLabel1.Text = "Error, seleccione un tipo de ordenamiento de datos.";
                             return;
@@ -127,11 +127,11 @@ namespace ArchivosTarea2
                         {
                             var cuadroTipo = selTip.ShowDialog();
 
-                            if (selTip.DialogResult == DialogResult.OK)
+                            if (cuadroTipo == DialogResult.OK)
                             {
                                 tipo = selTip.regresa_tipo();
                             }
-                            else if (selTip.DialogResult == DialogResult.Cancel)
+                            else if (cuadroTipo == DialogResult.Cancel)
                             {
                                 toolStripStatusLabel1.Text = "Error, seleccione un tipo de ordenamiento de datos.";
                                 return;
@@ -2226,7 +2226,6 @@ namespace ArchivosTarea2
                                         else if (at.esLlavePrimaria == false && verifica_llave_primaria(entidadEncontrada) == true &&
                                             esLlave == true)
                                         {
-                                            //toolStripStatusLabel1.Text = "Error, no se puede tener mas de una llave primaria.";
                                             at.esLlavePrimaria = false;
                                         }
                                         // Si no sera la llave primaria

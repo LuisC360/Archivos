@@ -15,7 +15,7 @@ namespace ArchivosTarea2
         public Entidad ent { get; set; }
         readonly int numAtributos;
         readonly int numIndices;
-        Atributo atrLlave;
+        readonly Atributo atrLlave;
         readonly List<Atributo> atributosVigentes = new List<Atributo>();
         public long posMemoria { get; set; }
         long tamDato;
@@ -23,7 +23,7 @@ namespace ArchivosTarea2
         long tamIndice = 40;
         public bool bandChanged { get; set; }
         readonly List<Indice> indicesVigentes = new List<Indice>();
-        int indiceLlave;
+        readonly int indiceLlave;
 
         public CuadroDeDatosIndexado(Entidad e, long pMem, long tamDat, long rang)
         {
@@ -349,8 +349,6 @@ namespace ArchivosTarea2
                 case 'D': tipoAtr = typeof(double);
                     break;
                 case 'L': tipoAtr = typeof(long);
-                    break;
-                default: // No hay ningun otro tipo de dato, por lo que el default estara vacio.
                     break;
             }
 
@@ -798,9 +796,6 @@ namespace ArchivosTarea2
                 case 'S':
                     ordenada = e.listaIndices.OrderBy(o => Convert.ToString(o.regresa_valInicial())).ToList();
                     break;
-                default:
-                    // DEFAULT VACIO
-                    break;
             }
 
             for(int i = 0; i < ordenada.Count; i++)
@@ -1081,12 +1076,39 @@ namespace ArchivosTarea2
                     {
                         if(vF > valorBuscar && valorBuscar > vI)
                         {
+                            // Si encontramos el indice, ahora hay que encontrar el indice que corresponda a ese dato.
+                            dynamic datoBuscar = 0;
 
+                            foreach(Dato dat in ind.datosIndice)
+                            {
+                                switch(atrLlave.tipo)
+                                {
+                                    case 'I': datoBuscar = Convert.ToInt32(dat.datos[indiceLlave]);
+                                        break;
+                                    case 'F': datoBuscar = Convert.ToSingle(dat.datos[indiceLlave]);
+                                        break;
+                                    case 'L': datoBuscar = Convert.ToInt64(dat.datos[indiceLlave]);
+                                        break;
+                                    case 'D': datoBuscar = Convert.ToDouble(dat.datos[indiceLlave]);
+                                        break;
+                                    case 'C': datoBuscar = Convert.ToChar(dat.datos[indiceLlave]);
+                                        break;
+                                    case 'S': datoBuscar = Convert.ToString(dat.datos[indiceLlave]);
+                                        break;
+                                }
+
+                                // Si encontramos el dato
+                                if(datoBuscar == valorBuscar)
+                                {
+
+                                }
+                            }
+                            break;
                         }
                     }
                     else
                     {
-
+                        // WIP
                     }
                 }
             }

@@ -78,6 +78,12 @@
     <Compile Include="ModificaDato.Designer.cs">
       <DependentUpon>ModificaDato.cs</DependentUpon>
     </Compile>
+    <Compile Include="ModificaDatoIndexado.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ModificaDatoIndexado.Designer.cs">
+      <DependentUpon>ModificaDatoIndexado.cs</DependentUpon>
+    </Compile>
     <Compile Include="ModificadorAtributo.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -112,6 +118,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ModificaDato.resx">
       <DependentUpon>ModificaDato.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ModificaDatoIndexado.resx">
+      <DependentUpon>ModificaDatoIndexado.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ModificadorAtributo.resx">
       <DependentUpon>ModificadorAtributo.cs</DependentUpon>

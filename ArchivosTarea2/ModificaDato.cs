@@ -350,6 +350,9 @@ namespace ArchivosTarea2
                         break;
                     case 'S': dato = Convert.ToString(dato);
                         break;
+                    default:
+                        // DEFAULT VACIO
+                        break;
                 }
 
                 fila[count] = dato.ToString();
