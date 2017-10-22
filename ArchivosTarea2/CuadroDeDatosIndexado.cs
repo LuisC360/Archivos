@@ -989,8 +989,6 @@ namespace ArchivosTarea2
                     valIni = 'a';
 
                     break;
-                default: // No hay mas tipos de datos que pueden ser llave primaria, asi que esto se dejara vacio.
-                    break;
             }
 
             toolStripStatusLabel1.Text = "Indice creado y dato insertado con exito.";

@@ -37,5 +37,12 @@ namespace ArchivosTarea2
         {
             return tipo;
         }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            tipo = 2;
+            this.DialogResult = DialogResult.OK;
+            this.Close();
+        }
     }
 }

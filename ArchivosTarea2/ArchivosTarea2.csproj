@@ -57,6 +57,12 @@
     <Compile Include="CuadroDeDatos.Designer.cs">
       <DependentUpon>CuadroDeDatos.cs</DependentUpon>
     </Compile>
+    <Compile Include="CuadroDeDatosHash.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CuadroDeDatosHash.Designer.cs">
+      <DependentUpon>CuadroDeDatosHash.cs</DependentUpon>
+    </Compile>
     <Compile Include="CuadroDeDatosIndexado.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -109,6 +115,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CuadroDeDatos.resx">
       <DependentUpon>CuadroDeDatos.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CuadroDeDatosHash.resx">
+      <DependentUpon>CuadroDeDatosHash.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CuadroDeDatosIndexado.resx">
       <DependentUpon>CuadroDeDatosIndexado.cs</DependentUpon>

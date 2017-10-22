@@ -117,6 +117,14 @@ namespace ArchivosTarea2
 
                                 toolStripStatusLabel1.Text = "Archivo creado con exito.";
                                 break;
+                        case 2:
+                                textBox2.ReadOnly = false;
+                                textBox3.ReadOnly = false;
+                                comboBox1.Enabled = true;
+                                comboBox2.Enabled = true;
+
+                                toolStripStatusLabel1.Text = "Archivo creado con exito.";
+                                break;
                     }
                 }
                 else // Si el archivo ya existe, se abre
@@ -155,6 +163,12 @@ namespace ArchivosTarea2
                                     comboBox1.Enabled = true;
                                     comboBox2.Enabled = true;
                                     button10.Enabled = true;
+                                    break;
+                            case 2: 
+                                    textBox2.ReadOnly = false;
+                                    textBox3.ReadOnly = false;
+                                    comboBox1.Enabled = true;
+                                    comboBox2.Enabled = true;
                                     break;
                         }
                         
@@ -1494,6 +1508,12 @@ namespace ArchivosTarea2
             stream.Close();
         }
 
+        public void crea_archivo_hash(String nombreArchivo)
+        {
+            FileStream stream = new FileStream(nombreArchivo, FileMode.Create, FileAccess.Write);
+            BinaryWriter writer = new BinaryWriter(stream);
+        }
+
         /// <summary>
         /// Esta funcion es parecida a la de crea_archivo, pero difiere en el hecho de que no crea el archivo, solo lo actualiza
         /// </summary>
@@ -1759,6 +1779,15 @@ namespace ArchivosTarea2
             stream.Close();
         }
 
+        public void escribe_archivo_hash(String archivo)
+        {
+            FileStream stream = new FileStream(archivo, FileMode.Create, FileAccess.Write);
+            BinaryWriter writer = new BinaryWriter(stream);
+            long cabecera = 24;
+
+
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -1949,8 +1978,6 @@ namespace ArchivosTarea2
 
                                                         manejo_dataGrid_indexado(textBox1.Text);
                                                         break;
-                                                default: // DEFAULT VACIO
-                                                        break;
                                             }                                            
 
                                             manejo_dataGrid_atributos(entidadEncontrada);  
@@ -1976,8 +2003,6 @@ namespace ArchivosTarea2
                                                 case 1: escribe_archivo_indexado(textBox1.Text);
 
                                                         manejo_dataGrid_indexado(textBox1.Text);
-                                                        break;
-                                                default: // DEFAULT VACIO
                                                         break;
                                             }  
 
@@ -2014,8 +2039,6 @@ namespace ArchivosTarea2
 
                                                     manejo_dataGrid_indexado(textBox1.Text);
                                                     break;
-                                            default: // DEFAULT VACIO
-                                                    break;
                                         }  
 
                                         manejo_dataGrid_atributos(entidadEncontrada);  
@@ -2041,8 +2064,6 @@ namespace ArchivosTarea2
                                             case 1: escribe_archivo_indexado(textBox1.Text);
 
                                                     manejo_dataGrid_indexado(textBox1.Text);
-                                                    break;
-                                            default: // DEFAULT VACIO
                                                     break;
                                         }  
 

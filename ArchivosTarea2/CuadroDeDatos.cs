@@ -298,8 +298,6 @@ namespace ArchivosTarea2
                               }
                           }
                           break;
-                default:  // No hay ningun otro tipo de dato, por lo que este default ira vacio.
-                          break;
             }
             
             foreach(Object obj in datos)
@@ -399,8 +397,6 @@ namespace ArchivosTarea2
                                     break;
                                 case 'L': datoG = Convert.ToInt64(dat.datos[indiceLlave]);
                                     datoH = Convert.ToInt64(nuevoDato.datos[indiceLlave]);
-                                    break;
-                                default: // Default vacio.
                                     break;
                             }
 
@@ -1219,8 +1215,8 @@ namespace ArchivosTarea2
 
                             datoL = Convert.ToString(nuevoDato.datos[indiceLlave]);
 
-                            datoK.ToLower();
-                            datoL.ToLower();
+                            datoK = datoK.ToLower();
+                            datoL = datoL.ToLower();
 
                             if (String.Compare(datoK, datoL) == 0)
                             {
@@ -1251,8 +1247,8 @@ namespace ArchivosTarea2
                                     String str1 = dataGridView1.Rows[dg].Cells[indiceLlave].Value.ToString();
                                     char[] crtemp = (char[])dat.datos[indiceLlave];
                                     String str2 = new string(crtemp);
-                                    str1.ToLower();
-                                    str2.ToLower();
+                                    str1 = str1.ToLower();
+                                    str2 = str2.ToLower();
                                     str1 = str1.Replace("\0", "");
                                     str2 = str2.Replace("\0", "");
 
@@ -1577,13 +1573,9 @@ namespace ArchivosTarea2
                 }
             }
 
-            if (attr.tipo == 'I' || attr.tipo == 'F' || attr.tipo == 'D' || attr.tipo == 'L')
+            if (attr.tipo == 'I' || attr.tipo == 'F' || attr.tipo == 'D' || attr.tipo == 'L' || attr.tipo == 'C')
             {
                 lowestVal = listaValores.Min();               
-            }
-            else if (attr.tipo == 'C')
-            {
-                lowestVal = listaValores.Min();
             }
             else if (attr.tipo == 'S')
             {

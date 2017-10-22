@@ -12,13 +12,13 @@ namespace ArchivosTarea2
 {
     public partial class ModificaDatoIndexado : Form
     {
-        Entidad ent;
+        readonly Entidad ent;
         public Indice ind { get; set; }
         public Dato dat { get; set; }
         public bool llavePrimariaCambiada { get; set; }
-        List<Atributo> listaAtributosVigentes = new List<Atributo>();
+        readonly List<Atributo> listaAtributosVigentes = new List<Atributo>();
         int atributosVigentes;
-        int indexLlavePrimaria;
+        readonly int indexLlavePrimaria;
         readonly Dato datoRespaldo;
 
         public ModificaDatoIndexado(Indice i, Dato d, Entidad e, int indK)
@@ -114,6 +114,15 @@ namespace ArchivosTarea2
             fila[count] = dat.apSigDato.ToString();
 
             dataGridView1.Rows.Add(fila);
+        }
+
+        public bool era_unico_dato()
+        {
+            bool unicoDato = false;
+
+
+
+            return unicoDato;
         }
 
         private void button1_Click(object sender, EventArgs e)
