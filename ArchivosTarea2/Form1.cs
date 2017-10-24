@@ -120,6 +120,8 @@ namespace ArchivosTarea2
                                 comboBox2.Enabled = true;
                                 button10.Enabled = true;
 
+                                posicionMemoria += 8;
+
                                 toolStripStatusLabel1.Text = "Archivo creado con exito.";
                                 break;
                         case 2: crea_archivo_hash(textBox1.Text);
@@ -131,6 +133,8 @@ namespace ArchivosTarea2
                                 comboBox1.Enabled = true;
                                 comboBox2.Enabled = true;
                                 button11.Enabled = true;
+
+                                posicionMemoria += 16;
 
                                 toolStripStatusLabel1.Text = "Archivo creado con exito.";
                                 break;
@@ -233,7 +237,19 @@ namespace ArchivosTarea2
                         {
                             // Se crea una lista actualizada
                             List<Entidad> listaActualizada = new List<Entidad>();
-                            long cabecera = 8;
+                            long cabecera = 0;
+
+                            switch(tipo)
+                            {
+                                case 0: cabecera = 8;
+                                    break;
+                                case 1: cabecera = 16;
+                                    break;
+                                case 2: cabecera = 24;
+                                    break;
+                                default: // Default vacio
+                                    break;
+                            }
 
                             // Se meten a esta lista actualizada todas las Entidades salvo las ultimas dos
                             for (int i = 0; i < entidades.Count - 1; i++)
@@ -267,7 +283,17 @@ namespace ArchivosTarea2
                             }
                             else
                             {
-                                entidad.posEntidad += 8;
+                                switch(tipo)
+                                {
+                                    case 0: entidad.posEntidad += 8;
+                                        break;
+                                    case 1: entidad.posEntidad += 16;
+                                        break;
+                                    case 2: entidad.posEntidad += 24;
+                                        break;
+                                    default: // Default vacio
+                                        break;
+                                }
                             }
 
                             if (entidades.Count == 0 && data.Count == 1)
@@ -301,7 +327,6 @@ namespace ArchivosTarea2
                                         break;
                             }
                             
-
                             toolStripStatusLabel1.Text = "Archivo abierto con exito.";
                         }
                         else
@@ -1116,12 +1141,13 @@ namespace ArchivosTarea2
                     }
 
                     long apAtr = reader.ReadInt64();
-                    long apInd = reader.ReadInt64();
+                    long apCaj = reader.ReadInt64();
                     long posIn = reader.ReadInt64();
                     long apSigE = reader.ReadInt64();
+                    long diferencia = 0;
                     archivoPos = reader.BaseStream.Position;
 
-                    Entidad nEntidad = new Entidad(nombre, apAtr, apInd, posIn, apSigE, 0);
+                    Entidad nEntidad = new Entidad(nombre, apAtr, apCaj, posIn, apSigE, diferencia);
 
                     posicionMemoria = posicionMemoria + tamEntidad;
 
@@ -2217,6 +2243,10 @@ namespace ArchivosTarea2
             stream.Close();
         }
 
+        /// <summary>
+        /// Esta funcion es parecida a la de crea_archivo_hash, pero difiere en el hecho de que no crea el archivo, solo lo actualiza.
+        /// </summary>
+        /// <param name="archivo">El nombre del archivo que sera actualizado.</param>
         public void escribe_archivo_hash(String archivo)
         {
             FileStream stream = new FileStream(archivo, FileMode.Create, FileAccess.Write);
