@@ -40,6 +40,10 @@ namespace ArchivosTarea2
         Atributo atributoEliminado;
         // El rango para los archivos secuuenciales indexados
         long rango;
+        // El numero de cajones y de registros por cajon para los archivos de hash estatica
+        long numCajones;
+        long regPorCajon;
+        List<Cajon> listaCajones = new List<Cajon>();
         // El tipo de ordenamiento del archivo (0- Secuencial ordenado, 1- Secuencial indezado, 3- Hash estatica)
         int tipo;
 
@@ -52,6 +56,7 @@ namespace ArchivosTarea2
             comboBox2.Enabled = false;
             button9.Enabled = false;
             button10.Enabled = false;
+            button11.Enabled = false;
             comboBox1.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox2.DropDownStyle = ComboBoxStyle.DropDownList;
             rellena_lista_tipo();
@@ -117,11 +122,15 @@ namespace ArchivosTarea2
 
                                 toolStripStatusLabel1.Text = "Archivo creado con exito.";
                                 break;
-                        case 2:
+                        case 2: crea_archivo_hash(textBox1.Text);
+
+                                manejo_dataGrid_hash(textBox1.Text);
+
                                 textBox2.ReadOnly = false;
                                 textBox3.ReadOnly = false;
                                 comboBox1.Enabled = true;
                                 comboBox2.Enabled = true;
+                                button11.Enabled = true;
 
                                 toolStripStatusLabel1.Text = "Archivo creado con exito.";
                                 break;
@@ -164,11 +173,13 @@ namespace ArchivosTarea2
                                     comboBox2.Enabled = true;
                                     button10.Enabled = true;
                                     break;
-                            case 2: 
+                            case 2: manejo_dataGrid_hash(textBox1.Text);
+
                                     textBox2.ReadOnly = false;
                                     textBox3.ReadOnly = false;
                                     comboBox1.Enabled = true;
                                     comboBox2.Enabled = true;
+                                    button11.Enabled = true;
                                     break;
                         }
                         
@@ -202,6 +213,11 @@ namespace ArchivosTarea2
                         case 1: crea_archivo_indexado(textBox1.Text);
 
                                 manejo_dataGrid_indexado(textBox1.Text);
+
+                                break;
+                        case 2: crea_archivo_hash(textBox1.Text);
+
+                                manejo_dataGrid_hash(textBox1.Text);
 
                                 break;
                     }
@@ -276,6 +292,12 @@ namespace ArchivosTarea2
                                         entidadesLeidas = new List<Entidad>();
 
                                         manejo_dataGrid_indexado(textBox1.Text);
+                                        break;
+                                case 2: escribe_archivo_hash(textBox1.Text);
+
+                                        entidadesLeidas = new List<Entidad>();
+
+                                        manejo_dataGrid_hash(textBox1.Text);
                                         break;
                             }
                             
@@ -440,10 +462,21 @@ namespace ArchivosTarea2
 
                                 entidadesLeidas.Clear();
 
-                                escribe_archivo(textBox1.Text);
+                                switch(tipo)
+                                {
+                                    case 0: escribe_archivo(textBox1.Text);
 
-                                manejo_dataGrid(textBox1.Text);
+                                            manejo_dataGrid(textBox1.Text);
+                                            break;
+                                    case 1: escribe_archivo_indexado(textBox1.Text);
 
+                                            manejo_dataGrid_indexado(textBox1.Text);
+                                            break;
+                                    case 2: escribe_archivo_hash(textBox1.Text);
+
+                                            manejo_dataGrid_hash(textBox1.Text);
+                                            break;
+                                }
                                 break;
                             }
                             else // Si es la primera
@@ -465,10 +498,21 @@ namespace ArchivosTarea2
                                     }
                                 }
 
-                                escribe_archivo(textBox1.Text);
+                                switch (tipo)
+                                {
+                                    case 0: escribe_archivo(textBox1.Text);
 
-                                manejo_dataGrid(textBox1.Text);
+                                            manejo_dataGrid(textBox1.Text);
+                                            break;
+                                    case 1: escribe_archivo_indexado(textBox1.Text);
 
+                                            manejo_dataGrid_indexado(textBox1.Text);
+                                            break;
+                                    case 2: escribe_archivo_hash(textBox1.Text);
+
+                                            manejo_dataGrid_hash(textBox1.Text);
+                                            break;
+                                }
                                 break;
                             }
                         }
@@ -494,10 +538,21 @@ namespace ArchivosTarea2
                                 }
                             }
 
-                            escribe_archivo(textBox1.Text);
+                            switch (tipo)
+                            {
+                                case 0: escribe_archivo(textBox1.Text);
 
-                            manejo_dataGrid(textBox1.Text);
+                                        manejo_dataGrid(textBox1.Text);
+                                        break;
+                                case 1: escribe_archivo_indexado(textBox1.Text);
 
+                                        manejo_dataGrid_indexado(textBox1.Text);
+                                        break;
+                                case 2: escribe_archivo_hash(textBox1.Text);
+
+                                        manejo_dataGrid_hash(textBox1.Text);
+                                        break;
+                            }
                             break;
                         }                        
                     }
@@ -841,7 +896,7 @@ namespace ArchivosTarea2
         /// En esta funcion se haran 3 cosas importantes:
         /// 1- Refrescar e inicializar ambos dataGridView.
         /// 2- Leer el archivo binario indexado especificado en el parametro "archivo".
-        /// 3. Poblar el dataGridView con los daros del archivo en el orden correspondiente.
+        /// 3. Poblar el dataGridView con los datos del archivo en el orden correspondiente.
         /// </summary>
         /// <param name="archivo">Nombre del archivo a abrirse.</param>
         public void manejo_dataGrid_indexado(String archivo)
@@ -997,7 +1052,176 @@ namespace ArchivosTarea2
         }
 
         /// <summary>
-        /// 
+        /// En esta funcion se haran 3 cosas importantes:
+        /// 1- Refrescar e inicializar ambos dataGridView.
+        /// 2- Leer el archivo binario con hash estatica especificado en el parametro "archivo".
+        /// 3. Poblar el dataGridView con los datos del archivo en el orden correspondiente.
+        /// </summary>
+        /// <param name="archivo">Nombre del archivo a abrirse.</param>
+        public void manejo_dataGrid_hash(String archivo)
+        {
+            posicionMemoria = 24;
+            tamDato = 8;
+
+            data.Clear();
+            entidades.Clear();
+            entidadesLeidas.Clear();
+
+            // Refrescar el dataGridView
+            dataGridView1.Rows.Clear();
+            dataGridView1.Refresh();
+
+            // Se inicializa el dataGridView correspondiente
+            dataGridView1.ColumnCount = 5;
+            dataGridView1.ColumnHeadersVisible = true;
+
+            dataGridView1.Columns[0].Name = "Nombre";
+            dataGridView1.Columns[1].Name = "Ap. Atributos";
+            dataGridView1.Columns[2].Name = "Ap. Cajones";
+            dataGridView1.Columns[3].Name = "Pos. Inicial";
+            dataGridView1.Columns[4].Name = "Ap. Sig. Entidad";
+
+            // Se lee el archivo binario
+            FileStream streamR = new FileStream(archivo, FileMode.Open, FileAccess.Read);
+            BinaryReader reader = new BinaryReader(streamR);
+
+            Boolean bandCabecera = false;
+            Boolean bandNumCajones = false;
+            Boolean bandRegCubetas = false;
+            long archivoPos;
+
+            while (reader.BaseStream.Position != reader.BaseStream.Length)
+            {
+                if (bandCabecera == false)
+                {
+                    long header = reader.ReadInt64();
+                    data.Add(header);
+                    bandCabecera = true;
+                }
+
+                if (bandNumCajones == false)
+                {
+                    numCajones = reader.ReadInt64();
+                    bandNumCajones = true;
+                }
+
+                if (bandRegCubetas == false)
+                {
+                    regPorCajon = reader.ReadInt64();
+                    bandRegCubetas = true;
+                }
+
+                if (reader.BaseStream.Position != reader.BaseStream.Length)
+                {
+                    for (int i = 0; i < nombre.Length; i++)
+                    {
+                        char car = reader.ReadChar();
+                        nombre[i] = car;
+                    }
+
+                    long apAtr = reader.ReadInt64();
+                    long apInd = reader.ReadInt64();
+                    long posIn = reader.ReadInt64();
+                    long apSigE = reader.ReadInt64();
+                    archivoPos = reader.BaseStream.Position;
+
+                    Entidad nEntidad = new Entidad(nombre, apAtr, apInd, posIn, apSigE, 0);
+
+                    posicionMemoria = posicionMemoria + tamEntidad;
+
+                    // Verificar si la entidad tiene atributos
+                    if (nEntidad.apAtributos != -1)
+                    {
+                        lee_atributos_de_entidad(streamR, reader, nEntidad);
+
+                        if (nEntidad.apCajones != -1)
+                        {
+                            for(int i = 0; i < numCajones; i++)
+                            {
+                                lee_cajones_de_entidad(streamR, reader, nEntidad);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        dataGridView2.Rows.Clear();
+
+                        dataGridView2.ColumnCount = 6;
+                        dataGridView2.ColumnHeadersVisible = true;
+
+                        dataGridView2.Columns[0].Name = "Nombre";
+                        dataGridView2.Columns[1].Name = "Tipo";
+                        dataGridView2.Columns[2].Name = "Longitud";
+                        dataGridView2.Columns[3].Name = "Pos. del Atributo";
+                        dataGridView2.Columns[4].Name = "Ap. Sig. Atributo";
+                        dataGridView2.Columns[5].Name = "Es llave primaria";
+                    }
+
+                    // Verificar si la entidad no fue eliminada
+                    entidadesLeidas.Add(nEntidad);
+                    data.Add(nEntidad);
+                    entidades.Add(nEntidad);
+
+                    nombre = new char[30];
+                    nombre[29] = '\n';
+                }
+            }
+
+            // Se popula el primer dataGridView con los datos de las entidades
+            List<String[]> filas = new List<string[]>();
+            String[] fila = new string[] { };
+            String nombreEntidad = "";
+            long apAt = 0;
+            long apIndi = 0;
+            long posInic = 0;
+            long apSigAt = 0;
+
+            foreach (Entidad ent in entidadesLeidas)
+            {
+                if (ent.apSigEntidad > -2)
+                {
+                    nombreEntidad = new string(ent.nombre);
+                    apAt += ent.apAtributos;
+                    apIndi += ent.apIndices;
+                    posInic += ent.posEntidad;
+                    apSigAt += ent.apSigEntidad;
+
+                    if (ent.apAtributos < -1)
+                    {
+                        apAt = -1;
+                    }
+
+                    if (ent.apDatos < -1)
+                    {
+                        apIndi = -1;
+                    }
+
+                    fila = new string[] { nombreEntidad, apAt.ToString(), apIndi.ToString(), posInic.ToString(), apSigAt.ToString() };
+
+                    nombreEntidad = "";
+                    apAt = 0;
+                    apIndi = 0;
+                    posInic = 0;
+                    apSigAt = 0;
+
+                    filas.Add(fila);
+                    fila = new string[] { };
+                }
+            }
+
+            foreach (string[] arr in filas)
+            {
+                dataGridView1.Rows.Add(arr);
+            }
+
+            reader.Close();
+            streamR.Close();
+
+            seAbrio = true;
+        }
+
+        /// <summary>
+        /// Funcion recursiva que se encargara de leer los indices del achivo.
         /// </summary>
         /// <param name="f"></param>
         /// <param name="r"></param>
@@ -1170,6 +1394,186 @@ namespace ArchivosTarea2
             {
                 lee_datos_de_indice(f, r, ent, ind);
             }
+        }
+
+        /// <summary>
+        /// Funcion que se encargara de leer los apuntadores a cajones de una cubeta. En este caso no sera una funcion
+        /// recursiva debido a que el numero de veces que se leera un 
+        /// </summary>
+        /// <param name="f"></param>
+        /// <param name="r"></param>
+        /// <param name="ent"></param>
+        void lee_cajones_de_entidad(FileStream f, BinaryReader r, Entidad ent)
+        {
+            Cajon caj = new Cajon();
+
+            long apCub = r.ReadInt64();
+
+            caj.str_apuntadorCubeta(apCub);
+
+            if(apCub != -1)
+            {
+                lee_cubetas_de_cajon(f, r, caj, ent);
+            }
+
+            ent.listaCajones.Add(caj);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="f"></param>
+        /// <param name="r"></param>
+        /// <param name="c"></param>
+        void lee_cubetas_de_cajon(FileStream f, BinaryReader r, Cajon c, Entidad ent)
+        {
+            Cubeta cub = new Cubeta();
+
+            long apDat = r.ReadInt64();
+            cub.str_apDato(apDat);
+
+            if(apDat != -1)
+            {
+                lee_datos_de_cubeta(f, r, cub, ent);
+            }
+
+            long apSig = r.ReadInt64();
+            cub.str_apSigCubeta(apSig);
+
+            c.listaCubetas.Add(cub);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="f"></param>
+        /// <param name="r"></param>
+        /// <param name="c"></param>
+        /// <param name="ent"></param>
+        void lee_datos_de_cubeta(FileStream f, BinaryReader r, Cubeta c, Entidad ent)
+        {
+            Dato dataRead = new Dato(ent);
+
+            // Primero se recorre la lista de atributos
+            foreach (Atributo atr in ent.listaAtributos)
+            {
+                // Verificamos si el atributo no fue borrado
+                if (atr.apSigAtributo != -2 && atr.apSigAtributo != -4)
+                {
+                    // Si no fue borrado, entonces revisamos de que tipo es ese atributo para leer el dato
+                    if (atr.tipo == 'I')
+                    {
+                        try
+                        {
+                            int datoI = r.ReadInt32();
+                            dataRead.datos.Add(datoI);
+                        }
+                        catch
+                        {
+                            toolStripStatusLabel1.Text = "Error al leer los datos.";
+                            return;
+                        }
+                    }
+                    else if (atr.tipo == 'F')
+                    {
+                        try
+                        {
+                            float datoI = r.ReadSingle();
+                            dataRead.datos.Add(datoI);
+                        }
+                        catch
+                        {
+                            toolStripStatusLabel1.Text = "Error al leer los datos.";
+                            return;
+                        }
+                    }
+                    else if (atr.tipo == 'D')
+                    {
+                        try
+                        {
+                            double datoI = r.ReadDouble();
+                            dataRead.datos.Add(datoI);
+                        }
+                        catch
+                        {
+                            toolStripStatusLabel1.Text = "Error al leer los datos.";
+                            return;
+                        }
+                    }
+                    else if (atr.tipo == 'L')
+                    {
+                        try
+                        {
+                            long datoI = r.ReadInt64();
+                            dataRead.datos.Add(datoI);
+                        }
+                        catch
+                        {
+                            toolStripStatusLabel1.Text = "Error al leer los datos.";
+                            return;
+                        }
+                    }
+                    else if (atr.tipo == 'C')
+                    {
+                        try
+                        {
+                            char datoI = r.ReadChar();
+                            dataRead.datos.Add(datoI);
+                        }
+                        catch
+                        {
+                            toolStripStatusLabel1.Text = "Error al leer los datos.";
+                            return;
+                        }
+                    }
+                    else if (atr.tipo == 'S')
+                    {
+                        try
+                        {
+                            char[] chara = new char[atr.bytes / 2];
+
+                            for (int i = 0; i < chara.Length; i++)
+                            {
+                                chara[i] = r.ReadChar();
+                            }
+
+                            dataRead.datos.Add(chara);
+                        }
+                        catch
+                        {
+                            toolStripStatusLabel1.Text = "Error al leer los datos.";
+                            return;
+                        }
+                    }
+                }
+                else
+                {
+                    switch (atr.tipo)
+                    {
+                        case 'I': r.ReadInt32();
+                            break;
+                        case 'F': r.ReadSingle();
+                            break;
+                        case 'C': r.ReadChar();
+                            break;
+                        case 'D': r.ReadDouble();
+                            break;
+                        case 'L': r.ReadInt64();
+                            break;
+                        case 'S': char[] chara = new char[atr.bytes / 2];
+
+                            for (int i = 0; i < chara.Length; i++)
+                            {
+                                chara[i] = r.ReadChar();
+                            }
+                            break;
+                    }
+                }
+            }
+
+            posicionMemoria += tamDato;
+
+            c.str_datoCubeta(dataRead);
         }
 
         /// <summary>
@@ -1508,10 +1912,56 @@ namespace ArchivosTarea2
             stream.Close();
         }
 
+        /// <summary>
+        /// Este metodo nos creara un nuevo archivo binario para el metodo de ordenacion por hash estatica, por lo que antes de escribir
+        /// las entidades, se escribiran primero el numero de cajones y de registros por cubeta.
+        /// </summary>
+        /// <param name="nombreArchivo">El nombre del archivo a crearse.</param>
         public void crea_archivo_hash(String nombreArchivo)
         {
             FileStream stream = new FileStream(nombreArchivo, FileMode.Create, FileAccess.Write);
             BinaryWriter writer = new BinaryWriter(stream);
+            long cabecera = -1;
+            long cajones = 0;
+            long registros = 0;
+
+            data.Add(cabecera);
+            data.Add(cajones);
+            data.Add(registros);
+
+            for(int i = 0; i < data.Count; i++)
+            {
+                if(i == 0)
+                {
+                    writer.Write(cabecera);
+                }
+                else if(i == 1)
+                {
+                    writer.Write(cajones);
+                }
+                else if(i == 2)
+                {
+                    writer.Write(registros);
+                }
+                else 
+                {
+                    for (int j = 0; j < entidades.Count; j++)
+                    {
+                        for (int k = 0; k < entidades[j].nombre.Length; k++)
+                        {
+                            writer.Write(entidades[j].nombre[k]);
+                        }
+
+                        writer.Write(entidades[j].apAtributos);
+                        writer.Write(entidades[j].apDatos);
+                        writer.Write(entidades[j].posEntidad);
+                        writer.Write(entidades[j].apSigEntidad);
+                    }
+                }
+            }
+
+            writer.Close();
+            stream.Close();
         }
 
         /// <summary>
@@ -1785,7 +2235,62 @@ namespace ArchivosTarea2
             BinaryWriter writer = new BinaryWriter(stream);
             long cabecera = 24;
 
+            for (int i = 0; i < data.Count; i++)
+            {
+                if (i == 0)
+                {
+                    writer.Write(cabecera);
+                    break;
+                }
+            }
 
+            writer.Write(numCajones);
+            writer.Write(regPorCajon);
+
+            for (int j = 0; j < entidades.Count; j++)
+            {
+                for (int k = 0; k < entidades[j].nombre.Length; k++)
+                {
+                    writer.Write(entidades[j].nombre[k]);
+                }
+
+                writer.Write(entidades[j].apAtributos);
+                writer.Write(entidades[j].apCajones);
+                writer.Write(entidades[j].posEntidad);
+                writer.Write(entidades[j].apSigEntidad);
+
+                if (entidades[j].apAtributos != -1)
+                {
+                    for (int l = 0; l < entidades[j].listaAtributos.Count; l++)
+                    {
+                        for (int m = 0; m < entidades[j].listaAtributos[l].nombre.Length; m++)
+                        {
+                            writer.Write(entidades[j].listaAtributos[l].nombre[m]);
+                        }
+
+                        writer.Write(entidades[j].listaAtributos[l].tipo);
+                        writer.Write(entidades[j].listaAtributos[l].bytes);
+                        writer.Write(entidades[j].listaAtributos[l].posAtributo);
+                        writer.Write(entidades[j].listaAtributos[l].esLlavePrimaria);
+                        writer.Write(entidades[j].listaAtributos[l].apSigAtributo);
+                    }
+                }
+
+                if(entidades[j].apCajones != -1)
+                {
+                    for(int k = 0; k < entidades[j].listaCajones.Count; k++)
+                    {
+                        long apCubeta = entidades[j].listaCajones[k].regresa_apuntadorCubeta();
+
+                        writer.Write(apCubeta);
+
+                        //
+                    }
+                }
+            }
+
+            writer.Close();
+            stream.Close();
         }
 
         /// <summary>
@@ -2669,6 +3174,45 @@ namespace ArchivosTarea2
 
                                 // Manejo dataGrid
                                 manejo_dataGrid_indexado(textBox1.Text);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    toolStripStatusLabel1.Text = "Error, esta entidad no tiene atributos o llave primaria.";
+                }
+            }
+        }
+
+        // Boton que abre una ventana donde se insertaran los datos via hash estatica.
+        private void button11_Click(object sender, EventArgs e)
+        {
+            if (textBox2.Text.Length > 0 && validacion(textBox2.Text) == true)
+            {
+                Entidad ent = busca_entidad(textBox2.Text);
+
+                if (ent.apAtributos > -1 && hay_llave_primaria(ent) == true)
+                {
+                    using (CuadroDeDatosHash datosHash = new CuadroDeDatosHash(ent, posicionMemoria, tamDato, numCajones, regPorCajon))
+                    {
+                        var cuadroHash = datosHash.ShowDialog();
+
+                        if(cuadroHash == DialogResult.OK)
+                        {
+                            ent.apCajones = datosHash.regresa_apuntador_cajones();
+                            posicionMemoria = datosHash.regresa_posMemoria();
+                            ent.listaCajones = datosHash.regresa_lista_cajones();
+                            numCajones = datosHash.regresa_numCajones();
+                            regPorCajon = datosHash.regresa_regPorCubeta();
+
+                            if(datosHash.regresa_seCambio() == true)
+                            {
+                                // Escribe archivo
+                                escribe_archivo_hash(textBox1.Text);
+
+                                // Manejo dataGrid
+                                manejo_dataGrid_hash(textBox1.Text);
                             }
                         }
                     }

@@ -51,6 +51,7 @@
     <Compile Include="BusquedaModifica.Designer.cs">
       <DependentUpon>BusquedaModifica.cs</DependentUpon>
     </Compile>
+    <Compile Include="Cajon.cs" />
     <Compile Include="CuadroDeDatos.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -69,6 +70,7 @@
     <Compile Include="CuadroDeDatosIndexado.Designer.cs">
       <DependentUpon>CuadroDeDatosIndexado.cs</DependentUpon>
     </Compile>
+    <Compile Include="Cubeta.cs" />
     <Compile Include="Dato.cs" />
     <Compile Include="Entidad.cs" />
     <Compile Include="Form1.cs">

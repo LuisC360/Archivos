@@ -58,6 +58,8 @@
             this.label8 = new System.Windows.Forms.Label();
             this.button10 = new System.Windows.Forms.Button();
             this.label9 = new System.Windows.Forms.Label();
+            this.button11 = new System.Windows.Forms.Button();
+            this.label10 = new System.Windows.Forms.Label();
             this.statusStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -95,7 +97,7 @@
             this.toolStripStatusLabel1});
             this.statusStrip1.Location = new System.Drawing.Point(0, 518);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(629, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(784, 22);
             this.statusStrip1.TabIndex = 3;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -207,7 +209,7 @@
             this.panel2.Controls.Add(this.textBox3);
             this.panel2.Location = new System.Drawing.Point(271, 53);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(346, 79);
+            this.panel2.Size = new System.Drawing.Size(501, 79);
             this.panel2.TabIndex = 12;
             // 
             // label7
@@ -222,7 +224,7 @@
             // comboBox2
             // 
             this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(251, 22);
+            this.comboBox2.Location = new System.Drawing.Point(253, 22);
             this.comboBox2.Name = "comboBox2";
             this.comboBox2.Size = new System.Drawing.Size(85, 21);
             this.comboBox2.TabIndex = 16;
@@ -246,7 +248,7 @@
             // 
             // button7
             // 
-            this.button7.Location = new System.Drawing.Point(169, 45);
+            this.button7.Location = new System.Drawing.Point(343, 21);
             this.button7.Name = "button7";
             this.button7.Size = new System.Drawing.Size(75, 23);
             this.button7.TabIndex = 13;
@@ -256,7 +258,7 @@
             // 
             // button6
             // 
-            this.button6.Location = new System.Drawing.Point(87, 45);
+            this.button6.Location = new System.Drawing.Point(421, 21);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(75, 23);
             this.button6.TabIndex = 12;
@@ -266,7 +268,7 @@
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(6, 45);
+            this.button5.Location = new System.Drawing.Point(6, 49);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(75, 23);
             this.button5.TabIndex = 11;
@@ -279,7 +281,7 @@
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Location = new System.Drawing.Point(12, 181);
             this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(605, 183);
+            this.dataGridView1.Size = new System.Drawing.Size(760, 183);
             this.dataGridView1.TabIndex = 13;
             // 
             // label4
@@ -305,7 +307,7 @@
             this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView2.Location = new System.Drawing.Point(13, 383);
             this.dataGridView2.Name = "dataGridView2";
-            this.dataGridView2.Size = new System.Drawing.Size(605, 132);
+            this.dataGridView2.Size = new System.Drawing.Size(759, 132);
             this.dataGridView2.TabIndex = 16;
             // 
             // button9
@@ -346,11 +348,32 @@
             this.label9.TabIndex = 20;
             this.label9.Text = "Secuencial indexado:";
             // 
+            // button11
+            // 
+            this.button11.Location = new System.Drawing.Point(505, 24);
+            this.button11.Name = "button11";
+            this.button11.Size = new System.Drawing.Size(112, 23);
+            this.button11.TabIndex = 21;
+            this.button11.Text = "Insertar datos";
+            this.button11.UseVisualStyleBackColor = true;
+            this.button11.Click += new System.EventHandler(this.button11_Click);
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(504, 9);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(75, 13);
+            this.label10.TabIndex = 22;
+            this.label10.Text = "Hash estatica:";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(629, 540);
+            this.ClientSize = new System.Drawing.Size(784, 540);
+            this.Controls.Add(this.label10);
+            this.Controls.Add(this.button11);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.button10);
             this.Controls.Add(this.label8);
@@ -412,6 +435,8 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Button button10;
         private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Button button11;
+        private System.Windows.Forms.Label label10;
     }
 }
 
