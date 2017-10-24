@@ -681,7 +681,7 @@ namespace ArchivosTarea2
         /// <param name="nombreAtributo">El "nuevo" nombre del atributo</param>
         /// <param name="entidadSeleccionada">La entidad con la lista en la que se buscara el atributo</param>
         /// <returns>Un atributo que puede o estar vacio o existir dentro de la lista de atributos de la entidad seleccionada</returns>
-        Atributo regresa_atributo(String nombreAtributo, Entidad entidadSeleccionada)
+        static Atributo regresa_atributo(String nombreAtributo, Entidad entidadSeleccionada)
         {
             Atributo atr = new Atributo();
 
@@ -775,7 +775,6 @@ namespace ArchivosTarea2
             BinaryReader reader = new BinaryReader(streamR);
 
             Boolean bandCabecera = false;
-            long archivoPos;
 
             while (reader.BaseStream.Position != reader.BaseStream.Length)
             {
@@ -798,7 +797,6 @@ namespace ArchivosTarea2
                     long apDt = reader.ReadInt64();
                     long posIn = reader.ReadInt64();
                     long apSigE = reader.ReadInt64();
-                    archivoPos = reader.BaseStream.Position;
 
                     Entidad nEntidad = new Entidad(nombre, apAtr, apDt, posIn, apSigE);
 
@@ -841,7 +839,7 @@ namespace ArchivosTarea2
 
             // Se popula el primer dataGridView con los datos de las entidades
             List<String[]> filas = new List<string[]>();
-            String[] fila = new string[] { };
+            String[] fila;
             String nombreEntidad = "";
             long apAt = 0;
             long apDat = 0;
@@ -870,14 +868,12 @@ namespace ArchivosTarea2
 
                     fila = new string[] { nombreEntidad, apAt.ToString(), apDat.ToString(), posInic.ToString(), apSigAt.ToString() };
 
-                    nombreEntidad = "";
                     apAt = 0;
                     apDat = 0;
                     posInic = 0;
                     apSigAt = 0;
 
                     filas.Add(fila);
-                    fila = new string[] { };
                 }
             }
 
@@ -1626,15 +1622,7 @@ namespace ArchivosTarea2
 
                     fila = new string[] { nombreAtributo, tipo.ToString(), longitud.ToString(), posAt.ToString(), apSigAt.ToString(), isLlave.ToString() };
 
-                    nombreAtributo = "";
-                    tipo = '\0';
-                    longitud = 0;
-                    posAt = 0;
-                    apSigAt = 0;
-                    isLlave = false;
-
                     filas.Add(fila);
-                    fila = new string[] { };
                 }
             }
 
@@ -2483,6 +2471,10 @@ namespace ArchivosTarea2
 
                                                         manejo_dataGrid_indexado(textBox1.Text);
                                                         break;
+                                                case 2: escribe_archivo_hash(textBox1.Text);
+
+                                                        manejo_dataGrid_hash(textBox1.Text);
+                                                        break;
                                             }                                            
 
                                             manejo_dataGrid_atributos(entidadEncontrada);  
@@ -2508,6 +2500,10 @@ namespace ArchivosTarea2
                                                 case 1: escribe_archivo_indexado(textBox1.Text);
 
                                                         manejo_dataGrid_indexado(textBox1.Text);
+                                                        break;
+                                                case 2: escribe_archivo_hash(textBox1.Text);
+
+                                                        manejo_dataGrid_hash(textBox1.Text);
                                                         break;
                                             }  
 
@@ -2544,6 +2540,10 @@ namespace ArchivosTarea2
 
                                                     manejo_dataGrid_indexado(textBox1.Text);
                                                     break;
+                                            case 2: escribe_archivo_hash(textBox1.Text);
+
+                                                    manejo_dataGrid_hash(textBox1.Text);
+                                                    break;
                                         }  
 
                                         manejo_dataGrid_atributos(entidadEncontrada);  
@@ -2569,6 +2569,10 @@ namespace ArchivosTarea2
                                             case 1: escribe_archivo_indexado(textBox1.Text);
 
                                                     manejo_dataGrid_indexado(textBox1.Text);
+                                                    break;
+                                            case 2: escribe_archivo_hash(textBox1.Text);
+
+                                                    manejo_dataGrid_hash(textBox1.Text);
                                                     break;
                                         }  
 
