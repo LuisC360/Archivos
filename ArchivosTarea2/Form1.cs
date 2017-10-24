@@ -2302,7 +2302,16 @@ namespace ArchivosTarea2
 
                         writer.Write(apCubeta);
 
-                        //
+                        if(apCubeta != -1)
+                        {
+                            for(int l = 0; l < entidades[j].listaCajones[k].listaCubetas.Count; l++)
+                            {
+                                long apDato = entidades[j].listaCajones[k].listaCubetas[l].regresa_apDato();
+                                long apSigCub = entidades[j].listaCajones[k].listaCubetas[l].regresa_apSigCubeta();
+
+                                writer.Write(apDato);
+                            }
+                        }
                     }
                 }
             }

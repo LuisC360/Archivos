@@ -62,8 +62,12 @@ namespace ArchivosTarea2
 
             InitializeComponent();
 
-            manejo_dataGrid_cajones();
-            manejo_dataGrid_cubetas();
+            if (numCajones > 0)
+            {
+                manejo_dataGrid_cajones();
+                rellena_dataGrid_cajones();
+                inicia_dataGrid_datos();
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -74,17 +78,28 @@ namespace ArchivosTarea2
                 {
                     numCajones = Int64.Parse(textBox1.Text);
                     regPorCubeta = Int64.Parse(textBox2.Text);
+                    ent.apCajones = posMemoria;
                     long cantReg = regPorCubeta;
                     seCambio = true;
 
+                    for(int i = 0; i < numCajones; i++)
+                    {
+                        Cajon nuevoC = new Cajon();
+
+                        ent.listaCajones.Add(nuevoC);
+                    }
+
                     tamCajon = tamCajon * numCajones;
                     tamCubeta = tamCubeta + (tamCubeta * cantReg);
+                    posMemoria += tamCajon;
 
                     textBox1.Enabled = false;
                     textBox2.Enabled = false;
                     button1.Enabled = false;
 
                     manejo_dataGrid_cajones();
+                    rellena_dataGrid_cajones();
+                    inicia_dataGrid_datos();
                 }
                 catch
                 {
@@ -108,19 +123,87 @@ namespace ArchivosTarea2
             }
         }
 
+        private void rellena_dataGrid_cajones()
+        {
+            dataGridView1.ColumnCount = (int)numCajones;
+            dataGridView1.ColumnHeadersVisible = true;
+
+            string[] fila = new string[(int)numCajones];
+            List<String[]> filas = new List<string[]>();
+            int j = 0;
+
+            for(int i = 0; i < ent.listaCajones.Count; i++)
+            {
+                long apCub = ent.listaCajones[i].regresa_apuntadorCubeta();
+                fila[i] = apCub.ToString();
+            }
+
+            filas.Add(fila);
+
+            foreach (string[] f in filas)
+            {
+                dataGridView1.Rows.Add(f);
+            }
+        }
+
         private void manejo_dataGrid_cubetas()
         {
             dataGridView2.ColumnCount = (int)regPorCubeta + 1;
             dataGridView2.ColumnHeadersVisible = true;
-            dataGridView2.RowCount = (int)numCajones;
 
-            for(int i = 1; i < regPorCubeta + 1; i++)
+            if (numCajones > 0)
             {
-                dataGridView2.Columns[i].Name = (i + 1).ToString();
-            }
+                dataGridView2.RowCount = (int)numCajones;
+
+                for (int i = 1; i < regPorCubeta + 1; i++)
+                {
+                    dataGridView2.Columns[i].Name = (i + 1).ToString();
+                }
+            }           
         }
 
-        // Boton que cierra la ventana actual
+        private void inicia_dataGrid_datos()
+        {
+            dataGridView3.ColumnCount = numAtributos + 2;
+            dataGridView3.ColumnHeadersVisible = true;
+            int j = 0;
+
+            for (int i = 0; i < ent.listaAtributos.Count; i++)
+            {
+                if (ent.listaAtributos[i].apSigAtributo != -2 && ent.listaAtributos[i].apSigAtributo != -4)
+                {
+                    char[] nombre = new char[30];
+
+                    for (int k = 0; k < ent.listaAtributos[i].nombre.Length; k++)
+                    {
+                        nombre[k] = ent.listaAtributos[i].nombre[k];
+                    }
+
+                    string nombreAtributo = new string(nombre);
+
+                    dataGridView3.Columns[j].Name = nombreAtributo;
+                    j++;
+                }
+            }
+
+            dataGridView3.Columns[j].Name = "Pos. Dato.";
+            j++;
+            dataGridView3.Columns[j].Name = "Ap. Sig. Dato";
+        }
+
+        // Boton para insertar datos a un registro dentro de una cubeta. El criterio que decidira en que numero de cubeta se insertara sera
+        // mediante el uso de la funcion hash "centro de cuadrados", a la que despues se le aplicara la funcion hash "modulo 10". Al
+        // resultado de cada funcion hash se le debe de sumar 1.
+        private void button6_Click(object sender, EventArgs e)
+        {
+            int celdaSeleccionada = dataGridView2.CurrentRow.Index;
+            bool incompatible = false;
+            List<object> datos = new List<object>();
+        }
+
+
+
+        // Boton que cierra la ventana actual.
         private void button7_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.OK;
@@ -155,6 +238,6 @@ namespace ArchivosTarea2
         public List<Cajon> regresa_lista_cajones()
         {
             return ent.listaCajones;
-        }
+        }        
     }
 }
