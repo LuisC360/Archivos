@@ -130,7 +130,6 @@ namespace ArchivosTarea2
 
             string[] fila = new string[(int)numCajones];
             List<String[]> filas = new List<string[]>();
-            int j = 0;
 
             for(int i = 0; i < ent.listaCajones.Count; i++)
             {
@@ -196,12 +195,257 @@ namespace ArchivosTarea2
         // resultado de cada funcion hash se le debe de sumar 1.
         private void button6_Click(object sender, EventArgs e)
         {
-            int celdaSeleccionada = dataGridView2.CurrentRow.Index;
+            int celdaSeleccionada = dataGridView3.CurrentRow.Index;
             bool incompatible = false;
             List<object> datos = new List<object>();
+
+            for (int i = 0; i < dataGridView3.CurrentRow.Cells.Count - 2; i++)
+            {
+                if (dataGridView3.CurrentRow.Cells[i].ToString() != "")
+                {
+                    Atributo atr = atributosVigentes[i];
+                    char tipoAtr = atr.tipo;
+
+                    var tipo = valida_atributo(tipoAtr);
+
+                    dynamic strTipo = tipo;
+                    Object resultado = null;
+
+                    if (strTipo == typeof(int))
+                    {
+                        try
+                        {
+                            resultado = Convert.ChangeType(this.dataGridView3.Rows[celdaSeleccionada].Cells[i].Value, typeof(int));
+                            datos.Add(resultado);
+                        }
+                        catch
+                        {
+                            MessageBox.Show("Error, tipo de dato incompatible / campo vacio");
+                            incompatible = true;
+                            return;
+                        }
+                    }
+                    else if (strTipo == typeof(char))
+                    {
+                        try
+                        {
+                            resultado = Convert.ChangeType(this.dataGridView3.Rows[celdaSeleccionada].Cells[i].Value, typeof(char));
+
+                            if (resultado.ToString().Length > 1)
+                            {
+                                MessageBox.Show("Error, tamaño de atributo exedido.");
+                                return;
+                            }
+
+                            datos.Add(resultado);
+                        }
+                        catch
+                        {
+                            MessageBox.Show("Error, tipo de dato incompatible / campo vacio");
+                            incompatible = true;
+                            return;
+                        }
+                    }
+                    else if (strTipo == typeof(string))
+                    {
+                        try
+                        {
+                            resultado = Convert.ChangeType(this.dataGridView3.Rows[celdaSeleccionada].Cells[i].Value, typeof(string));
+                            String res = resultado.ToString();
+
+                            if (res.Length > (atr.bytes / 2))
+                            {
+                                int start = Convert.ToInt32(atr.bytes);
+                                start = start / 2;
+                                int count = res.Length - start;
+                                res = res.Remove(start, count);
+                            }
+
+                            datos.Add(res.ToLower());
+                        }
+                        catch
+                        {
+                            MessageBox.Show("Error, valor de cadena excedida.");
+                            incompatible = true;
+                            return;
+                        }
+                    }
+                    else if (strTipo == typeof(float))
+                    {
+                        try
+                        {
+                            resultado = Convert.ChangeType(this.dataGridView3.Rows[celdaSeleccionada].Cells[i].Value, typeof(float));
+                            datos.Add(resultado);
+                        }
+                        catch
+                        {
+                            MessageBox.Show("Error, tipo de dato incompatible / campo vacio");
+                            incompatible = true;
+                            return;
+                        }
+                    }
+                    else if (strTipo == typeof(double))
+                    {
+                        try
+                        {
+                            resultado = Convert.ChangeType(this.dataGridView3.Rows[celdaSeleccionada].Cells[i].Value, typeof(double));
+                            datos.Add(resultado);
+                        }
+                        catch
+                        {
+                            MessageBox.Show("Error, tipo de dato incompatible / campo vacio");
+                            incompatible = true;
+                            return;
+                        }
+                    }
+                    else if (strTipo == typeof(long))
+                    {
+                        try
+                        {
+                            resultado = Convert.ChangeType(this.dataGridView3.Rows[celdaSeleccionada].Cells[i].Value, typeof(long));
+                            datos.Add(resultado);
+                        }
+                        catch
+                        {
+                            MessageBox.Show("Error, tipo de dato incompatible / campo vacio");
+                            incompatible = true;
+                            return;
+                        }
+                    }
+
+                    if (incompatible == true)
+                    {
+                        return;
+                    }
+                }
+                else
+                {
+                    toolStripStatusLabel1.Text = "Error, no se pueden dejar campos vacios.";
+                    break;
+                }
+            }
+
+            Dato nuevoDato = new Dato(ent);
+
+            foreach (Object obj in datos)
+            {
+                nuevoDato.datos.Add(obj);
+            }
+
+            inserta_dato_hash(nuevoDato);
         }
 
+        /// <summary>
+        /// Funcion con la que se insertara un dato en un cajon. Primero se aplicara la funcion hash, despues se validara si existe la
+        /// cubeta correspondiente, si no, entonces se debe crear la cubeta con el numero de cajones correspondiente, para despues insertar
+        /// el dato en dicha cubeta, y despues poner la posicion de dicha cubeta en la posicion del cajon que marque la funcion hash.
+        /// </summary>
+        /// <param name="dat">El dato que se desea insertar.</param>
+        private void inserta_dato_hash(Dato dat)
+        {
+            int valHash = funcion_hash(dat);
 
+            // Si no hay cubetas
+            if(ent.listaCajones[valHash].regresa_apuntadorCubeta() == -1)
+            {
+                // Se crea la cubeta y se coloca 
+            }
+            else
+            {
+                // Se debe validar si hay espacios dispobibles en la cubeta
+            }
+        }
+
+        /// <summary>
+        /// La funcion hash que se aplicara. En este caso, sera la funcion centro de cuadrados, a la cual despues se le aplicara la funcion
+        /// modulo 10. 
+        /// </summary>
+        /// <param name="dat">El dato que se quiere insertar.</param>
+        /// <returns>El valor hash que decidira en que cajon ira la cubeta que contendra el dato.</returns>
+        private int funcion_hash(Dato dat)
+        {
+            int valorHash = 0;
+
+            var valorLlavePrimaria = dat.datos[indiceLlave];
+
+            String convertToASCII = valorLlavePrimaria.ToString();
+            byte[] bytes = Encoding.ASCII.GetBytes(convertToASCII);
+
+            String valueASCII = "";
+
+            foreach(byte b in bytes)
+            {
+                valueASCII += b.ToString();
+            }
+
+            double ASCIIdouble = Convert.ToDouble(valueASCII);            
+            double potencia = 2;
+
+            double cuadrado = Math.Pow(ASCIIdouble, potencia);
+            int cuadradoInt = Convert.ToInt32(cuadrado);
+
+            int digitos = cuadradoInt.ToString().Length;
+
+            if(digitos % 2 == 0)
+            {
+                int mitad = digitos / 2;
+
+                String subString1 = cuadradoInt.ToString().Substring(0, mitad);
+                String subString2 = cuadradoInt.ToString().Substring(mitad, mitad);
+
+                Char c1 = subString1[subString1.Length - 1];
+                Char c2 = subString2[0];
+
+                String digitosCentrales = "" + c1 + c2;
+                int digitosFinales = Convert.ToInt32(digitosCentrales);
+
+                valorHash = (digitosFinales % 10) + 1;
+            }
+            else
+            {
+                int mitad = digitos - 1 / 2;
+
+                String subString1 = cuadradoInt.ToString().Substring(0, mitad);
+                String subString2 = cuadradoInt.ToString().Substring(mitad, mitad);
+
+                Char c1 = cuadradoInt.ToString()[mitad + 1];
+
+                String digitosCentrales = "" + c1;
+                int digitosFinales = Convert.ToInt32(digitosCentrales);
+
+                valorHash = (digitosFinales % 10) + 1;
+            }
+
+            return valorHash;
+        }
+
+        /// <summary>
+        /// Metodo que regresa el tipo de dato acorde al valor dado por el atributo.
+        /// </summary>
+        /// <param name="tatr">El caracter que define el tipo de atributo de cada valor del dato.</param>
+        /// <returns>El tipo de dato del valor del dato.</returns>
+        private static dynamic valida_atributo(char tatr)
+        {
+            var tipoAtr = typeof(int);
+
+            switch (tatr)
+            {
+                case 'I': tipoAtr = typeof(int);
+                    break;
+                case 'F': tipoAtr = typeof(float);
+                    break;
+                case 'C': tipoAtr = typeof(char);
+                    break;
+                case 'S': tipoAtr = typeof(string);
+                    break;
+                case 'D': tipoAtr = typeof(double);
+                    break;
+                case 'L': tipoAtr = typeof(long);
+                    break;
+            }
+
+            return tipoAtr;
+        }
 
         // Boton que cierra la ventana actual.
         private void button7_Click(object sender, EventArgs e)
