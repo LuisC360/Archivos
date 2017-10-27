@@ -638,6 +638,8 @@ namespace ArchivosTarea2
                     break;
                 case 'L': tipoAtr = typeof(long);
                     break;
+                default: // Default vacio
+                    break;
             }
 
             return tipoAtr;
@@ -707,6 +709,18 @@ namespace ArchivosTarea2
             {
                 dataGridView2.Rows.Add(arr);
             }
+        }
+
+        /// <summary>
+        /// Metodo con el que se validara que no haya un dato con la misma llave primaria que el dato que se desea insertar.
+        /// </summary>
+        /// <param name="dat">El dato que se desea insertar.</param>
+        /// <returns>Booleano que indica si el dato que se desea insertar se puede insertar o no.</returns>
+        private bool valida_dato(Dato dat)
+        {
+            bool repetido = false;
+
+            return repetido;
         }
 
         // Boton con el que se mostraran los datos de una cubeta seleccionada en el dataGridView correspondiente.

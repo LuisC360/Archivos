@@ -463,7 +463,8 @@ namespace ArchivosTarea2
                                 return;
                             }
                             entidadEliminada = entidadEliminar;
-                            entidadEliminada.apSigEntidad = entidadEliminar.apSigEntidad = -2;
+                            entidadEliminada.apSigEntidad = -2;
+                            entidadEliminar.apSigEntidad = -2;
                             break;
                         }
                     }
@@ -1402,6 +1403,8 @@ namespace ArchivosTarea2
                             {
                                 chara[i] = r.ReadChar();
                             }
+                            break;
+                        default: // Default vacio.
                             break;
                     }
                 }
