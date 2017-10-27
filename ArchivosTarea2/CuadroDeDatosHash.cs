@@ -24,6 +24,7 @@ namespace ArchivosTarea2
         long tamCajon = 8;
         long tamCubeta = 8;
         readonly List<Atributo> atributosVigentes = new List<Atributo>();
+        Cajon cajonActual = new Cajon();
 
         /// <summary>
         /// Constructor de la ventana para la manipulacion de datos mediante hash estatica.
@@ -71,6 +72,7 @@ namespace ArchivosTarea2
             }
         }
 
+        // Boton para poner el tamaño del cajon y el numero de registros por cubeta.
         private void button1_Click(object sender, EventArgs e)
         {
             if(textBox1.Text.Length > 0 && textBox2.Text.Length > 0)
@@ -118,6 +120,9 @@ namespace ArchivosTarea2
             }
         }
 
+        /// <summary>
+        /// Funcion con la que se iniciara el dataGridView con el que se mostraran los cajones de una entidad.
+        /// </summary>
         private void manejo_dataGrid_cajones()
         {
             dataGridView1.ColumnCount = (int)numCajones;
@@ -129,6 +134,9 @@ namespace ArchivosTarea2
             }
         }
 
+        /// <summary>
+        /// Funcion con la que se va a rellenar el dataGridView de los cajones con la informacion de los apuntadores de estos.
+        /// </summary>
         private void rellena_dataGrid_cajones()
         {
             dataGridView1.ColumnCount = (int)numCajones;
@@ -151,6 +159,9 @@ namespace ArchivosTarea2
             }
         }
 
+        /// <summary>
+        /// Funcion con la que se rellenaran las columnas del dataGridView correspondiente a las cubetas. 
+        /// </summary>
         private void manejo_dataGrid_cubetas()
         {
             dataGridView2.ColumnCount = (int)regPorCubeta + 1;
@@ -371,6 +382,7 @@ namespace ArchivosTarea2
 
                 ent.listaCajones[valHash].listaCubetas.Add(newCubeta);
                 ent.listaCajones[valHash].str_apuntadorCubeta(newCubeta[0].regresa_posCubeta());
+                seCambio = true;
             }
             else
             {
@@ -405,6 +417,8 @@ namespace ArchivosTarea2
                     // Se debe de ligar la cubeta nueva con la anterior usando la posicion de la nueva cubeta
                     ent.listaCajones[valHash].listaCubetas[ent.listaCajones[valHash].listaCubetas.Count - 1][ultimoValor].str_apSigCubeta(nuevasCubetas[0].regresa_posCubeta()); 
                 }
+
+                seCambio = true;
             }
         }
 
@@ -471,6 +485,11 @@ namespace ArchivosTarea2
             return valorHash;
         }
 
+        /// <summary>
+        /// Funcion que crea ua nueva cubeta, que contendra en su primer elemento el dato correspondiente.
+        /// </summary>
+        /// <param name="dat">El dato a insertar en la lista de cubetas.</param>
+        /// <returns>La lista de cubetas con el dato insertado en la primer posicion.</returns>
         private List<Cubeta> regresa_cubetas(Dato dat)
         {
             List<Cubeta> listaCubetas = new List<Cubeta>();
@@ -544,6 +563,7 @@ namespace ArchivosTarea2
 
             if(cajonEncontrado.regresa_apuntadorCubeta() != -1)
             {
+                cajonActual = cajonEncontrado; 
                 muestra_cubetas(cajonEncontrado);
             }
             else
@@ -592,7 +612,13 @@ namespace ArchivosTarea2
         // Boton con el que se mostraran los datos de una cubeta seleccionada en el dataGridView correspondiente.
         private void button5_Click(object sender, EventArgs e)
         {
-            // WIP
+            long cajonSeleccionado = Convert.ToInt64(dataGridView2.CurrentCell.Value);
+            Cubeta cubetaEncontrada = new Cubeta();
+
+            foreach(List<Cubeta> cub in cajonActual.listaCubetas)
+            {
+                //if(cub[0])
+            }
         }   
 
         // Boton que cierra la ventana actual.

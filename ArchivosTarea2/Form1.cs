@@ -43,7 +43,6 @@ namespace ArchivosTarea2
         // El numero de cajones y de registros por cajon para los archivos de hash estatica
         long numCajones;
         long regPorCajon;
-        List<Cajon> listaCajones = new List<Cajon>();
         // El tipo de ordenamiento del archivo (0- Secuencial ordenado, 1- Secuencial indezado, 3- Hash estatica)
         int tipo;
 
@@ -1245,9 +1244,9 @@ namespace ArchivosTarea2
         /// <summary>
         /// Funcion recursiva que se encargara de leer los indices del achivo.
         /// </summary>
-        /// <param name="f"></param>
-        /// <param name="r"></param>
-        /// <param name="ent"></param>
+        /// <param name="f">El FileStream con el que se manipulan los archivos.</param>
+        /// <param name="r">El lector de archivos binarios.</param>
+        /// <param name="ent">La entidad que contiene los atributos.</param>
         void lee_indices_de_entidad(FileStream f, BinaryReader r, Entidad ent)
         {
             Indice ind = new Indice();
@@ -1420,11 +1419,12 @@ namespace ArchivosTarea2
 
         /// <summary>
         /// Funcion que se encargara de leer los apuntadores a cajones de una cubeta. En este caso no sera una funcion
-        /// recursiva debido a que el numero de veces que se leera un 
+        /// recursiva debido a que el numero de veces que se leera un cajon dependera del numero de cajones especificados en el
+        /// comienzo del archivo.
         /// </summary>
-        /// <param name="f"></param>
-        /// <param name="r"></param>
-        /// <param name="ent"></param>
+        /// <param name="f">El FileStream con el que se manipulan los archivos.</param>
+        /// <param name="r">El lector de archivos binarios.</param>
+        /// <param name="ent">La entidad que contiene los atributos.</param>
         void lee_cajones_de_entidad(FileStream f, BinaryReader r, Entidad ent)
         {
             Cajon caj = new Cajon();
@@ -1435,19 +1435,25 @@ namespace ArchivosTarea2
 
             if(apCub != -1)
             {
-                lee_cubetas_de_cajon(f, r, caj, ent);
+                List<Cubeta> cubL = new List<Cubeta>();
+                lee_cubetas_de_cajon(f, r, caj, ent, cubL);
             }
 
             ent.listaCajones.Add(caj);
         }
 
         /// <summary>
-        /// 
+        /// Funcin encargada de leer las cubetas de un cajon. Se debe de declarar una lista para albergar los cajones, y al encontrarse el
+        /// cajon con el apuntador al siguiente, se debe de ver si este es igual a -1 o no. Si es el caso, entonces se debe de agregar
+        /// la lista de cubetas al cajon correspondiente, y si no, se agrega la lista de cubetas al cajon, se declara una nueva lista y
+        /// se llama a la misma funcion de lectura de cajones.
         /// </summary>
-        /// <param name="f"></param>
-        /// <param name="r"></param>
-        /// <param name="c"></param>
-        void lee_cubetas_de_cajon(FileStream f, BinaryReader r, Cajon c, Entidad ent)
+        /// <param name="f">El FileStream con el que se manipulan los archivos.</param>
+        /// <param name="r">El lector de archivos binarios.</param>
+        /// <param name="c">El cajon en el que se pondran las cubetas.</param>
+        /// <param name="ent">La entidad que contiene los atributos.</param>
+        /// <param name="cubL">La lista individual de cubetas, la cual contendra todas las cubetas del cajon, junto con la cubeta enlace.</param>
+        void lee_cubetas_de_cajon(FileStream f, BinaryReader r, Cajon c, Entidad ent, List<Cubeta> cubL)
         {
             Cubeta cub = new Cubeta();
 
@@ -1462,11 +1468,32 @@ namespace ArchivosTarea2
             long apSig = r.ReadInt64();
             cub.str_apSigCubeta(apSig);
 
-            c.listaCubetas.Add(cub);
+            // Si hay otra lista de cubetas despues de la que ya se leyo.
+            if(apSig != -1 && apSig != 0)
+            {
+                cubL.Add(cub);
+                c.listaCubetas.Add(cubL);
+                cubL = new List<Cubeta>();
+
+                lee_cubetas_de_cajon(f, r, c, ent, cubL);
+            }
+            // Si ya no hay mas cubetas que leer.
+            else if(apSig == -1)
+            {
+                cubL.Add(cub);
+                c.listaCubetas.Add(cubL);
+            }
+            // Si la cubeta correspondiente alberga un apuntador a dato valido.
+            else if(apSig == 0)
+            {
+                cubL.Add(cub);
+
+                lee_cubetas_de_cajon(f, r, c, ent, cubL);
+            }
         }
 
         /// <summary>
-        /// 
+        /// Funcion con la que se leera un dato para ponerlo en la cubeta correspondiente.
         /// </summary>
         /// <param name="f"></param>
         /// <param name="r"></param>
@@ -2304,12 +2331,91 @@ namespace ArchivosTarea2
 
                         if(apCubeta != -1)
                         {
+                            // Recorre la lista de listas de cubetas del cajon
                             for(int l = 0; l < entidades[j].listaCajones[k].listaCubetas.Count; l++)
                             {
-                                long apDato = entidades[j].listaCajones[k].listaCubetas[l].regresa_apDato();
-                                long apSigCub = entidades[j].listaCajones[k].listaCubetas[l].regresa_apSigCubeta();
+                                // Recorre cada cubeta del la lista de listas
+                                for(int m = 0; m < entidades[j].listaCajones[k].listaCubetas[l].Count; m++)
+                                {
+                                    if(m == entidades[j].listaCajones[k].listaCubetas[l].Count - 1)
+                                    {
+                                        long apSigCub = entidades[j].listaCajones[k].listaCubetas[l][m].regresa_apSigCubeta();
 
-                                writer.Write(apDato);
+                                        writer.Write(apSigCub);
+                                    }
+                                    else
+                                    {
+                                        long apDato = entidades[j].listaCajones[k].listaCubetas[l][m].regresa_apDato();
+
+                                        writer.Write(apDato);
+
+                                        if(apDato != -1)
+                                        {
+                                            Dato dat = entidades[j].listaCajones[k].listaCubetas[l][m].regresa_datoCubeta();
+
+                                            for(int n = 0; n < dat.datos.Count; n++)
+                                            {
+                                                if (dat.listaAtributosDato[n].tipo == 'I')
+                                                {
+                                                    writer.Write(Convert.ToInt32(dat.datos[n]));
+                                                }
+                                                else if (dat.listaAtributosDato[n].tipo == 'F')
+                                                {
+                                                    writer.Write(Convert.ToSingle(dat.datos[n]));
+                                                }
+                                                else if (dat.listaAtributosDato[n].tipo == 'L')
+                                                {
+                                                    writer.Write(Convert.ToInt64(dat.datos[n]));
+                                                }
+                                                else if (dat.listaAtributosDato[n].tipo == 'D')
+                                                {
+                                                    writer.Write(Convert.ToDouble(dat.datos[n]));
+                                                }
+                                                else if (dat.listaAtributosDato[n].tipo == 'C')
+                                                {
+                                                    writer.Write(Convert.ToChar(dat.datos[n]));
+                                                }
+                                                else if (dat.listaAtributosDato[n].tipo == 'S')
+                                                {
+                                                    String nuSt = "";
+
+                                                    if (dat.datos[n] is char[])
+                                                    {
+                                                        nuSt = new string((char[])dat.datos[n]);
+                                                    }
+
+                                                    char[] cadenaTemporal =
+                                                        new char[dat.listaAtributosDato[n].bytes / 2];
+
+                                                    for (int i = 0; i < dat.listaAtributosDato[n].bytes / 2; i++)
+                                                    {
+                                                        cadenaTemporal[i] = '\0';
+                                                    }
+
+                                                    if (nuSt.Length > 0)
+                                                    {
+                                                        for (int o = 0; o < nuSt.Length; o++)
+                                                        {
+                                                            cadenaTemporal[o] = nuSt[o];
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        for (int o = 0; o < dat.datos[n].ToString().Length; o++)
+                                                        {
+                                                            cadenaTemporal[o] = dat.datos[n].ToString()[o];
+                                                        }
+                                                    }
+
+                                                    for (int p = 0; p < cadenaTemporal.Length; p++)
+                                                    {
+                                                        writer.Write(cadenaTemporal[p]);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
