@@ -42,6 +42,17 @@ namespace ArchivosTarea2
             regPorCubeta = regCub;
             int indLlave = 0;
 
+            if(numCajones > 0 && regPorCubeta > 0)
+            {
+                textBox1.Text = numCajones.ToString();
+                textBox2.Text = regPorCubeta.ToString();
+
+                textBox1.Enabled = false;
+                textBox2.Enabled = false;
+
+                button1.Enabled = false;
+            }
+
             foreach (Atributo atr in ent.listaAtributos)
             {
                 if (atr.apSigAtributo != -2 && atr.apSigAtributo != -4)
@@ -139,6 +150,8 @@ namespace ArchivosTarea2
         /// </summary>
         private void rellena_dataGrid_cajones()
         {
+            dataGridView1.Rows.Clear();
+
             dataGridView1.ColumnCount = (int)numCajones;
             dataGridView1.ColumnHeadersVisible = true;
 
@@ -156,6 +169,87 @@ namespace ArchivosTarea2
             foreach (string[] f in filas)
             {
                 dataGridView1.Rows.Add(f);
+            }
+        }
+
+        /// <summary>
+        /// Funcion con la que se va a rellenar el dataGridView de las cubetas con la informacion de de estos.
+        /// </summary>
+        /// <param name="caj">El cajon al que pertenece la lista de listas de cubetas.</param>
+        private void rellena_dataGrid_cubetas(Cajon caj)
+        {
+            dataGridView2.Rows.Clear();
+
+            dataGridView2.ColumnCount = (int)regPorCubeta + 1;
+            dataGridView2.ColumnHeadersVisible = true;
+
+            string[] fila = new string[(int)regPorCubeta + 1];
+            List<String[]> filas = new List<string[]>();
+
+            for (int i = 0; i < caj.listaCubetas.Count; i++)
+            {
+                for(int j = 0; j < caj.listaCubetas[i].Count; j++)
+                {
+                    if (j == caj.listaCubetas[i].Count - 1)
+                    {
+                        long apSig = caj.listaCubetas[i][j].regresa_apSigCubeta();
+                        fila[j] = apSig.ToString();
+                    }
+                    else
+                    {
+                        long apDato = caj.listaCubetas[i][j].regresa_apDato();
+                        fila[j] = apDato.ToString();
+                    }
+                }
+
+                filas.Add(fila);
+                fila = new string[(int)regPorCubeta + 1];
+            }
+
+            foreach(string[] f in filas)
+            {
+                dataGridView2.Rows.Add(f);
+            }
+        }
+
+        /// <summary>
+        /// Funcion con la que se rellenara el dataGridView correspondiente 
+        /// </summary>
+        /// <param name="cub">La cubeta que contiene el dato a mostrarse.</param>
+        private void rellena_dataGrid_datos(Cubeta cub)
+        {
+            dataGridView3.Rows.Clear();
+
+            dataGridView3.ColumnCount = numAtributos + 1;
+            dataGridView3.ColumnHeadersVisible = true;
+
+            string[] fila = new string[(int)regPorCubeta + 1];
+            List<String[]> filas = new List<string[]>();
+            Dato datoCubeta = cub.regresa_datoCubeta();
+            int count = 0;
+
+            for (int i = 0; i < datoCubeta.datos.Count; i++ )
+            {
+                if(datoCubeta.datos[i] is char[])
+                {
+                    char[] arr = (char[])datoCubeta.datos[i];
+                    String objeto = new string(arr);
+                    fila[i] = objeto;
+                }
+                else
+                {
+                    fila[i] = datoCubeta.datos[i].ToString();
+                }
+                count++;
+            }
+
+            fila[count] = datoCubeta.posDato.ToString();
+
+            filas.Add(fila);
+
+            foreach (string[] arr in filas)
+            {
+                dataGridView3.Rows.Add(arr);
             }
         }
 
@@ -183,7 +277,7 @@ namespace ArchivosTarea2
         /// </summary>
         private void inicia_dataGrid_datos()
         {
-            dataGridView3.ColumnCount = numAtributos + 2;
+            dataGridView3.ColumnCount = numAtributos + 1;
             dataGridView3.ColumnHeadersVisible = true;
             int j = 0;
 
@@ -206,8 +300,6 @@ namespace ArchivosTarea2
             }
 
             dataGridView3.Columns[j].Name = "Pos. Dato.";
-            j++;
-            dataGridView3.Columns[j].Name = "Ap. Sig. Dato";
         }
 
         // Boton para insertar datos a un registro dentro de una cubeta. El criterio que decidira en que numero de cubeta se insertara sera
@@ -219,7 +311,7 @@ namespace ArchivosTarea2
             bool incompatible = false;
             List<object> datos = new List<object>();
 
-            for (int i = 0; i < dataGridView3.CurrentRow.Cells.Count - 2; i++)
+            for (int i = 0; i < dataGridView3.CurrentRow.Cells.Count - 1; i++)
             {
                 if (dataGridView3.CurrentRow.Cells[i].ToString() != "")
                 {
@@ -364,6 +456,7 @@ namespace ArchivosTarea2
         private void inserta_dato_hash(Dato dat)
         {
             int valHash = funcion_hash(dat);
+            Cubeta cubetaSender = new Cubeta();
 
             // Si el valor hash resultante es mayor al numero de cajones que tenemos.
             if(valHash > numCajones)
@@ -382,6 +475,7 @@ namespace ArchivosTarea2
 
                 ent.listaCajones[valHash].listaCubetas.Add(newCubeta);
                 ent.listaCajones[valHash].str_apuntadorCubeta(newCubeta[0].regresa_posCubeta());
+                cubetaSender = newCubeta[0];
                 seCambio = true;
             }
             else
@@ -401,6 +495,7 @@ namespace ArchivosTarea2
                                 cub.str_datoCubeta(dat);
                                 cub.str_apDato(dat.posDato);
                                 posMemoria += tamDato;
+                                cubetaSender = cub;
                                 libre = true;
                                 break;
                             }
@@ -415,11 +510,16 @@ namespace ArchivosTarea2
                     int ultimoValor = Convert.ToInt32(regPorCubeta - 1);
 
                     // Se debe de ligar la cubeta nueva con la anterior usando la posicion de la nueva cubeta
-                    ent.listaCajones[valHash].listaCubetas[ent.listaCajones[valHash].listaCubetas.Count - 1][ultimoValor].str_apSigCubeta(nuevasCubetas[0].regresa_posCubeta()); 
-                }
-
-                seCambio = true;
+                    ent.listaCajones[valHash].listaCubetas[ent.listaCajones[valHash].listaCubetas.Count - 1][ultimoValor].str_apSigCubeta(nuevasCubetas[0].regresa_posCubeta());
+                    cubetaSender = nuevasCubetas[0];
+                }                
             }
+
+            rellena_dataGrid_cajones();
+            manejo_dataGrid_cubetas();
+            rellena_dataGrid_cubetas(ent.listaCajones[valHash]);
+            rellena_dataGrid_datos(cubetaSender);
+            seCambio = true;
         }
 
         /// <summary>

@@ -27,6 +27,10 @@ namespace ArchivosTarea2
         readonly int tamAtributo = 56;
         // Tamaño de un dato
         int tamDato = 8;
+        // Tamaño de un cajon
+        int tamCajon = 8;
+        // Tamaño de una cubeta
+        int tamCubeta = 8;
         // Valores que posee una entidad (para lectura de archivo)
         char[] nombre = { '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0',  
                                     '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0' ,'\0' ,'\n'};
@@ -1440,6 +1444,7 @@ namespace ArchivosTarea2
             }
 
             ent.listaCajones.Add(caj);
+            posicionMemoria += tamCajon;
         }
 
         /// <summary>
@@ -1472,6 +1477,7 @@ namespace ArchivosTarea2
             if(apSig != -1 && apSig != 0)
             {
                 cubL.Add(cub);
+                posicionMemoria += tamCubeta;
                 c.listaCubetas.Add(cubL);
                 cubL = new List<Cubeta>();
 
@@ -1481,13 +1487,14 @@ namespace ArchivosTarea2
             else if(apSig == -1)
             {
                 cubL.Add(cub);
+                posicionMemoria += tamCubeta;
                 c.listaCubetas.Add(cubL);
             }
             // Si la cubeta correspondiente alberga un apuntador a dato valido.
             else if(apSig == 0)
             {
                 cubL.Add(cub);
-
+                posicionMemoria += tamCubeta;
                 lee_cubetas_de_cajon(f, r, c, ent, cubL);
             }
         }
@@ -2339,8 +2346,10 @@ namespace ArchivosTarea2
                                 {
                                     if(m == entidades[j].listaCajones[k].listaCubetas[l].Count - 1)
                                     {
+                                        long apDato = entidades[j].listaCajones[k].listaCubetas[l][m].regresa_apDato();
                                         long apSigCub = entidades[j].listaCajones[k].listaCubetas[l][m].regresa_apSigCubeta();
 
+                                        writer.Write(apDato);
                                         writer.Write(apSigCub);
                                     }
                                     else
@@ -2414,6 +2423,10 @@ namespace ArchivosTarea2
                                                 }
                                             }
                                         }
+
+                                        long apSigCub = entidades[j].listaCajones[k].listaCubetas[l][m].regresa_apSigCubeta();
+
+                                        writer.Write(apSigCub);
                                     }
                                 }
                             }
