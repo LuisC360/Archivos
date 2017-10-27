@@ -28,9 +28,9 @@ namespace ArchivosTarea2
         // Tamaño de un dato
         int tamDato = 8;
         // Tamaño de un cajon
-        int tamCajon = 8;
+        readonly int tamCajon = 8;
         // Tamaño de una cubeta
-        int tamCubeta = 8;
+        readonly int tamCubeta = 8;
         // Valores que posee una entidad (para lectura de archivo)
         char[] nombre = { '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0',  
                                     '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0' ,'\0' ,'\n'};

@@ -714,10 +714,35 @@ namespace ArchivosTarea2
         {
             long cajonSeleccionado = Convert.ToInt64(dataGridView2.CurrentCell.Value);
             Cubeta cubetaEncontrada = new Cubeta();
+            bool bandEncontrada = false;
 
             foreach(List<Cubeta> cub in cajonActual.listaCubetas)
             {
-                //if(cub[0])
+                foreach(Cubeta c in cub)
+                {
+                    long apDato = c.regresa_apDato();
+
+                    if(cajonSeleccionado == apDato)
+                    {
+                        cubetaEncontrada = c;
+                        bandEncontrada = true;
+                        break;
+                    }
+                }
+
+                if(bandEncontrada == true)
+                {
+                    break;
+                }
+            }
+
+            if(cubetaEncontrada.regresa_apDato() == -1)
+            {
+                toolStripStatusLabel1.Text = "Error, esta cubeta no tiene ningun dato.";
+            }
+            else
+            {
+                rellena_dataGrid_datos(cubetaEncontrada);
             }
         }   
 
