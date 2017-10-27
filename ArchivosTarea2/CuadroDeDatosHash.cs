@@ -552,6 +552,10 @@ namespace ArchivosTarea2
             }
         }
 
+        /// <summary>
+        /// Metodo que mostrara en el dataGridView correspondiente las cubetas correspondientes a un cajon en especifico.
+        /// </summary>
+        /// <param name="caj">El cajon con las cubetas a mostrar.</param>
         private void muestra_cubetas(Cajon caj)
         {
             dataGridView2.Rows.Clear();
@@ -559,10 +563,33 @@ namespace ArchivosTarea2
             dataGridView2.ColumnCount = (int)regPorCubeta + 1;
             dataGridView2.ColumnHeadersVisible = true;
 
+            List<String[]> filas = new List<string[]>();
+            String[] fila = new string[(int)regPorCubeta + 1];
 
+            foreach (List<Cubeta> cub in caj.listaCubetas)
+            {
+                for (int i = 0; i < dataGridView2.ColumnCount; i++)
+                {
+                    if(i == (dataGridView2.ColumnCount - 1))
+                    {
+                        fila[i] = cub[i].regresa_apSigCubeta().ToString();
+                    }
+                    else
+                    {
+                        fila[i] = cub[i].regresa_apDato().ToString();
+                    }
+                }
+
+                filas.Add(fila);
+            }
+
+            foreach (string[] arr in filas)
+            {
+                dataGridView2.Rows.Add(arr);
+            }
         }
 
-        // 
+        // Boton con el que se mostraran los datos de una cubeta seleccionada en el dataGridView correspondiente.
         private void button5_Click(object sender, EventArgs e)
         {
             // WIP
