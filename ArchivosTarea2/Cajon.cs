@@ -10,7 +10,7 @@ namespace ArchivosTarea2
     {
         long posCajon { get; set; }
         long apuntadorCubeta { get; set; }
-        public List<Cubeta> listaCubetas = new List<Cubeta>();
+        public List<List<Cubeta>> listaCubetas = new List<List<Cubeta>>();
 
         public Cajon()
         {

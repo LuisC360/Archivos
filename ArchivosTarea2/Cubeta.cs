@@ -16,7 +16,7 @@ namespace ArchivosTarea2
         public Cubeta()
         {
             apDato = -1;
-            apSigCubeta = -1;
+            apSigCubeta = 0;
         }
 
         public void str_apDato(long ap)
