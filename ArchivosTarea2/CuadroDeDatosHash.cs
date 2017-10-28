@@ -42,16 +42,8 @@ namespace ArchivosTarea2
             regPorCubeta = regCub;
             int indLlave = 0;
 
-            if(numCajones > 0 && regPorCubeta > 0)
-            {
-                textBox1.Text = numCajones.ToString();
-                textBox2.Text = regPorCubeta.ToString();
-
-                textBox1.Enabled = false;
-                textBox2.Enabled = false;
-
-                button1.Enabled = false;
-            }
+            int nC = (int)numCajones;
+            int rC = (int)regPorCubeta;
 
             foreach (Atributo atr in ent.listaAtributos)
             {
@@ -75,11 +67,44 @@ namespace ArchivosTarea2
 
             InitializeComponent();
 
-            if (numCajones > 0)
+            if (numCajones > 0 && regPorCubeta > 0)
             {
+                textBox1.Text = nC.ToString();
+                textBox2.Text = rC.ToString();
+
+                textBox1.Enabled = false;
+                textBox2.Enabled = false;
+
+                button1.Enabled = false;
+
+                pon_posiciones_datos();
                 manejo_dataGrid_cajones();
                 rellena_dataGrid_cajones();
                 inicia_dataGrid_datos();
+            }
+        }
+
+        /// <summary>
+        /// Metodo con el cual se colocaran las posiciones de los datos, ya que, como esta informacion no se almacena en el archivo, debemos
+        /// guiarnos usando los apuntadores a dato de cada cubeta
+        /// </summary>
+        private void pon_posiciones_datos()
+        {
+            foreach(Cajon caj in ent.listaCajones)
+            {
+                foreach(List<Cubeta> cub in caj.listaCubetas)
+                {
+                    foreach(Cubeta c in cub)
+                    {
+                        long apDato = c.regresa_apDato();
+
+                        if(apDato != -1)
+                        {
+                            Dato dat = c.regresa_datoCubeta();
+                            dat.posDato = apDato;
+                        }
+                    }
+                }
             }
         }
 
@@ -119,6 +144,7 @@ namespace ArchivosTarea2
                     manejo_dataGrid_cajones();
                     rellena_dataGrid_cajones();
                     inicia_dataGrid_datos();
+                    toolStripStatusLabel1.Text = "Valores agregados con exito.";
                 }
                 catch
                 {
@@ -455,71 +481,79 @@ namespace ArchivosTarea2
         /// <param name="dat">El dato que se desea insertar.</param>
         private void inserta_dato_hash(Dato dat)
         {
-            int valHash = funcion_hash(dat);
-            Cubeta cubetaSender = new Cubeta();
-
-            // Si el valor hash resultante es mayor al numero de cajones que tenemos.
-            if(valHash > numCajones)
+            if (valida_dato(dat) == false)
             {
-                double multiploMasProximo = valHash / numCajones;
-                int redondeado = Convert.ToInt32(Math.Floor(multiploMasProximo));
-                
-                valHash = valHash - (redondeado * (int)numCajones);
-            }
+                int valHash = funcion_hash(dat);
+                Cubeta cubetaSender = new Cubeta();
 
-            // Si no hay cubetas
-            if(ent.listaCajones[valHash].regresa_apuntadorCubeta() == -1)
-            {
-                // Se crea la cubeta y se coloca el dato en la primer posicion de esta.
-                List<Cubeta> newCubeta = regresa_cubetas(dat);
+                // Si el valor hash resultante es mayor al numero de cajones que tenemos.
+                if (valHash > numCajones)
+                {
+                    double multiploMasProximo = valHash / numCajones;
+                    int redondeado = Convert.ToInt32(Math.Floor(multiploMasProximo));
 
-                ent.listaCajones[valHash].listaCubetas.Add(newCubeta);
-                ent.listaCajones[valHash].str_apuntadorCubeta(newCubeta[0].regresa_posCubeta());
-                cubetaSender = newCubeta[0];
+                    valHash = valHash - (redondeado * (int)numCajones);
+                }
+
+                // Si no hay cubetas
+                if (ent.listaCajones[valHash].regresa_apuntadorCubeta() == -1)
+                {
+                    // Se crea la cubeta y se coloca el dato en la primer posicion de esta.
+                    List<Cubeta> newCubeta = regresa_cubetas(dat);
+
+                    ent.listaCajones[valHash].listaCubetas.Add(newCubeta);
+                    ent.listaCajones[valHash].str_apuntadorCubeta(newCubeta[0].regresa_posCubeta());
+                    cubetaSender = newCubeta[0];
+                    seCambio = true;
+                }
+                else
+                {
+                    // Se debe validar si hay espacios dispobibles en la cubeta
+                    bool libre = false;
+
+                    foreach (List<Cubeta> listcub in ent.listaCajones[valHash].listaCubetas)
+                    {
+                        foreach (Cubeta cub in listcub)
+                        {
+                            if (cub.regresa_apSigCubeta() == 0)
+                            {
+                                if (cub.regresa_apDato() == -1)
+                                {
+                                    dat.posDato = posMemoria;
+                                    cub.str_datoCubeta(dat);
+                                    cub.str_apDato(dat.posDato);
+                                    posMemoria += tamDato;
+                                    cubetaSender = cub;
+                                    libre = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    // Si no se encontro un espacio disponible en la cubeta, se debe de crear una cubeta nueva
+                    if (libre == false)
+                    {
+                        List<Cubeta> nuevasCubetas = regresa_cubetas(dat);
+                        int ultimoValor = Convert.ToInt32(regPorCubeta - 1);
+
+                        // Se debe de ligar la cubeta nueva con la anterior usando la posicion de la nueva cubeta
+                        ent.listaCajones[valHash].listaCubetas[ent.listaCajones[valHash].listaCubetas.Count - 1][ultimoValor].str_apSigCubeta(nuevasCubetas[0].regresa_posCubeta());
+                        cubetaSender = nuevasCubetas[0];
+                    }
+                }
+
+                rellena_dataGrid_cajones();
+                manejo_dataGrid_cubetas();
+                rellena_dataGrid_cubetas(ent.listaCajones[valHash]);
+                rellena_dataGrid_datos(cubetaSender);
+                toolStripStatusLabel1.Text = "Dato insertado con exito.";
                 seCambio = true;
             }
             else
             {
-                // Se debe validar si hay espacios dispobibles en la cubeta
-                bool libre = false;
-
-                foreach (List<Cubeta> listcub in ent.listaCajones[valHash].listaCubetas)
-                {
-                    foreach (Cubeta cub in listcub)
-                    {
-                        if (cub.regresa_apSigCubeta() == 0)
-                        {
-                            if (cub.regresa_apDato() == -1)
-                            {
-                                dat.posDato = posMemoria;
-                                cub.str_datoCubeta(dat);
-                                cub.str_apDato(dat.posDato);
-                                posMemoria += tamDato;
-                                cubetaSender = cub;
-                                libre = true;
-                                break;
-                            }
-                        }
-                    }
-                }
-
-                // Si no se encontro un espacio disponible en la cubeta, se debe de crear una cubeta nueva
-                if(libre == false)
-                {
-                    List<Cubeta> nuevasCubetas = regresa_cubetas(dat);
-                    int ultimoValor = Convert.ToInt32(regPorCubeta - 1);
-
-                    // Se debe de ligar la cubeta nueva con la anterior usando la posicion de la nueva cubeta
-                    ent.listaCajones[valHash].listaCubetas[ent.listaCajones[valHash].listaCubetas.Count - 1][ultimoValor].str_apSigCubeta(nuevasCubetas[0].regresa_posCubeta());
-                    cubetaSender = nuevasCubetas[0];
-                }                
+                toolStripStatusLabel1.Text = "Error, llave primaria duplicada.";
             }
-
-            rellena_dataGrid_cajones();
-            manejo_dataGrid_cubetas();
-            rellena_dataGrid_cubetas(ent.listaCajones[valHash]);
-            rellena_dataGrid_datos(cubetaSender);
-            seCambio = true;
         }
 
         /// <summary>
@@ -719,6 +753,40 @@ namespace ArchivosTarea2
         private bool valida_dato(Dato dat)
         {
             bool repetido = false;
+            bool encontrado = false;
+
+            foreach (Cajon caj in ent.listaCajones)
+            {
+                foreach (List<Cubeta> cubL in caj.listaCubetas)
+                {
+                    foreach (Cubeta c in cubL)
+                    {
+                        long apDato = c.regresa_apDato();
+
+                        if (apDato != -1)
+                        {
+                            Dato datoComparar = c.regresa_datoCubeta();
+
+                            if (dat.datos[indiceLlave].ToString() == datoComparar.datos[indiceLlave].ToString())
+                            {
+                                repetido = true;
+                                encontrado = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (encontrado == true)
+                    {
+                        break;
+                    }
+                }
+
+                if(encontrado == true)
+                {
+                    break;
+                }
+            }
 
             return repetido;
         }
