@@ -88,7 +88,7 @@ namespace ArchivosTarea2
             dataGridView1.ReadOnly = true;
         }
 
-        private void inicia_dataGridIndices()
+        private static void inicia_dataGridIndices()
         {
             dataGridView1.ColumnCount = 5;
             dataGridView1.ColumnHeadersVisible = true;
@@ -260,7 +260,7 @@ namespace ArchivosTarea2
                                 res = res.Remove(start, count);
                             }
 
-                            datos.Add(res.ToLower());
+                            datos.Add(res.ToLowerInvariant());
                         }
                         catch
                         {
@@ -356,6 +356,8 @@ namespace ArchivosTarea2
                 case 'D': tipoAtr = typeof(double);
                     break;
                 case 'L': tipoAtr = typeof(long);
+                    break;
+                default: // Default vacio
                     break;
             }
 
@@ -532,6 +534,8 @@ namespace ArchivosTarea2
                             break;
                         }
                     }
+                    break;
+                default: // Default vacio
                     break;
              }
          
@@ -996,6 +1000,8 @@ namespace ArchivosTarea2
                     valIni = 'a';
 
                     break;
+                default: // Default vacio
+                    break;
             }
 
             toolStripStatusLabel1.Text = "Indice creado y dato insertado con exito.";
@@ -1184,6 +1190,32 @@ namespace ArchivosTarea2
             if(textBox2.Text.Length > 0)
             {
                 dynamic valorBuscar = 0;
+
+                // Convertimos el valor escrito en el textBox al tipo de dato correspondiente al de la llave primaria
+                switch (atrLlave.tipo)
+                {
+                    case 'I':
+                        valorBuscar = Int32.Parse(textBox2.Text);
+                        break;
+                    case 'F':
+                        valorBuscar = float.Parse(textBox2.Text);
+                        break;
+                    case 'L':
+                        valorBuscar = Int64.Parse(textBox2.Text);
+                        break;
+                    case 'D':
+                        valorBuscar = Double.Parse(textBox2.Text);
+                        break;
+                    case 'C':
+                        valorBuscar = Char.Parse(textBox2.Text);
+                        break;
+                    case 'S':
+                        valorBuscar = textBox2.Text;
+                        break;
+                    default:
+                        // DEFAULT VACIO
+                        break;
+                }
             }
             else
             {
