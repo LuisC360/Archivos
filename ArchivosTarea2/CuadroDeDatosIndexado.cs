@@ -1041,6 +1041,8 @@ namespace ArchivosTarea2
         // Boton para modificar un dato.
         private void button2_Click(object sender, EventArgs e)
         {
+            bool encontradoYmodificado = false;
+
             if(textBox2.Text.Length > 0)
             {
                 dynamic valorBuscar = 0;
@@ -1087,36 +1089,55 @@ namespace ArchivosTarea2
 
                             foreach(Dato dat in ind.datosIndice)
                             {
+                                Dato datoI = dat;
+
                                 switch(atrLlave.tipo)
                                 {
-                                    case 'I': datoBuscar = Convert.ToInt32(dat.datos[indiceLlave]);
+                                    case 'I': datoBuscar = Convert.ToInt32(datoI.datos[indiceLlave]);
                                         break;
-                                    case 'F': datoBuscar = Convert.ToSingle(dat.datos[indiceLlave]);
+                                    case 'F': datoBuscar = Convert.ToSingle(datoI.datos[indiceLlave]);
                                         break;
-                                    case 'L': datoBuscar = Convert.ToInt64(dat.datos[indiceLlave]);
+                                    case 'L': datoBuscar = Convert.ToInt64(datoI.datos[indiceLlave]);
                                         break;
-                                    case 'D': datoBuscar = Convert.ToDouble(dat.datos[indiceLlave]);
+                                    case 'D': datoBuscar = Convert.ToDouble(datoI.datos[indiceLlave]);
                                         break;
-                                    case 'C': datoBuscar = Convert.ToChar(dat.datos[indiceLlave]);
+                                    case 'C': datoBuscar = Convert.ToChar(datoI.datos[indiceLlave]);
                                         break;
-                                    case 'S': datoBuscar = Convert.ToString(dat.datos[indiceLlave]);
+                                    case 'S': datoBuscar = Convert.ToString(datoI.datos[indiceLlave]);
                                         break;
                                 }
 
                                 // Si encontramos el dato
                                 if(datoBuscar == valorBuscar)
                                 {
-                                    using(ModificaDatoIndexado modIndex = new ModificaDatoIndexado(ind, dat, ent, indiceLlave))
+                                    using(ModificaDatoIndexado modIndex = new ModificaDatoIndexado(ind, datoI, ent, indiceLlave))
                                     {
                                         var modifica = modIndex.ShowDialog();
 
                                         if(modifica == DialogResult.OK)
                                         {
-                                            if(modIndex.)
+                                            datoI = modIndex.regresa_datoIndexado();
+
+                                            // Si se cambio la llave primaria del dato
+                                            if(modIndex.regresa_llavePrimariaCambiada() == true)
+                                            {
+
+                                            }
+
+                                            encontradoYmodificado = true;
                                         }
                                     }
                                 }
+
+                                if(encontradoYmodificado == true)
+                                {
+                                    break;
+                                }
                             }
+                        }
+
+                        if(encontradoYmodificado == true)
+                        {
                             break;
                         }
                     }
@@ -1131,6 +1152,8 @@ namespace ArchivosTarea2
                 toolStripStatusLabel1.Text = "Error, no se ha introducido una llave primaria.";
             }
         }
+
+
 
         // Boton para eliminar un dato (y quiza hasta el indice si se da el caso).
         private void button3_Click(object sender, EventArgs e)

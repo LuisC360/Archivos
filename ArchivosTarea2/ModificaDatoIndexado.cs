@@ -123,15 +123,6 @@ namespace ArchivosTarea2
             dataGridView1.Rows.Add(fila);
         }
 
-        public bool era_unico_dato()
-        {
-            bool unicoDato = false;
-
-
-
-            return unicoDato;
-        }
-
         // Boton que acepta los cambios realizados.
         private void button1_Click(object sender, EventArgs e)
         {
@@ -430,6 +421,14 @@ namespace ArchivosTarea2
             return tipoAtr;
         }
 
+        public bool regresa_llavePrimariaCambiada()
+        {
+            return llavePrimariaCambiada;
+        }
 
+        public Dato regresa_datoIndexado()
+        {
+            return dat;
+        }
     }
 }
