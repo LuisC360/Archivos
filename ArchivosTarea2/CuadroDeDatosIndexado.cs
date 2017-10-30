@@ -1123,7 +1123,7 @@ namespace ArchivosTarea2
                                             // Si se cambio la llave primaria del dato
                                             if(modIndex.regresa_llavePrimariaCambiada() == true)
                                             {
-
+                                                revisa_cambio(datoI, indiceI);
                                             }
 
                                             encontradoYmodificado = true;
@@ -1163,7 +1163,19 @@ namespace ArchivosTarea2
         /// <param name="i">El indice actual del dato. Si solo tenia el dato a cambiar de indice, dicho indice sera eliminado.</param>
         private void revisa_cambio(Dato d, Indice i)
         {
+            // Primero se debe revisar si el dato aun cabe dentro del indice en el que esta, en cuyo caso no se debe tomar accion alguna.
+            dynamic valorLlavePrimaria = d.datos[indiceLlave];
+            dynamic valorInicial = i.regresa_valInicial();
+            dynamic valorFinal = i.regresa_valFinal();
 
+            if(atrLlave.tipo != 'S')
+            {
+                if(valorFinal > valorLlavePrimaria && valorLlavePrimaria > valorInicial)
+                {
+                    // No se debe de tomar accion alguna puesto a que el valor de la llave primaria aun esta dentro de los valores del indice
+                    // en el que esta el dato con dicha llave.
+                }
+            }
         }
 
         // Boton para eliminar un dato (y quiza hasta el indice si se da el caso).
