@@ -25,6 +25,13 @@ namespace ArchivosTarea2
         readonly List<Indice> indicesVigentes = new List<Indice>();
         readonly int indiceLlave;
 
+        /// <summary>
+        /// Constructor del cuadro de insercion, modificacion y eliminacion de datos indexados.
+        /// </summary>
+        /// <param name="e">La entidad en la que se insertaran los indices y los datos.</param>
+        /// <param name="pMem">La posicion actual de memoria.</param>
+        /// <param name="tamDat">El tamaño actual del dato.</param>
+        /// <param name="rang">El rango definido para los indices.</param>
         public CuadroDeDatosIndexado(Entidad e, long pMem, long tamDat, long rang)
         {
             ent = e;
@@ -1070,6 +1077,7 @@ namespace ArchivosTarea2
                     dynamic vI = ind.regresa_valInicial();
                     dynamic vF = ind.regresa_valFinal();
 
+                    // Si la llave primaria no es de tipo String
                     if(atrLlave.tipo != 'S')
                     {
                         if(vF > valorBuscar && valorBuscar > vI)
@@ -1098,7 +1106,15 @@ namespace ArchivosTarea2
                                 // Si encontramos el dato
                                 if(datoBuscar == valorBuscar)
                                 {
+                                    using(ModificaDatoIndexado modIndex = new ModificaDatoIndexado(ind, dat, ent, indiceLlave))
+                                    {
+                                        var modifica = modIndex.ShowDialog();
 
+                                        if(modifica == DialogResult.OK)
+                                        {
+                                            if(modIndex.)
+                                        }
+                                    }
                                 }
                             }
                             break;
@@ -1119,7 +1135,14 @@ namespace ArchivosTarea2
         // Boton para eliminar un dato (y quiza hasta el indice si se da el caso).
         private void button3_Click(object sender, EventArgs e)
         {
-
+            if(textBox2.Text.Length > 0)
+            {
+                dynamic valorBuscar = 0;
+            }
+            else
+            {
+                toolStripStatusLabel1.Text = "Error, no se ha introducido una llave primaria.";
+            }
         }
 
         // Boton que muestra los datos ligados a un indice.
