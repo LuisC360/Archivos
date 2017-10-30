@@ -1076,6 +1076,8 @@ namespace ArchivosTarea2
                 // Recorremos la lista de indices en busqueda de el que contenga el rango adecuado.
                 foreach(Indice ind in ent.listaIndices)
                 {
+                    Indice indiceI = ind;
+
                     dynamic vI = ind.regresa_valInicial();
                     dynamic vF = ind.regresa_valFinal();
 
@@ -1110,7 +1112,7 @@ namespace ArchivosTarea2
                                 // Si encontramos el dato
                                 if(datoBuscar == valorBuscar)
                                 {
-                                    using(ModificaDatoIndexado modIndex = new ModificaDatoIndexado(ind, datoI, ent, indiceLlave))
+                                    using(ModificaDatoIndexado modIndex = new ModificaDatoIndexado(indiceI, datoI, ent, indiceLlave))
                                     {
                                         var modifica = modIndex.ShowDialog();
 
@@ -1153,7 +1155,16 @@ namespace ArchivosTarea2
             }
         }
 
+        /// <summary>
+        /// Metodo que revisa que el cambio de dato haga que se tenga que cambiar el dato a otro indice, y, si ese es el caso, tambien
+        /// verificara si el indice sobre el que se desea insertar el dato exista. Si no es el caso, entonces el indice sera creado.
+        /// </summary>
+        /// <param name="d">El dato al que se cambiara de indice de ser necesario.</param>
+        /// <param name="i">El indice actual del dato. Si solo tenia el dato a cambiar de indice, dicho indice sera eliminado.</param>
+        private void revisa_cambio(Dato d, Indice i)
+        {
 
+        }
 
         // Boton para eliminar un dato (y quiza hasta el indice si se da el caso).
         private void button3_Click(object sender, EventArgs e)

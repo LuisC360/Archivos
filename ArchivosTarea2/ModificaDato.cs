@@ -14,10 +14,10 @@ namespace ArchivosTarea2
     {
         public Entidad ent;
         public Dato dat;
-        public bool llavePrimariaCambiada = false;
+        public bool llavePrimariaCambiada;
         List<Atributo> listaAtributosVigentes = new List<Atributo>();
         int atributosVigentes;
-        int indexLlavePrimaria;      
+        readonly int indexLlavePrimaria;      
         readonly Dato datoRespaldo;
 
         /// <summary>
@@ -160,7 +160,7 @@ namespace ArchivosTarea2
                                 res = res.Remove(start, count);
                             }
 
-                            dat.datos[i] = res.ToLower();
+                            dat.datos[i] = res.ToLowerInvariant();
 
                             if (casillaLlavePrimaria == true)
                             {
@@ -375,11 +375,11 @@ namespace ArchivosTarea2
         {
             bool duplicada = false;
 
-            foreach(Dato dat in ent.listaDatos)
+            foreach(Dato datA in ent.listaDatos)
             {
-                if (dat != modificado)
+                if (datA != modificado)
                 {
-                    dynamic llaveComparar = dat.datos[indexLlavePrimaria];
+                    dynamic llaveComparar = datA.datos[indexLlavePrimaria];
 
                     if (llaveComparar == llave)
                     {
@@ -397,7 +397,7 @@ namespace ArchivosTarea2
         /// </summary>
         /// <param name="tatr">El caracter que define el tipo de atributo de cada valor del dato.</param>
         /// <returns>El tipo de dato del valor del dato.</returns>
-        private dynamic valida_atributo(char tatr)
+        private static dynamic valida_atributo(char tatr)
         {
             var tipoAtr = typeof(int);
 
@@ -414,6 +414,9 @@ namespace ArchivosTarea2
                 case 'D': tipoAtr = typeof(double);
                     break;
                 case 'L': tipoAtr = typeof(long);
+                    break;
+                default:
+                    // DEFAULT VACIO
                     break;
             }
 

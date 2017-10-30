@@ -1470,7 +1470,7 @@ namespace ArchivosTarea2
 
             if(apDat != -1)
             {
-                lee_datos_de_cubeta(f, r, cub, ent);
+                lee_datos_de_cubeta(r, cub, ent);
             }
 
             long apSig = r.ReadInt64();
@@ -1505,11 +1505,10 @@ namespace ArchivosTarea2
         /// <summary>
         /// Funcion con la que se leera un dato para ponerlo en la cubeta correspondiente.
         /// </summary>
-        /// <param name="f"></param>
-        /// <param name="r"></param>
-        /// <param name="c"></param>
-        /// <param name="ent"></param>
-        void lee_datos_de_cubeta(FileStream f, BinaryReader r, Cubeta c, Entidad ent)
+        /// <param name="r">El lector de archivos binarios.</param>
+        /// <param name="c">La cubeta en la que se pondra el dato.</param>
+        /// <param name="ent">La entidad que contiene los atributos.</param>
+        void lee_datos_de_cubeta(BinaryReader r, Cubeta c, Entidad ent)
         {
             Dato dataRead = new Dato(ent);
 
