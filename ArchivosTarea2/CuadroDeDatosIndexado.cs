@@ -1205,12 +1205,18 @@ namespace ArchivosTarea2
                                 {
                                     i.datosIndice[a].apSigDato = -1;
                                 }
+
+                                datosRespaldo.Add(i.datosIndice[a]);
                             }
                             else if(i.datosIndice[a] == d && a == 0 && (a+1) < i.datosIndice.Count)
                             {
                                 i.srt_apDatos(i.datosIndice[a+1].posDato);
+                                datosRespaldo.Add(i.datosIndice[a+1]);
                             }
                         }
+
+                        i.datosIndice.Clear();
+                        i.datosIndice = datosRespaldo;
                     }
 
                     busca_indice(d);
