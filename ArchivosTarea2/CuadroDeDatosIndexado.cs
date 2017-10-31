@@ -88,7 +88,7 @@ namespace ArchivosTarea2
             dataGridView1.ReadOnly = true;
         }
 
-        private static void inicia_dataGridIndices()
+        private void inicia_dataGridIndices()
         {
             dataGridView1.ColumnCount = 5;
             dataGridView1.ColumnHeadersVisible = true;
@@ -1180,6 +1180,40 @@ namespace ArchivosTarea2
                 {
                     // No se debe de tomar accion alguna puesto a que el valor de la llave primaria aun esta dentro de los valores del indice
                     // en el que esta el dato con dicha llave.
+                }
+                else
+                {   
+                    // Se debe revisar si el dato que se quiere cambiar de indice era el unico dato del indice en cuestion.
+                    if(i.datosIndice.Count == 1)
+                    {
+                        i.srt_apDatos(-1);
+                        i.datosIndice.Clear();
+                    }
+                    else
+                    {
+                        List<Dato> datosRespaldo = new List<Dato>();
+
+                        for(int a = 0; a < i.datosIndice.Count; a++)
+                        {
+                            if (i.datosIndice[a] != d)
+                            {
+                                if ((a + 1) < i.datosIndice.Count && i.datosIndice[a + 1] == d && (a + 2) < i.datosIndice.Count)
+                                {
+                                    i.datosIndice[a].apSigDato = i.datosIndice[a + 2].posDato;
+                                }
+                                else if((a + 1) < i.datosIndice.Count && i.datosIndice[a + 1] == d)
+                                {
+                                    i.datosIndice[a].apSigDato = -1;
+                                }
+                            }
+                            else if(i.datosIndice[a] == d && a == 0 && (a+1) < i.datosIndice.Count)
+                            {
+                                i.srt_apDatos(i.datosIndice[a+1].posDato);
+                            }
+                        }
+                    }
+
+                    busca_indice(d);
                 }
             }
         }
