@@ -847,8 +847,8 @@ namespace ArchivosTarea2
                     Convert.ChangeType(valIni, typeof(int));
                     Convert.ChangeType(valFin, typeof(int));
 
-                    valIni = 1;
-                    valFin = rango;
+                    valIni = 0;
+                    valFin = rango - 1;
 
                     do
                     {
@@ -877,8 +877,8 @@ namespace ArchivosTarea2
                     Convert.ChangeType(valIni, typeof(long));
                     Convert.ChangeType(valFin, typeof(long));
 
-                    valIni = 1;
-                    valFin = rango;
+                    valIni = 0;
+                    valFin = rango - 1;
 
                     do
                     {
@@ -907,8 +907,8 @@ namespace ArchivosTarea2
                     Convert.ChangeType(valIni, typeof(float));
                     Convert.ChangeType(valFin, typeof(float));
 
-                    valIni = 1;
-                    valFin = rango;
+                    valIni = 0;
+                    valFin = rango - 1;
 
                     do
                     {
@@ -937,8 +937,8 @@ namespace ArchivosTarea2
                     Convert.ChangeType(valIni, typeof(double));
                     Convert.ChangeType(valFin, typeof(double));
 
-                    valIni = 1;
-                    valFin = rango;
+                    valIni = 0;
+                    valFin = rango - 1;
 
                     do
                     {
@@ -1222,11 +1222,17 @@ namespace ArchivosTarea2
                     busca_indice(d);
                 }
             }
+            else
+            {
+                // WIP
+            }
         }
 
         // Boton para eliminar un dato (y quiza hasta el indice si se da el caso).
         private void button3_Click(object sender, EventArgs e)
         {
+            bool encontradoYeliminado = false;
+
             if(textBox2.Text.Length > 0)
             {
                 dynamic valorBuscar = 0;
@@ -1256,6 +1262,101 @@ namespace ArchivosTarea2
                         // DEFAULT VACIO
                         break;
                 }
+
+                // Recorremos la lista de indices en busqueda de el que contenga el rango adecuado.
+                foreach (Indice ind in ent.listaIndices)
+                {
+                    Indice indiceI = ind;
+
+                    dynamic vI = ind.regresa_valInicial();
+                    dynamic vF = ind.regresa_valFinal();
+
+                    // Si la llave primaria no es de tipo String
+                    if (atrLlave.tipo != 'S')
+                    {
+                        if (vF > valorBuscar && valorBuscar > vI)
+                        {
+                            // Si encontramos el indice, ahora hay que encontrar el indice que corresponda a ese dato.
+                            dynamic datoBuscar = 0;
+
+                            foreach (Dato dat in ind.datosIndice)
+                            {
+                                Dato datoI = dat;
+
+                                switch (atrLlave.tipo)
+                                {
+                                    case 'I': datoBuscar = Convert.ToInt32(datoI.datos[indiceLlave]);
+                                        break;
+                                    case 'F': datoBuscar = Convert.ToSingle(datoI.datos[indiceLlave]);
+                                        break;
+                                    case 'L': datoBuscar = Convert.ToInt64(datoI.datos[indiceLlave]);
+                                        break;
+                                    case 'D': datoBuscar = Convert.ToDouble(datoI.datos[indiceLlave]);
+                                        break;
+                                    case 'C': datoBuscar = Convert.ToChar(datoI.datos[indiceLlave]);
+                                        break;
+                                    case 'S': datoBuscar = Convert.ToString(datoI.datos[indiceLlave]);
+                                        break;
+                                }
+
+                                // Si encontramos el dato
+                                if (datoBuscar == valorBuscar)
+                                {
+                                    // Se debe revisar si el dato a eliminar era el unico dentro del indice
+                                    if(indiceI.datosIndice.Count == 1)
+                                    {
+                                        indiceI.srt_apDatos(-1);
+                                        indiceI.datosIndice[0].apSigDato = -4;
+                                    }
+                                    else
+                                    {
+                                        // Si no era el unico, habra que revisar en que posicion esta el dato a eliminar
+                                        for(int it = 0; it < indiceI.datosIndice.Count; it++)
+                                        {
+                                            if(indiceI.datosIndice[it] != datoI)
+                                            {
+                                                if((it+1) < indiceI.datosIndice.Count && indiceI.datosIndice[it+1] == datoI && 
+                                                    (it+2) < indiceI.datosIndice.Count)
+                                                {
+                                                    indiceI.datosIndice[it].apSigDato = indiceI.datosIndice[it + 2].posDato;
+                                                    indiceI.datosIndice[it + 1].apSigDato = -3;
+                                                }
+                                                else if((it+1) < indiceI.datosIndice.Count && indiceI.datosIndice[it+1] == datoI)
+                                                {
+                                                    indiceI.datosIndice[it].apSigDato = -2;
+                                                    indiceI.datosIndice[it + 1].apSigDato = -4;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                if(it == 0)
+                                                {
+                                                    ent.apIndices = indiceI.datosIndice[it + 1].posDato;
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    encontradoYeliminado = true;
+                                }
+
+                                if (encontradoYeliminado == true)
+                                {
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (encontradoYeliminado == true)
+                        {
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        // WIP
+                    }
+                }
             }
             else
             {
@@ -1273,6 +1374,11 @@ namespace ArchivosTarea2
             actualiza_dataGrid_datos(muestraIndice);
         }
 
+        /// <summary>
+        /// Metodo con el cual se buscara un indice en base a su valor inicial.
+        /// </summary>
+        /// <param name="vI">El valor inicial del indice a buscar.</param>
+        /// <returns>Un indice que puede estar con un valor inicial vacio en caso de no ser encontrado.</returns>
         private Indice busca_indice(dynamic vI)
         {
             Indice encontrar = new Indice();
