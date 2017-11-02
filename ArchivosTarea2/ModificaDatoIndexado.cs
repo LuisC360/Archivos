@@ -107,9 +107,6 @@ namespace ArchivosTarea2
                         break;
                     case 'S': dato = Convert.ToString(dato);
                         break;
-                    default:
-                        // DEFAULT VACIO
-                        break;
                 }
 
                 fila[count] = dato.ToString();
@@ -232,7 +229,7 @@ namespace ArchivosTarea2
                                 res = res.Remove(start, count);
                             }
 
-                            dat.datos[i] = res.ToLower();
+                            dat.datos[i] = res.ToLowerInvariant();
 
                             if (casillaLlavePrimaria == true)
                             {
@@ -368,7 +365,7 @@ namespace ArchivosTarea2
         }
 
         /// <summary>
-        /// Metodo con el que se validara si la nueva llave primaria no existe dentro de la lista de datos de la entidad.
+        /// Metodo con el que se validara si la nueva llave primaria no existe dentro de la lista de indices de la entidad.
         /// </summary>
         /// <param name="llave">El nuevo valor de llave primaria del dato modificado.</param>
         /// <returns>Bandera que indica si la llave primaria esta duplicada.</returns>
@@ -376,17 +373,28 @@ namespace ArchivosTarea2
         {
             bool duplicada = false;
 
-            foreach (Dato dat in ent.listaDatos)
+            foreach(Indice ind in ent.listaIndices)
             {
-                if (dat != modificado)
+                if(ind.regresa_apDatos() != -2)
                 {
-                    dynamic llaveComparar = dat.datos[indexLlavePrimaria];
-
-                    if (llaveComparar == llave)
+                    foreach(Dato dt in ind.datosIndice)
                     {
-                        duplicada = true;
-                        break;
+                        if(dt.apSigDato != -3 && dt.apSigDato != -4)
+                        {
+                            dynamic llaveComparar = dt.datos[indexLlavePrimaria];
+
+                            if(llaveComparar == llave)
+                            {
+                                duplicada = true;
+                                break;
+                            }
+                        }
                     }
+                }
+
+                if(duplicada == true)
+                {
+                    break;
                 }
             }
 
@@ -398,7 +406,7 @@ namespace ArchivosTarea2
         /// </summary>
         /// <param name="tatr">El caracter que define el tipo de atributo de cada valor del dato.</param>
         /// <returns>El tipo de dato del valor del dato.</returns>
-        private dynamic valida_atributo(char tatr)
+        private static dynamic valida_atributo(char tatr)
         {
             var tipoAtr = typeof(int);
 
