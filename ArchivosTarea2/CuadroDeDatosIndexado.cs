@@ -1303,35 +1303,110 @@ namespace ArchivosTarea2
                                 if (datoBuscar == valorBuscar)
                                 {
                                     // Se debe revisar si el dato a eliminar era el unico dentro del indice
+                                    // Si era el unico dato del indice, entonces se actualizara el apuntador al siguiente dato de dicho
+                                    // dato a -4
                                     if(indiceI.datosIndice.Count == 1)
                                     {
-                                        indiceI.srt_apDatos(-1);
                                         indiceI.datosIndice[0].apSigDato = -4;
+                                        indiceI.srt_apDatos(-2);
                                     }
                                     else
                                     {
                                         // Si no era el unico, habra que revisar en que posicion esta el dato a eliminar
                                         for(int it = 0; it < indiceI.datosIndice.Count; it++)
                                         {
-                                            if(indiceI.datosIndice[it] != datoI)
+                                            // Si el dato examinado no es el dato a eliminar, y el dato a examinar no fue eliminado con
+                                            // anterioridad
+                                            if(indiceI.datosIndice[it] != datoI && indiceI.datosIndice[it].apSigDato != -3
+                                                && indiceI.datosIndice[it].apSigDato != -4)
                                             {
-                                                if((it+1) < indiceI.datosIndice.Count && indiceI.datosIndice[it+1] == datoI && 
-                                                    (it+2) < indiceI.datosIndice.Count)
+                                                // Si el siguiente dato a examinar es el dato que se busca eliminar y hay datos despues
+                                                if ((it + 1) < indiceI.datosIndice.Count && indiceI.datosIndice[it + 1] == datoI &&
+                                                    (it + 2) < indiceI.datosIndice.Count)
                                                 {
-                                                    indiceI.datosIndice[it].apSigDato = indiceI.datosIndice[it + 2].posDato;
-                                                    indiceI.datosIndice[it + 1].apSigDato = -3;
+                                                    // Se debe de buscar si el dato posterior a eliminar no fue eliminado tambien
+                                                    bool todosEliminados = false;
+
+                                                    for(int iu = it + 2; iu < indiceI.datosIndice.Count; iu++)
+                                                    {
+                                                        // Si se encontro un dato posterior que no fue eliminado.
+                                                        if(indiceI.datosIndice[iu].apSigDato != -3 && 
+                                                            indiceI.datosIndice[iu].apSigDato != -4)
+                                                        {
+                                                            indiceI.datosIndice[it].apSigDato = indiceI.datosIndice[iu].posDato;
+                                                            break;
+                                                        }
+
+                                                        if(iu == indiceI.datosIndice.Count)
+                                                        {
+                                                            todosEliminados = true;
+                                                        }
+                                                    }
+                                                    
+                                                    // Si al final no hubo datos posteriores al eliminado que tampoco fueron eliminados
+                                                    if(todosEliminados == true)
+                                                    {
+                                                        encontradoYeliminado = true;
+                                                        indiceI.datosIndice[it].apSigDato = -2;
+                                                        break;
+                                                    }
+                                                    else
+                                                    {
+                                                        encontradoYeliminado = true;
+                                                        break;
+                                                    }
                                                 }
-                                                else if((it+1) < indiceI.datosIndice.Count && indiceI.datosIndice[it+1] == datoI)
+                                                // Si el siguiente dato a examinar el el dato que se busca eliminar y no hay datos despues
+                                                else if ((it + 1) < indiceI.datosIndice.Count && indiceI.datosIndice[it + 1] == datoI)
                                                 {
+                                                    encontradoYeliminado = true;
                                                     indiceI.datosIndice[it].apSigDato = -2;
-                                                    indiceI.datosIndice[it + 1].apSigDato = -4;
                                                 }
                                             }
-                                            else
+                                            // Si el dato examinado no es el dato a eliminar, y dicho dato examinado tambien fue eliminado
+                                            else if (indiceI.datosIndice[it] != datoI && indiceI.datosIndice[it].apSigDato == -3
+                                                && indiceI.datosIndice[it].apSigDato == -4)
                                             {
-                                                if(it == 0)
+                                                // Si el siguiente dato del que se esta examinando es el dato a eliminar y hay datos despues
+                                                if ((it + 1) < indiceI.datosIndice.Count && indiceI.datosIndice[it + 1] == datoI &&
+                                                    (it + 2) < indiceI.datosIndice.Count)
                                                 {
-                                                    ent.apIndices = indiceI.datosIndice[it + 1].posDato;
+                                                    // Se debe de buscar si el dato posterior a eliminar no fue eliminado tambien
+                                                    bool todosEliminados = false;
+
+                                                    for (int iu = it + 2; iu < indiceI.datosIndice.Count; iu++)
+                                                    {
+                                                        // Si se encontro un dato posterior que no fue eliminado.
+                                                        if (indiceI.datosIndice[iu].apSigDato != -3 &&
+                                                            indiceI.datosIndice[iu].apSigDato != -4)
+                                                        {
+                                                            indiceI.srt_apDatos(indiceI.datosIndice[iu].posDato);
+                                                            break;
+                                                        }
+
+                                                        if (iu == indiceI.datosIndice.Count)
+                                                        {
+                                                            todosEliminados = true;
+                                                        }
+                                                    }
+
+                                                    // Si al final no hubo datos posteriores al eliminado que tampoco fueron eliminados
+                                                    if (todosEliminados == true)
+                                                    {
+                                                        encontradoYeliminado = true;
+                                                        indiceI.srt_apDatos(-2);
+                                                        break;
+                                                    }
+                                                    else
+                                                    {
+                                                        encontradoYeliminado = true;
+                                                        break;
+                                                    }
+                                                }
+                                                else if ((it + 1) < indiceI.datosIndice.Count && indiceI.datosIndice[it + 1] == datoI)
+                                                {
+                                                    encontradoYeliminado = true;
+                                                    indiceI.srt_apDatos(-2);
                                                 }
                                             }
                                         }
