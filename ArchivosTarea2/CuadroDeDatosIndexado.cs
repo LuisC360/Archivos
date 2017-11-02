@@ -1309,6 +1309,7 @@ namespace ArchivosTarea2
                                     {
                                         indiceI.datosIndice[0].apSigDato = -4;
                                         indiceI.srt_apDatos(-2);
+                                        encontradoYeliminado = true;
                                     }
                                     else
                                     {
@@ -1333,6 +1334,7 @@ namespace ArchivosTarea2
                                                         if(indiceI.datosIndice[iu].apSigDato != -3 && 
                                                             indiceI.datosIndice[iu].apSigDato != -4)
                                                         {
+                                                            indiceI.datosIndice[it + 1].apSigDato = -3;
                                                             indiceI.datosIndice[it].apSigDato = indiceI.datosIndice[iu].posDato;
                                                             break;
                                                         }
@@ -1348,6 +1350,7 @@ namespace ArchivosTarea2
                                                     {
                                                         encontradoYeliminado = true;
                                                         indiceI.datosIndice[it].apSigDato = -2;
+                                                        indiceI.datosIndice[it + 1].apSigDato = -3;
                                                         break;
                                                     }
                                                     else
@@ -1361,6 +1364,7 @@ namespace ArchivosTarea2
                                                 {
                                                     encontradoYeliminado = true;
                                                     indiceI.datosIndice[it].apSigDato = -2;
+                                                    indiceI.datosIndice[it + 1].apSigDato = -4;
                                                 }
                                             }
                                             // Si el dato examinado no es el dato a eliminar, y dicho dato examinado tambien fue eliminado
@@ -1380,6 +1384,7 @@ namespace ArchivosTarea2
                                                         if (indiceI.datosIndice[iu].apSigDato != -3 &&
                                                             indiceI.datosIndice[iu].apSigDato != -4)
                                                         {
+                                                            indiceI.datosIndice[it + 1].apSigDato = -3;
                                                             indiceI.srt_apDatos(indiceI.datosIndice[iu].posDato);
                                                             break;
                                                         }
@@ -1394,6 +1399,7 @@ namespace ArchivosTarea2
                                                     if (todosEliminados == true)
                                                     {
                                                         encontradoYeliminado = true;
+                                                        indiceI.datosIndice[it + 1].apSigDato = -3;
                                                         indiceI.srt_apDatos(-2);
                                                         break;
                                                     }
@@ -1407,12 +1413,11 @@ namespace ArchivosTarea2
                                                 {
                                                     encontradoYeliminado = true;
                                                     indiceI.srt_apDatos(-2);
+                                                    indiceI.datosIndice[it + 1].apSigDato = -4;
                                                 }
                                             }
                                         }
                                     }
-
-                                    encontradoYeliminado = true;
                                 }
 
                                 if (encontradoYeliminado == true)
