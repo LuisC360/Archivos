@@ -2203,74 +2203,72 @@ namespace ArchivosTarea2
                         writer.Write(apSigIn);
                         writer.Write(apDat);
 
-                        if(apDat != -1 && apDat != -2)
+                        for(int n = 0; n < entidades[j].listaIndices[l].datosIndice.Count; n++)
                         {
-                            for(int n = 0; n < entidades[j].listaIndices[l].datosIndice.Count; n++)
+                            for(int m = 0; m < entidades[j].listaIndices[l].datosIndice[n].datos.Count; m++)
                             {
-                                for(int m = 0; m < entidades[j].listaIndices[l].datosIndice[n].datos.Count; m++)
+                                if(entidades[j].listaIndices[l].datosIndice[n].listaAtributosDato[m].tipo == 'I')
                                 {
-                                    if(entidades[j].listaIndices[l].datosIndice[n].listaAtributosDato[m].tipo == 'I')
-                                    {
-                                        writer.Write(Convert.ToInt32(entidades[j].listaIndices[l].datosIndice[n].datos[m]));
-                                    }
-                                    else if(entidades[j].listaIndices[l].datosIndice[n].listaAtributosDato[m].tipo == 'F')
-                                    {
-                                        writer.Write(Convert.ToSingle(entidades[j].listaIndices[l].datosIndice[n].datos[m]));
-                                    }
-                                    else if (entidades[j].listaIndices[l].datosIndice[n].listaAtributosDato[m].tipo == 'L')
-                                    {
-                                        writer.Write(Convert.ToInt64(entidades[j].listaIndices[l].datosIndice[n].datos[m]));
-                                    }
-                                    else if (entidades[j].listaIndices[l].datosIndice[n].listaAtributosDato[m].tipo == 'D')
-                                    {
-                                        writer.Write(Convert.ToDouble(entidades[j].listaIndices[l].datosIndice[n].datos[m]));
-                                    }
-                                    else if (entidades[j].listaIndices[l].datosIndice[n].listaAtributosDato[m].tipo == 'C')
-                                    {
-                                        writer.Write(Convert.ToChar(entidades[j].listaIndices[l].datosIndice[n].datos[m]));
-                                    }
-                                    else if (entidades[j].listaIndices[l].datosIndice[n].listaAtributosDato[m].tipo == 'S')
-                                    {
-                                        String nuSt = "";
+                                    writer.Write(Convert.ToInt32(entidades[j].listaIndices[l].datosIndice[n].datos[m]));
+                                }
+                                else if(entidades[j].listaIndices[l].datosIndice[n].listaAtributosDato[m].tipo == 'F')
+                                {
+                                    writer.Write(Convert.ToSingle(entidades[j].listaIndices[l].datosIndice[n].datos[m]));
+                                }
+                                else if (entidades[j].listaIndices[l].datosIndice[n].listaAtributosDato[m].tipo == 'L')
+                                {
+                                    writer.Write(Convert.ToInt64(entidades[j].listaIndices[l].datosIndice[n].datos[m]));
+                                }
+                                else if (entidades[j].listaIndices[l].datosIndice[n].listaAtributosDato[m].tipo == 'D')
+                                {
+                                    writer.Write(Convert.ToDouble(entidades[j].listaIndices[l].datosIndice[n].datos[m]));
+                                }
+                                else if (entidades[j].listaIndices[l].datosIndice[n].listaAtributosDato[m].tipo == 'C')
+                                {
+                                    writer.Write(Convert.ToChar(entidades[j].listaIndices[l].datosIndice[n].datos[m]));
+                                }
+                                else if (entidades[j].listaIndices[l].datosIndice[n].listaAtributosDato[m].tipo == 'S')
+                                {
+                                    String nuSt = "";
 
-                                        if (entidades[j].listaIndices[l].datosIndice[n].datos[m] is char[])
-                                        {
-                                            nuSt = new string((char[])entidades[j].listaDatos[n].datos[m]);
-                                        }
+                                    if (entidades[j].listaIndices[l].datosIndice[n].datos[m] is char[])
+                                    {
+                                        nuSt = new string((char[])entidades[j].listaIndices[l].datosIndice[n].datos[m]);
+                                    }
 
-                                        char[] cadenaTemporal = 
+                                    char[] cadenaTemporal = 
                                             new char[entidades[j].listaIndices[l].datosIndice[n].listaAtributosDato[m].bytes / 2];
 
-                                        for (int i = 0; i < entidades[j].listaIndices[l].datosIndice[n].listaAtributosDato[m].bytes / 2; i++)
-                                        {
-                                            cadenaTemporal[i] = '\0';
-                                        }
+                                    for (int i = 0; i < entidades[j].listaIndices[l].datosIndice[n].listaAtributosDato[m].bytes / 2; i++)
+                                    {
+                                        cadenaTemporal[i] = '\0';
+                                    }
 
-                                        if (nuSt.Length > 0)
+                                    if (nuSt.Length > 0)
+                                    {
+                                        for (int o = 0; o < nuSt.Length; o++)
                                         {
-                                            for (int o = 0; o < nuSt.Length; o++)
-                                            {
-                                                cadenaTemporal[o] = nuSt[o];
-                                            }
-                                        }
-                                        else
-                                        {
-                                            for (int o = 0; o < entidades[j].listaIndices[l].datosIndice[n].datos[m].ToString().Length; o++)
-                                            {
-                                                cadenaTemporal[o] = entidades[j].listaDatos[n].datos[m].ToString()[o];
-                                            }
-                                        }
-
-                                        for (int p = 0; p < cadenaTemporal.Length; p++)
-                                        {
-                                            writer.Write(cadenaTemporal[p]);
+                                            cadenaTemporal[o] = nuSt[o];
                                         }
                                     }
-                                }
+                                    else
+                                    {
+                                        for (int o = 0; o < entidades[j].listaIndices[l].datosIndice[n].datos[m].ToString().Length; o++)
+                                        {
+                                            cadenaTemporal[o] = entidades[j].listaIndices[l].datosIndice[n].datos[m].ToString()[o];
+                                        }
+                                    }
 
-                                writer.Write(entidades[j].listaIndices[l].datosIndice[n].apSigDato);
+                                    for (int p = 0; p < cadenaTemporal.Length; p++)
+                                    {
+                                        writer.Write(cadenaTemporal[p]);
+                                    }
+                                }
                             }
+
+                            writer.Write(entidades[j].listaIndices[l].datosIndice[n].apSigDato);
                         }
+                        
                     }
                 }
             }
@@ -2865,14 +2863,37 @@ namespace ArchivosTarea2
                                     }
                                 }
 
-                                escribe_archivo(textBox1.Text);
+                                switch(tipo)
+                                {
+                                    case 0:
+                                        escribe_archivo(textBox1.Text);
 
-                                entidadesLeidas = new List<Entidad>();
+                                        entidadesLeidas = new List<Entidad>();
 
-                                manejo_dataGrid(textBox1.Text);
+                                        manejo_dataGrid(textBox1.Text);
 
-                                manejo_dataGrid_atributos(entidadEncontrada);
+                                        manejo_dataGrid_atributos(entidadEncontrada);
+                                        break;
+                                    case 1:
+                                        escribe_archivo_indexado(textBox1.Text);
 
+                                        entidadesLeidas = new List<Entidad>();
+
+                                        manejo_dataGrid_indexado(textBox1.Text);
+
+                                        manejo_dataGrid_atributos(entidadEncontrada);
+                                        break;
+                                    case 2:
+                                        escribe_archivo_hash(textBox1.Text);
+
+                                        entidadesLeidas = new List<Entidad>();
+
+                                        manejo_dataGrid_hash(textBox1.Text);
+
+                                        manejo_dataGrid_atributos(entidadEncontrada);
+                                        break;
+                                }
+                                
                                 toolStripStatusLabel1.Text = "Atributo modificado con exito.";
                             }
                             // Si no es el mismo atributo
@@ -2933,13 +2954,36 @@ namespace ArchivosTarea2
                                     }
                                 }
 
-                                escribe_archivo(textBox1.Text);
+                                switch (tipo)
+                                {
+                                    case 0:
+                                        escribe_archivo(textBox1.Text);
 
-                                entidadesLeidas = new List<Entidad>();
+                                        entidadesLeidas = new List<Entidad>();
 
-                                manejo_dataGrid(textBox1.Text);
+                                        manejo_dataGrid(textBox1.Text);
 
-                                manejo_dataGrid_atributos(entidadEncontrada);
+                                        manejo_dataGrid_atributos(entidadEncontrada);
+                                        break;
+                                    case 1:
+                                        escribe_archivo_indexado(textBox1.Text);
+
+                                        entidadesLeidas = new List<Entidad>();
+
+                                        manejo_dataGrid_indexado(textBox1.Text);
+
+                                        manejo_dataGrid_atributos(entidadEncontrada);
+                                        break;
+                                    case 2:
+                                        escribe_archivo_hash(textBox1.Text);
+
+                                        entidadesLeidas = new List<Entidad>();
+
+                                        manejo_dataGrid_hash(textBox1.Text);
+
+                                        manejo_dataGrid_atributos(entidadEncontrada);
+                                        break;
+                                }
 
                                 toolStripStatusLabel1.Text = "Atributo modificado con exito.";
                             }
@@ -3178,9 +3222,24 @@ namespace ArchivosTarea2
                                 }                                
                             }
 
-                            escribe_archivo(textBox1.Text);
+                            switch(tipo)
+                            {
+                                case 0:
+                                    escribe_archivo(textBox1.Text);
 
-                            manejo_dataGrid(textBox1.Text);
+                                    manejo_dataGrid(textBox1.Text);
+                                    break;
+                                case 1:
+                                    escribe_archivo_indexado(textBox1.Text);
+
+                                    manejo_dataGrid_indexado(textBox1.Text);
+                                    break;
+                                case 2:
+                                    escribe_archivo_hash(textBox1.Text);
+
+                                    manejo_dataGrid_hash(textBox1.Text);
+                                    break;
+                            }
 
                             manejo_dataGrid_atributos(entidadEncontrada);
 

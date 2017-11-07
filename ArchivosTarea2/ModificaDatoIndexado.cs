@@ -105,7 +105,14 @@ namespace ArchivosTarea2
                         break;
                     case 'C': dato = Convert.ToChar(dato);
                         break;
-                    case 'S': dato = Convert.ToString(dato);
+                    case 'S':
+                        if (dato is char[])
+                        {
+                            char[] arr = (char[])dato;
+                            String objeto = new string(arr);
+                            dato = objeto;
+                        }
+                        dato = Convert.ToString(dato);
                         break;
                 }
 
@@ -368,6 +375,7 @@ namespace ArchivosTarea2
         /// Metodo con el que se validara si la nueva llave primaria no existe dentro de la lista de indices de la entidad.
         /// </summary>
         /// <param name="llave">El nuevo valor de llave primaria del dato modificado.</param>
+        /// <param name="modificado">El dato que se desea modificar.</param>
         /// <returns>Bandera que indica si la llave primaria esta duplicada.</returns>
         private bool verifica_llave_primaria(dynamic llave, Dato modificado)
         {
@@ -379,7 +387,7 @@ namespace ArchivosTarea2
                 {
                     foreach(Dato dt in ind.datosIndice)
                     {
-                        if(dt.apSigDato != -3 && dt.apSigDato != -4)
+                        if(dt.apSigDato != -3 && dt.apSigDato != -4 && dt != modificado)
                         {
                             dynamic llaveComparar = dt.datos[indexLlavePrimaria];
 

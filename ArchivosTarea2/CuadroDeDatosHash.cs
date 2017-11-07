@@ -863,6 +863,12 @@ namespace ArchivosTarea2
         public List<Cajon> regresa_lista_cajones()
         {
             return ent.listaCajones;
-        }       
+        }
+
+        // Boton con el que se hara la eliminación de un dato.
+        private void button3_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

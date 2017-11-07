@@ -70,6 +70,11 @@ namespace ArchivosTarea2
                 }
             }
 
+            if(ent.listaIndices.Count > 0)
+            {
+                posiciones_datos();
+            }
+
             InitializeComponent();
 
             inicia_dataGridIndices();
@@ -129,8 +134,13 @@ namespace ArchivosTarea2
             dataGridView2.Columns[j].Name = "Ap. Sig. Dato";
         }
 
+        /// <summary>
+        /// Metodo con el que se rellena el dataGridView de los indices con su informacion correspondiente.
+        /// </summary>
         private void rellena_dataGridIndices()
         {
+            dataGridView1.Rows.Clear();
+
             dataGridView1.ColumnCount = 5;
             dataGridView1.ColumnHeadersVisible = true;
 
@@ -164,6 +174,37 @@ namespace ArchivosTarea2
             foreach(string[] f in filas)
             {
                 dataGridView1.Rows.Add(f);
+            }
+        }
+
+        /// <summary>
+        /// Metodo que pone las posiciones en memoria de los datos almacenados en los indices.
+        /// </summary>
+        private void posiciones_datos()
+        {
+            foreach(Indice ind in ent.listaIndices)
+            {
+                Dato anterior = new Dato();
+
+                for(int i = 0; i < ind.datosIndice.Count; i++)
+                {
+                    if(i == 0 && ind.datosIndice[i].apSigDato != -3 && ind.datosIndice[i].apSigDato != -4)
+                    {
+                        long apD = ind.regresa_apDatos();
+                        ind.datosIndice[i].posDato = apD;
+                        anterior = ind.datosIndice[i];
+                    }
+                    else if(anterior.apSigDato == -1 && i > 0 && ind.datosIndice[i].apSigDato != -3 && ind.datosIndice[i].apSigDato != -4)
+                    {
+                        ind.datosIndice[i].posDato = ind.regresa_apDatos();
+                        anterior = ind.datosIndice[i];
+                    }
+                    else if(ind.datosIndice[i].apSigDato != -3 && ind.datosIndice[i].apSigDato != -4)
+                    {
+                        ind.datosIndice[i].posDato = anterior.apSigDato;
+                        anterior = ind.datosIndice[i];
+                    }
+                }
             }
         }
 
@@ -414,6 +455,8 @@ namespace ArchivosTarea2
                             // Validar que no exista un dato con la misma llave primaria
                             if(valida_llave_primaria(ind, dat) == false)
                             {
+                                dat.posDato = posMemoria;
+                                ind.datosIndice[ind.datosIndice.Count - 1].apSigDato = dat.posDato;
                                 ind.datosIndice.Add(dat);
                                 posMemoria = posMemoria + tamDato;
                                 indiceEncontrado = ind;
@@ -441,6 +484,8 @@ namespace ArchivosTarea2
                             // Validar que no exista un dato con la misma llave primaria
                             if(valida_llave_primaria(ind, dat) == false)
                             {
+                                dat.posDato = posMemoria;
+                                ind.datosIndice[ind.datosIndice.Count - 1].apSigDato = dat.posDato;
                                 ind.datosIndice.Add(dat);
                                 posMemoria = posMemoria + tamDato;
                                 indiceEncontrado = ind;
@@ -468,6 +513,8 @@ namespace ArchivosTarea2
                             // Validar que no exista un dato con la misma llave primaria
                             if(valida_llave_primaria(ind, dat) == false)
                             {
+                                dat.posDato = posMemoria;
+                                ind.datosIndice[ind.datosIndice.Count - 1].apSigDato = dat.posDato;
                                 ind.datosIndice.Add(dat);
                                 posMemoria = posMemoria + tamDato;
                                 indiceEncontrado = ind;
@@ -495,6 +542,8 @@ namespace ArchivosTarea2
                             // Validar que no exista un dato con la misma llave primaria
                             if(valida_llave_primaria(ind, dat) == false)
                             {
+                                dat.posDato = posMemoria;
+                                ind.datosIndice[ind.datosIndice.Count - 1].apSigDato = dat.posDato;
                                 ind.datosIndice.Add(dat);
                                 posMemoria = posMemoria + tamDato;
                                 indiceEncontrado = ind;
@@ -522,9 +571,14 @@ namespace ArchivosTarea2
                             // Validar que no exista un dato con la misma llave primaria
                             if(valida_llave_primaria(ind, dat) == false)
                             {
+                                dat.posDato = posMemoria;
+                                ind.datosIndice[ind.datosIndice.Count - 1].apSigDato = dat.posDato;
                                 ind.datosIndice.Add(dat);
                                 posMemoria = posMemoria + tamDato;
                                 indiceEncontrado = ind;
+
+                                ind.datosIndice = ind.datosIndice.OrderBy(o => o.datos[indiceLlave]).ToList();
+
                                 encontro = true;
                             }
                             else
@@ -560,7 +614,9 @@ namespace ArchivosTarea2
             String[] fila = new string[atributosVigentes.Count + 2];
             int count = 0;
 
-            foreach(Dato dat in i.datosIndice)
+            List<Dato> datosOrdenados = i.datosIndice.OrderBy(o => o.datos[indiceLlave]).ToList();
+
+            foreach (Dato dat in datosOrdenados)
             {
                 foreach(object obj in dat.datos)
                 {
@@ -1090,7 +1146,7 @@ namespace ArchivosTarea2
                     // Si la llave primaria no es de tipo String
                     if(atrLlave.tipo != 'S')
                     {
-                        if(vF > valorBuscar && valorBuscar > vI)
+                        if(vF >= valorBuscar && valorBuscar >= vI)
                         {
                             // Si encontramos el indice, ahora hay que encontrar el indice que corresponda a ese dato.
                             dynamic datoBuscar = 0;
@@ -1131,6 +1187,9 @@ namespace ArchivosTarea2
                                             {
                                                 revisa_cambio(datoI, indiceI);
                                             }
+
+                                            actualiza_dataGrid_indices();
+                                            actualiza_dataGrid_datos(indiceI);
 
                                             encontradoYmodificado = true;
                                         }
@@ -1274,7 +1333,7 @@ namespace ArchivosTarea2
                     // Si la llave primaria no es de tipo String
                     if (atrLlave.tipo != 'S')
                     {
-                        if (vF > valorBuscar && valorBuscar > vI)
+                        if (vF >= valorBuscar && valorBuscar >= vI)
                         {
                             // Si encontramos el indice, ahora hay que encontrar el indice que corresponda a ese dato.
                             dynamic datoBuscar = 0;
@@ -1294,8 +1353,6 @@ namespace ArchivosTarea2
                                     case 'D': datoBuscar = Convert.ToDouble(datoI.datos[indiceLlave]);
                                         break;
                                     case 'C': datoBuscar = Convert.ToChar(datoI.datos[indiceLlave]);
-                                        break;
-                                    case 'S': datoBuscar = Convert.ToString(datoI.datos[indiceLlave]);
                                         break;
                                 }
 
@@ -1365,6 +1422,7 @@ namespace ArchivosTarea2
                                                     encontradoYeliminado = true;
                                                     indiceI.datosIndice[it].apSigDato = -2;
                                                     indiceI.datosIndice[it + 1].apSigDato = -4;
+                                                    break;
                                                 }
                                             }
                                             // Si el dato examinado no es el dato a eliminar, y dicho dato examinado tambien fue eliminado
@@ -1414,6 +1472,34 @@ namespace ArchivosTarea2
                                                     encontradoYeliminado = true;
                                                     indiceI.srt_apDatos(-2);
                                                     indiceI.datosIndice[it + 1].apSigDato = -4;
+                                                    break;
+                                                }
+                                            }
+                                            // Si es el primer dato de la lista de datos del indice es el dato a eliminar
+                                            else if(it == 0 && indiceI.datosIndice[it] == datoI)
+                                            {
+                                                bool todosEliminados = true;
+
+                                                for(int iu = it +1; iu < indiceI.datosIndice.Count; iu++)
+                                                {
+                                                    if(indiceI.datosIndice[iu].apSigDato != -3 && indiceI.datosIndice[iu].apSigDato != -4)
+                                                    {
+                                                        indiceI.srt_apDatos(indiceI.datosIndice[iu].posDato);
+                                                        indiceI.datosIndice[it].apSigDato = -3;
+                                                        encontradoYeliminado = true;
+                                                        todosEliminados = false;
+                                                        break;
+                                                    }
+                                                }
+
+                                                if(todosEliminados == true)
+                                                {
+                                                    indiceI.srt_apDatos(-2);
+                                                    break;
+                                                }
+                                                else
+                                                {
+                                                    break;
                                                 }
                                             }
                                         }
@@ -1437,6 +1523,10 @@ namespace ArchivosTarea2
                         // WIP
                     }
                 }
+
+                bandChanged = true;
+                rellena_dataGridIndices();
+                muestra_dataGrid_datos();
             }
             else
             {
@@ -1446,6 +1536,14 @@ namespace ArchivosTarea2
 
         // Boton que muestra los datos ligados a un indice.
         private void button4_Click(object sender, EventArgs e)
+        {
+            muestra_dataGrid_datos();
+        }
+
+        /// <summary>
+        /// Metodo que hace las llamadas correspondientes para mostrar los datos de un indice en el dataGridView correspondiente.
+        /// </summary>
+        private void muestra_dataGrid_datos()
         {
             dynamic valorInicial = dataGridView1.CurrentRow.Cells[0].Value;
 
