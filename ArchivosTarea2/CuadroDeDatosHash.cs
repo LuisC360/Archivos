@@ -34,12 +34,13 @@ namespace ArchivosTarea2
         /// <param name="tamDato">El tamaño del dato a insertar.</param>
         /// <param name="numC">El numero de cajones.</param>
         /// <param name="regCub">El numero de registros por cubeta.</param>
-        public CuadroDeDatosHash(Entidad e, long pMem, long tamDato, long numC, long regCub)
+        public CuadroDeDatosHash(Entidad e, long pMem, long tD, long numC, long regCub)
         {
             ent = e;
             posMemoria = pMem;
             numCajones = numC;
             regPorCubeta = regCub;
+            tamDato = tD;
             int indLlave = 0;
 
             int nC = (int)numCajones;
@@ -51,7 +52,6 @@ namespace ArchivosTarea2
                 {
                     numAtributos++;
                     atributosVigentes.Add(atr);
-                    tamDato += atr.bytes;
 
                     if (atr.esLlavePrimaria == true)
                     {
@@ -239,7 +239,7 @@ namespace ArchivosTarea2
         }
 
         /// <summary>
-        /// Funcion con la que se rellenara el dataGridView correspondiente 
+        /// Funcion con la que se rellenara el dataGridView correspondiente a los datos.
         /// </summary>
         /// <param name="cub">La cubeta que contiene el dato a mostrarse.</param>
         private void rellena_dataGrid_datos(Cubeta cub)
@@ -519,10 +519,10 @@ namespace ArchivosTarea2
                             {
                                 if (cub.regresa_apDato() == -1)
                                 {
+                                    posMemoria += tamDato;
                                     dat.posDato = posMemoria;
                                     cub.str_datoCubeta(dat);
-                                    cub.str_apDato(dat.posDato);
-                                    posMemoria += tamDato;
+                                    cub.str_apDato(dat.posDato);                       
                                     cubetaSender = cub;
                                     libre = true;
                                     break;
@@ -620,7 +620,7 @@ namespace ArchivosTarea2
         }
 
         /// <summary>
-        /// Funcion que crea ua nueva cubeta, que contendra en su primer elemento el dato correspondiente.
+        /// Funcion que crea una nueva cubeta, que contendra en su primer elemento el dato correspondiente.
         /// </summary>
         /// <param name="dat">El dato a insertar en la lista de cubetas.</param>
         /// <returns>La lista de cubetas con el dato insertado en la primer posicion.</returns>
@@ -637,14 +637,14 @@ namespace ArchivosTarea2
             cubetaEnlace.str_apSigCubeta(-1);
 
             listaCubetas.Add(cubetaEnlace);
-            
-            listaCubetas[0].str_posCubeta(posMemoria);
-            posMemoria += tamCubeta;
 
+            posMemoria += tamCubeta;
+            listaCubetas[0].str_posCubeta(posMemoria);
+
+            posMemoria += tamDato;
             dat.posDato = posMemoria;
             listaCubetas[0].str_datoCubeta(dat);
             listaCubetas[0].str_apDato(dat.posDato);
-            posMemoria += tamDato;
 
             return listaCubetas;
         }
@@ -868,7 +868,136 @@ namespace ArchivosTarea2
         // Boton con el que se hara la eliminación de un dato.
         private void button3_Click(object sender, EventArgs e)
         {
+            if(textBox3.Text.Length > 0)
+            {
+                dynamic datoBuscarLlave = 0;
+                bool encontradoYeliminado = false;
 
+                switch(atrLlave.tipo)
+                {
+                    case 'I':
+                            try
+                            {
+                                datoBuscarLlave = Convert.ToInt32(textBox3.Text);
+                            }
+                            catch
+                            {
+                                toolStripStatusLabel1.Text = "Error en la conversion.";
+                            }
+                            break;
+                    case 'L':
+                            try
+                            {
+                                datoBuscarLlave = Convert.ToInt64(textBox3.Text);
+                            }
+                            catch
+                            {
+                                toolStripStatusLabel1.Text = "Error en la conversion.";
+                            }
+                            break;
+                    case 'F':
+                            try
+                            {
+                                datoBuscarLlave = Convert.ToSingle(textBox3.Text);
+                            }
+                            catch
+                            {
+                                toolStripStatusLabel1.Text = "Error en la conversion.";
+                            }
+                            break;
+                    case 'D':
+                            try
+                            {
+                                datoBuscarLlave = Convert.ToDouble(textBox3.Text);
+                            }
+                            catch
+                            {
+                                toolStripStatusLabel1.Text = "Error en la conversion.";
+                            }
+                            break;
+                    case 'C':
+                            try
+                            {
+                                datoBuscarLlave = Convert.ToChar(textBox3.Text);
+                            }
+                            catch
+                            {
+                                toolStripStatusLabel1.Text = "Error en la conversion.";
+                            }
+                            break;
+                    default: // Default vacio
+                            break;
+                }
+
+                if(ent.apCajones != -1)
+                {
+                    foreach(Cajon caj in ent.listaCajones)
+                    {
+                        Cajon c = caj;
+
+                        if(c.regresa_apuntadorCubeta() != -1)
+                        {
+                            foreach(List<Cubeta> cubL in c.listaCubetas)
+                            {
+                                List<Cubeta> cubetL = cubL;
+
+                                for(int i = 0; i < cubetL.Count - 1; i++)
+                                {
+                                    Cubeta cub = cubetL[i];
+                                    Dato datoCubeta = cub.regresa_datoCubeta();
+
+                                    dynamic valorLlave = 0;
+
+                                    switch(atrLlave.tipo)
+                                    {
+                                        case 'I': valorLlave = Convert.ToInt32(datoCubeta.datos[indiceLlave]);
+                                            break;
+                                        case 'L': valorLlave = Convert.ToInt64(datoCubeta.datos[indiceLlave]);
+                                            break;
+                                        case 'F': valorLlave = Convert.ToSingle(datoCubeta.datos[indiceLlave]);
+                                            break;
+                                        case 'D': valorLlave = Convert.ToDouble(datoCubeta.datos[indiceLlave]);
+                                            break;
+                                        case 'C': valorLlave = Convert.ToChar(datoCubeta.datos[indiceLlave]);
+                                            break;
+                                        case 'S': valorLlave = Convert.ToString(datoCubeta.datos[indiceLlave]);
+                                            break;
+                                        default: // default vacio
+                                            break;
+                                    }
+
+                                    if(valorLlave == datoBuscarLlave)
+                                    {
+                                        cub.str_apDato(-2);
+                                        encontradoYeliminado = true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    toolStripStatusLabel1.Text = "Error, no existen cajones llenos.";
+                }
+            }
+            else
+            {
+                toolStripStatusLabel1.Text = "Error, no se ha introducido una llave primaria.";
+            }
+        }
+
+        // Boton con el que se abrira una ventana para modificar el dato.
+        private void button2_Click(object sender, EventArgs e)
+        {
+            if(textBox3.Text.Length > 0)
+            {
+
+            }
+            else
+            {
+                toolStripStatusLabel1.Text = "Error, no se ha introducido una llave primaria.";
+            }
         }
     }
 }

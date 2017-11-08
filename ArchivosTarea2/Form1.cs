@@ -78,7 +78,7 @@ namespace ArchivosTarea2
             if(textBox1.Text.Length > 0)
             {
                 // Si el archivo no existe, se crea
-                if (File.Exists(@"C:\Users\DanielCorona\Documents\Visual Studio 2013\Projects\ArchivosTarea2Respaldo\ArchivosTarea2\ArchivosTarea2\bin\Debug\" + textBox1.Text) == false)
+                if (File.Exists(@"C:\Users\DanielCorona\Documents\Projects\ArchivosTarea2Respaldo\ArchivosTarea2\ArchivosTarea2\bin\Debug\" + textBox1.Text) == false)
                 {
                     using(SeleccionTipo selTip = new SeleccionTipo())
                     {
@@ -207,7 +207,7 @@ namespace ArchivosTarea2
             if(seAbrio == true && textBox2.Text.Length > 0 && textBox2.Text.Length < 29)
             {
                 // Si el archivo especificado no existe, se crea
-                if (File.Exists(@"C:\Users\DanielCorona\Documents\Visual Studio 2013\Projects\ArchivosTarea2Respaldo\ArchivosTarea2\ArchivosTarea2\bin\Debug\" + 
+                if (File.Exists(@"C:\Users\DanielCorona\Documents\Projects\ArchivosTarea2Respaldo\ArchivosTarea2\ArchivosTarea2\bin\Debug\" + 
                     textBox1.Text) == false)
                 {
                     switch(tipo)
