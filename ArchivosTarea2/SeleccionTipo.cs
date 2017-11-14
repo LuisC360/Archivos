@@ -44,5 +44,12 @@ namespace ArchivosTarea2
             this.DialogResult = DialogResult.OK;
             this.Close();
         }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            tipo = 3;
+            this.DialogResult = DialogResult.OK;
+            this.Close();
+        }
     }
 }

@@ -60,6 +60,8 @@
             this.label9 = new System.Windows.Forms.Label();
             this.button11 = new System.Windows.Forms.Button();
             this.label10 = new System.Windows.Forms.Label();
+            this.button12 = new System.Windows.Forms.Button();
+            this.label11 = new System.Windows.Forms.Label();
             this.statusStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -323,7 +325,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(272, 9);
+            this.label8.Location = new System.Drawing.Point(268, 9);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(111, 13);
             this.label8.TabIndex = 18;
@@ -342,7 +344,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(389, 9);
+            this.label9.Location = new System.Drawing.Point(386, 9);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(109, 13);
             this.label9.TabIndex = 20;
@@ -367,11 +369,32 @@
             this.label10.TabIndex = 22;
             this.label10.Text = "Hash estatica:";
             // 
+            // button12
+            // 
+            this.button12.Location = new System.Drawing.Point(623, 24);
+            this.button12.Name = "button12";
+            this.button12.Size = new System.Drawing.Size(110, 23);
+            this.button12.TabIndex = 23;
+            this.button12.Text = "Insertar datos";
+            this.button12.UseVisualStyleBackColor = true;
+            this.button12.Click += new System.EventHandler(this.button12_Click);
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(623, 9);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(55, 13);
+            this.label11.TabIndex = 24;
+            this.label11.Text = "Multilistas:";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 540);
+            this.Controls.Add(this.label11);
+            this.Controls.Add(this.button12);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.button11);
             this.Controls.Add(this.label9);
@@ -437,6 +460,8 @@
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Button button11;
         private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Button button12;
+        private System.Windows.Forms.Label label11;
     }
 }
 

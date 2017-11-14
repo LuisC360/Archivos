@@ -60,6 +60,7 @@ namespace ArchivosTarea2
             button9.Enabled = false;
             button10.Enabled = false;
             button11.Enabled = false;
+            button12.Enabled = false;
             comboBox1.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox2.DropDownStyle = ComboBoxStyle.DropDownList;
             rellena_lista_tipo();
@@ -3445,6 +3446,12 @@ namespace ArchivosTarea2
                     toolStripStatusLabel1.Text = "Error, esta entidad no tiene atributos o llave primaria.";
                 }
             }
+        }
+
+        // Boton que abre una ventana donde se insertaran los datos via multilistas.
+        private void button12_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

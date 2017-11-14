@@ -870,64 +870,8 @@ namespace ArchivosTarea2
         {
             if(textBox3.Text.Length > 0)
             {
-                dynamic datoBuscarLlave = 0;
+                dynamic datoBuscarLlave = convierte_dato_a_encontrar(textBox3.Text);
                 bool encontradoYeliminado = false;
-
-                switch(atrLlave.tipo)
-                {
-                    case 'I':
-                            try
-                            {
-                                datoBuscarLlave = Convert.ToInt32(textBox3.Text);
-                            }
-                            catch
-                            {
-                                toolStripStatusLabel1.Text = "Error en la conversion.";
-                            }
-                            break;
-                    case 'L':
-                            try
-                            {
-                                datoBuscarLlave = Convert.ToInt64(textBox3.Text);
-                            }
-                            catch
-                            {
-                                toolStripStatusLabel1.Text = "Error en la conversion.";
-                            }
-                            break;
-                    case 'F':
-                            try
-                            {
-                                datoBuscarLlave = Convert.ToSingle(textBox3.Text);
-                            }
-                            catch
-                            {
-                                toolStripStatusLabel1.Text = "Error en la conversion.";
-                            }
-                            break;
-                    case 'D':
-                            try
-                            {
-                                datoBuscarLlave = Convert.ToDouble(textBox3.Text);
-                            }
-                            catch
-                            {
-                                toolStripStatusLabel1.Text = "Error en la conversion.";
-                            }
-                            break;
-                    case 'C':
-                            try
-                            {
-                                datoBuscarLlave = Convert.ToChar(textBox3.Text);
-                            }
-                            catch
-                            {
-                                toolStripStatusLabel1.Text = "Error en la conversion.";
-                            }
-                            break;
-                    default: // Default vacio
-                            break;
-                }
 
                 if(ent.apCajones != -1)
                 {
@@ -970,11 +914,29 @@ namespace ArchivosTarea2
                                     {
                                         cub.str_apDato(-2);
                                         encontradoYeliminado = true;
+
+                                        if(cubeta_vacia(cubetL) == true)
+                                        {
+                                            cubetL[cubetL.Count - 1].str_apSigCubeta(-2);
+                                            enlaza_nuevas_cubetas(c, cubetL);
+                                        }
+
+                                        break;
                                     }
+                                }
+
+                                if(encontradoYeliminado == true)
+                                {
+                                    break;
                                 }
                             }
                         }
-                    }
+
+                        if (encontradoYeliminado == true)
+                        {
+                            break;
+                        }
+                    }                   
                 }
                 else
                 {
@@ -992,11 +954,218 @@ namespace ArchivosTarea2
         {
             if(textBox3.Text.Length > 0)
             {
+                dynamic datoBuscarLlave = convierte_dato_a_encontrar(textBox3.Text);
+                bool encontradoYmodificado = false;
 
+                if (ent.apCajones != -1)
+                {
+                    foreach (Cajon caj in ent.listaCajones)
+                    {
+                        Cajon c = caj;
+
+                        if (c.regresa_apuntadorCubeta() != -1)
+                        {
+                            foreach (List<Cubeta> cubL in c.listaCubetas)
+                            {
+                                List<Cubeta> cubetL = cubL;
+
+                                for (int i = 0; i < cubetL.Count - 1; i++)
+                                {
+                                    Cubeta cub = cubetL[i];
+                                    Dato datoCubeta = cub.regresa_datoCubeta();
+
+                                    dynamic valorLlave = 0;
+
+                                    switch (atrLlave.tipo)
+                                    {
+                                        case 'I':
+                                            valorLlave = Convert.ToInt32(datoCubeta.datos[indiceLlave]);
+                                            break;
+                                        case 'L':
+                                            valorLlave = Convert.ToInt64(datoCubeta.datos[indiceLlave]);
+                                            break;
+                                        case 'F':
+                                            valorLlave = Convert.ToSingle(datoCubeta.datos[indiceLlave]);
+                                            break;
+                                        case 'D':
+                                            valorLlave = Convert.ToDouble(datoCubeta.datos[indiceLlave]);
+                                            break;
+                                        case 'C':
+                                            valorLlave = Convert.ToChar(datoCubeta.datos[indiceLlave]);
+                                            break;
+                                        case 'S':
+                                            valorLlave = Convert.ToString(datoCubeta.datos[indiceLlave]);
+                                            break;
+                                        default: // default vacio
+                                            break;
+                                    }
+
+                                    if (valorLlave == datoBuscarLlave)
+                                    {
+                                        using(ModificaDatoHash modificaDato = new ModificaDatoHash(c, datoCubeta, ent, indiceLlave))
+                                        {
+                                            var modifica = modificaDato.ShowDialog();
+
+                                            if(modifica == DialogResult.OK)
+                                            {
+                                                datoCubeta = modificaDato.regresa_datoHash();
+
+                                                if(modificaDato.regresa_llavePrimariaCambiada() == true)
+                                                {
+
+                                                }
+                                            }
+                                        }
+
+                                        encontradoYmodificado = true;
+                                        break;
+                                    }
+                                }
+
+                                if (encontradoYmodificado == true)
+                                {
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (encontradoYmodificado == true)
+                        {
+                            break;
+                        }
+                    }
+                }
             }
             else
             {
                 toolStripStatusLabel1.Text = "Error, no se ha introducido una llave primaria.";
+            }
+        }
+
+        /// <summary>
+        /// Metodo que convierte el string en el textBox al valor de llave primaria que se busca eliminar o modificar.
+        /// </summary>
+        /// <param name="dato">La cadena a convertir a un valor de llave primaria. Si es una cadena, no se tendra que hacer
+        /// conversion.</param>
+        /// <returns>La cadena ya convertida en el valor correspondiente a una llave primaria junto con el tipo de dato de
+        /// esa llave.</returns>
+        private dynamic convierte_dato_a_encontrar(String dato)
+        {
+            dynamic datoEnc = 0;
+
+            switch (atrLlave.tipo)
+            {
+                case 'I':
+                    try
+                    {
+                        datoEnc = Convert.ToInt32(dato);
+                    }
+                    catch
+                    {
+                        toolStripStatusLabel1.Text = "Error en la conversion.";
+                    }
+                    break;
+                case 'L':
+                    try
+                    {
+                        datoEnc = Convert.ToInt64(dato);
+                    }
+                    catch
+                    {
+                        toolStripStatusLabel1.Text = "Error en la conversion.";
+                    }
+                    break;
+                case 'F':
+                    try
+                    {
+                        datoEnc = Convert.ToSingle(dato);
+                    }
+                    catch
+                    {
+                        toolStripStatusLabel1.Text = "Error en la conversion.";
+                    }
+                    break;
+                case 'D':
+                    try
+                    {
+                        datoEnc = Convert.ToDouble(dato);
+                    }
+                    catch
+                    {
+                        toolStripStatusLabel1.Text = "Error en la conversion.";
+                    }
+                    break;
+                case 'C':
+                    try
+                    {
+                        datoEnc = Convert.ToChar(dato);
+                    }
+                    catch
+                    {
+                        toolStripStatusLabel1.Text = "Error en la conversion.";
+                    }
+                    break;
+                default: // Default vacio
+                    break;
+            }
+
+            return datoEnc;
+        }
+
+        /// <summary>
+        /// Metodo que contara los datos que no han sido borrados de una cubeta.
+        /// </summary>
+        /// <param name="listaCubetas">La cubeta de la que se contaran los datos.</param>
+        /// <returns>Booleano que indica si la lista de cubetas esta vacia.</returns>
+        private bool cubeta_vacia(List<Cubeta> listaCubetas)
+        {
+            bool vacia = false;
+            int contador = listaCubetas.Count - 1;
+            int vigentes = 0;
+
+            for(int i = 0; i < contador; i++)
+            {
+                if(listaCubetas[i].regresa_apDato() != -2)
+                {
+                    vigentes++;
+                }
+            }
+
+            if(vigentes == 0)
+            {
+                vacia = true;
+            }
+
+            return vacia;
+        }
+
+        /// <summary>
+        /// Metodo que enlazara el apuntador a las cubetas del cajon correspondiente a un nuevo cajon, siempre y cuando se cuente con
+        /// mas de una lista de cubetas a las cuales poner dicho enlace.
+        /// </summary>
+        /// <param name="caj">El cajon al que se le actualizará el apuntador a las cubetas.</param>
+        /// <param name="eliminada">La lista de cubetas que ha sido eliminada debido a que todos los datos de cada una de las
+        /// cubetas han sido eliminados.</param>
+        private void enlaza_nuevas_cubetas(Cajon caj, List<Cubeta> eliminada)
+        {
+            // Si se cuenta con mas de una lista de cubetas, se tiene que revisar si se puede enlazar el apuntador a las cubetas
+            // del cajon a una nueva lista de cubetas.
+            if(caj.listaCubetas.Count > 1)
+            {
+                for(int i = 0; i < caj.listaCubetas.Count;i++)
+                {
+                    if(caj.listaCubetas[i][0].regresa_posCubeta() == eliminada[0].regresa_posCubeta())
+                    {
+                        if(i == 0)
+                        {
+                            caj.str_apuntadorCubeta(0);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                caj.str_apuntadorCubeta(-2);
             }
         }
     }
