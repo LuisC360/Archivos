@@ -949,7 +949,7 @@ namespace ArchivosTarea2
             }
         }
 
-        // Boton con el que se abrira una ventana para modificar el dato.
+        // Boton con el que se abrira una ventana para modificar un dato.
         private void button2_Click(object sender, EventArgs e)
         {
             if(textBox3.Text.Length > 0)
@@ -1012,7 +1012,12 @@ namespace ArchivosTarea2
 
                                                 if(modificaDato.regresa_llavePrimariaCambiada() == true)
                                                 {
+                                                    int hash = funcion_hash(datoCubeta);
 
+                                                    if(compara_nuevo_hash(c, hash) == true)
+                                                    {
+
+                                                    }
                                                 }
                                             }
                                         }
@@ -1154,19 +1159,165 @@ namespace ArchivosTarea2
             {
                 for(int i = 0; i < caj.listaCubetas.Count;i++)
                 {
+                    // Si encontramos la lista de cubetas que fue eliminada.
                     if(caj.listaCubetas[i][0].regresa_posCubeta() == eliminada[0].regresa_posCubeta())
                     {
+                        // Si la primer lista de cubetas se elimino, se debe revisar si alguna de las otras listas de cubetas
+                        // esta disponible para hacer el enlace.
                         if(i == 0)
                         {
-                            caj.str_apuntadorCubeta(0);
+                            bool encontrado = false;
+
+                            for(int j = i + 1; j < caj.listaCubetas.Count; j++)
+                            {
+                                if (caj.listaCubetas[j][caj.listaCubetas[j].Count - 1].regresa_apSigCubeta() != -2)
+                                {
+                                    caj.str_apuntadorCubeta(caj.listaCubetas[j][0].regresa_posCubeta());
+                                    encontrado = true;
+                                    break;
+                                }
+                            }
+
+                            if(encontrado == true)
+                            {
+                                break;
+                            }
+                            else
+                            {
+                                caj.str_apuntadorCubeta(-2);
+                                break;
+                            }
+                        }
+                        // Si se elimino alguna cubeta que no este al principio ni al final de la lista de cubetas del cajon.
+                        else if(i != 0 && i != caj.listaCubetas.Count - 1)
+                        {
+                            bool encontrado = false;
+
+                            for(int j = 0; j < caj.listaCubetas.Count; j++)
+                            {
+                                if(j == i - 1 && caj.listaCubetas[j][caj.listaCubetas[j].Count - 1].regresa_apSigCubeta() != -2)
+                                {
+
+                                }
+                            }
+
+                            if (encontrado == true)
+                            {
+                                break;
+                            }
+                            else
+                            {
+                                caj.str_apuntadorCubeta(-2);
+                                break;
+                            }
+                        }
+                        // Si se elimino la cubeta que esta al final de la lista.
+                        else if(i == caj.listaCubetas.Count - 1)
+                        {
+                            caj.listaCubetas[i][caj.listaCubetas[i].Count - 1].str_apSigCubeta(-4);
+                            bool encontrado = false;
+
+                            for(int j = caj.listaCubetas.Count - 2; j > 0; j--)
+                            {
+                                if (caj.listaCubetas[j][caj.listaCubetas[j].Count - 1].regresa_apSigCubeta() != -2)
+                                {
+                                    caj.listaCubetas[j][caj.listaCubetas[j].Count - 1].str_apSigCubeta(-3);
+                                    encontrado = true;
+                                    break;
+                                }
+                            }
+
+                            if(encontrado == true)
+                            {
+                                break;
+                            }
+                            else
+                            {
+                                caj.str_apuntadorCubeta(-2);
+                                break;
+                            }
                         }
                     }
                 }
             }
+            // Si no se cuenta con mas listas, solo se modifica el apuntador a las cubetas del cajon.
             else
             {
                 caj.str_apuntadorCubeta(-2);
             }
+        }
+
+        /// <summary>
+        /// Metodo con el cual se comparara el hash aplicado al dato que se acaba de cambiar con el numero de cajon en el que estaba,
+        /// y regresara una bandera que indicara si el dato cambia su hash.
+        /// </summary>
+        /// <param name="caj">El cajon actual del dato cambiado.</param>
+        /// <param name="nuevoHash">El nuevo valor de la funcion hash aplicada al dato.</param>
+        /// <returns>Una bandera que indica si el nuevo valor hash del dato es diferente al hash que tenia anteriormente.</returns>
+        private bool compara_nuevo_hash(Cajon caj, int nuevoHash)
+        {
+            bool hashCambiado = false;
+            int contadorCajones = 0;
+
+            foreach(Cajon c in ent.listaCajones)
+            {
+                if(c != caj)
+                {
+                    contadorCajones++;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            if(nuevoHash != contadorCajones)
+            {
+                hashCambiado = true;
+            }
+
+            return hashCambiado;
+        }
+
+        /// <summary>
+        /// Metodo que volvera a reorganizar los datos en el cajon de donde se quito el dato debido a que se le dio un nuevo valor hash.
+        /// </summary>
+        /// <param name="caj">El cajon en el que se reordenaran los datos.</param>
+        /// <param name="movido">El dato que se movio a otro cajon.</param>
+        private void reordena_datos_cajon(Cajon caj, Dato movido)
+        {
+            foreach(List<Cubeta> listaC in caj.listaCubetas)
+            {
+                List<Cubeta> cubetas = listaC;
+
+                // Si esta lista contiene el dato movido.
+                if(contains_eliminado(cubetas, movido) == true)
+                {
+
+                }
+            }
+        }
+
+        /// <summary>
+        /// Metodo que nos dira si una determinada lista de cubetas contiene el dato que se ha movido a otro cajon.
+        /// </summary>
+        /// <param name="lista">La lista de cubetas a recorrer en busca del dato.</param>
+        /// <param name="mov">El dato que se movio a otro cajon.</param>
+        /// <returns>Una bandera que indica si la lista de cubetas contiene a la cubeta con el dato movido.</returns>
+        private bool contains_eliminado(List<Cubeta> lista, Dato mov)
+        {
+            bool loContiene = false;
+
+            foreach(Cubeta c in lista)
+            {
+                if(c.regresa_datoCubeta() == mov)
+                {
+                    loContiene = true;
+                    break;
+                }
+            }
+
+            return loContiene;
         }
     }
 }
