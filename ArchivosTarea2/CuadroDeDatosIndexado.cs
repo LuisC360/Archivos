@@ -40,6 +40,8 @@ namespace ArchivosTarea2
             rango = rang;
             int indLlave = 0;
 
+            this.Location = new Point(100, 100);
+
             foreach (Atributo atr in ent.listaAtributos)
             {
                 if (atr.apSigAtributo != -2 && atr.apSigAtributo != -4)

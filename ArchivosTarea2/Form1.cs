@@ -52,7 +52,8 @@ namespace ArchivosTarea2
 
         public Form1()
         {
-            InitializeComponent();
+            this.Location = new Point(100, 100);
+            InitializeComponent();           
             textBox2.ReadOnly = true;
             textBox3.ReadOnly = true;
             comboBox1.Enabled = false;
@@ -1199,7 +1200,7 @@ namespace ArchivosTarea2
             String[] fila = new string[] { };
             String nombreEntidad = "";
             long apAt = 0;
-            long apIndi = 0;
+            long apCajon = 0;
             long posInic = 0;
             long apSigAt = 0;
 
@@ -1209,7 +1210,7 @@ namespace ArchivosTarea2
                 {
                     nombreEntidad = new string(ent.nombre);
                     apAt += ent.apAtributos;
-                    apIndi += ent.apIndices;
+                    apCajon += ent.apCajones;
                     posInic += ent.posEntidad;
                     apSigAt += ent.apSigEntidad;
 
@@ -1220,14 +1221,14 @@ namespace ArchivosTarea2
 
                     if (ent.apDatos < -1)
                     {
-                        apIndi = -1;
+                        apCajon = -1;
                     }
 
-                    fila = new string[] { nombreEntidad, apAt.ToString(), apIndi.ToString(), posInic.ToString(), apSigAt.ToString() };
+                    fila = new string[] { nombreEntidad, apAt.ToString(), apCajon.ToString(), posInic.ToString(), apSigAt.ToString() };
 
                     nombreEntidad = "";
                     apAt = 0;
-                    apIndi = 0;
+                    apCajon = 0;
                     posInic = 0;
                     apSigAt = 0;
 

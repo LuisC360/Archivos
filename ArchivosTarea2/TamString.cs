@@ -16,7 +16,8 @@ namespace ArchivosTarea2
 
         public TamString()
         {
-            InitializeComponent();
+            this.Location = new Point(100, 100);
+            InitializeComponent();           
         }
 
         private void button1_Click(object sender, EventArgs e)

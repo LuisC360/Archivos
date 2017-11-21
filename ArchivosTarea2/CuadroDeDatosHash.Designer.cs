@@ -203,12 +203,12 @@
             this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView2.Location = new System.Drawing.Point(13, 228);
             this.dataGridView2.Name = "dataGridView2";
-            this.dataGridView2.Size = new System.Drawing.Size(677, 73);
+            this.dataGridView2.Size = new System.Drawing.Size(677, 136);
             this.dataGridView2.TabIndex = 6;
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(582, 307);
+            this.button5.Location = new System.Drawing.Point(582, 370);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(108, 23);
             this.button5.TabIndex = 7;
@@ -219,15 +219,15 @@
             // dataGridView3
             // 
             this.dataGridView3.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView3.Location = new System.Drawing.Point(12, 355);
+            this.dataGridView3.Location = new System.Drawing.Point(12, 414);
             this.dataGridView3.Name = "dataGridView3";
-            this.dataGridView3.Size = new System.Drawing.Size(677, 134);
+            this.dataGridView3.Size = new System.Drawing.Size(677, 105);
             this.dataGridView3.TabIndex = 8;
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(13, 339);
+            this.label6.Location = new System.Drawing.Point(14, 398);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(35, 13);
             this.label6.TabIndex = 9;
@@ -251,7 +251,7 @@
             // 
             // button6
             // 
-            this.button6.Location = new System.Drawing.Point(582, 496);
+            this.button6.Location = new System.Drawing.Point(469, 525);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(107, 23);
             this.button6.TabIndex = 11;

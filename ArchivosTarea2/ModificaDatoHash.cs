@@ -29,9 +29,8 @@ namespace ArchivosTarea2
             indiceLlavePrimaria = indK;
             datoRespaldo = new Dato();
 
-            InitializeComponent();
-
             this.Location = new Point(100, 100);
+            InitializeComponent();
 
             rellena_dataGrid();
             crea_referencia_nuevo_dato();
@@ -146,7 +145,7 @@ namespace ArchivosTarea2
                         break;
                 }
 
-                fila[count] = dato.ToString();
+                fila[count] = dat.ToString();
                 count++;
             }
 
@@ -414,11 +413,12 @@ namespace ArchivosTarea2
                 {
                     foreach(List<Cubeta> listCub in caj.listaCubetas)
                     {
-                        foreach(Cubeta cub in listCub)
+                        for(int i = 0; i < listCub.Count - 1; i++)
                         {
-                            if(cub.regresa_datoCubeta().apSigDato != -2 && cub.regresa_datoCubeta() != modificado)
+                            if (listCub[i].regresa_apDato() != -1 && listCub[i].regresa_datoCubeta() != modificado &&
+                                listCub[i].regresa_datoCubeta().apSigDato != -2)
                             {
-                                dynamic llaveComparar = cub.regresa_datoCubeta().datos[indiceLlavePrimaria];
+                                dynamic llaveComparar = listCub[i].regresa_datoCubeta().datos[indiceLlavePrimaria];
 
                                 if(llaveComparar == llave)
                                 {

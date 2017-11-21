@@ -65,6 +65,7 @@ namespace ArchivosTarea2
                 }
             }
 
+            this.Location = new Point(100, 100);
             InitializeComponent();
 
             if (numCajones > 0 && regPorCubeta > 0)
@@ -214,22 +215,25 @@ namespace ArchivosTarea2
 
             for (int i = 0; i < caj.listaCubetas.Count; i++)
             {
-                for(int j = 0; j < caj.listaCubetas[i].Count; j++)
+                if (verifica_cajones_vacios(caj.listaCubetas[i]) == false)
                 {
-                    if (j == caj.listaCubetas[i].Count - 1)
+                    for (int j = 0; j < caj.listaCubetas[i].Count; j++)
                     {
-                        long apSig = caj.listaCubetas[i][j].regresa_apSigCubeta();
-                        fila[j] = apSig.ToString();
+                        if (j == caj.listaCubetas[i].Count - 1)
+                        {
+                            long apSig = caj.listaCubetas[i][j].regresa_apSigCubeta();
+                            fila[j] = apSig.ToString();
+                        }
+                        else
+                        {
+                            long apDato = caj.listaCubetas[i][j].regresa_apDato();
+                            fila[j] = apDato.ToString();
+                        }
                     }
-                    else
-                    {
-                        long apDato = caj.listaCubetas[i][j].regresa_apDato();
-                        fila[j] = apDato.ToString();
-                    }
-                }
 
-                filas.Add(fila);
-                fila = new string[(int)regPorCubeta + 1];
+                    filas.Add(fila);
+                    fila = new string[(int)regPorCubeta + 1];
+                }
             }
 
             foreach(string[] f in filas)
@@ -291,9 +295,16 @@ namespace ArchivosTarea2
             {
                 dataGridView2.RowCount = (int)numCajones;
 
-                for (int i = 1; i < regPorCubeta + 1; i++)
+                for (int i = 0; i < regPorCubeta + 1; i++)
                 {
-                    dataGridView2.Columns[i].Name = (i + 1).ToString();
+                    if (i == regPorCubeta)
+                    {
+                        dataGridView2.Columns[i].Name = "Ap. Sig. Cubetas";
+                    }
+                    else
+                    {
+                        dataGridView2.Columns[i].Name = (i + 1).ToString();
+                    }
                 }
             }           
         }
@@ -478,7 +489,7 @@ namespace ArchivosTarea2
         /// cubeta correspondiente, si no, entonces se debe crear la cubeta con el numero de cajones correspondiente, para despues insertar
         /// el dato en dicha cubeta, y despues poner la posicion de dicha cubeta en la posicion del cajon que marque la funcion hash.
         /// </summary>
-        /// <param name="dat">El dato que se desea insertar.</param>
+        /// <param name="dat">El dato que se desea insertar.</param>      
         private void inserta_dato_hash(Dato dat)
         {
             if (valida_dato(dat) == false)
@@ -487,7 +498,7 @@ namespace ArchivosTarea2
                 Cubeta cubetaSender = new Cubeta();
 
                 // Si el valor hash resultante es mayor al numero de cajones que tenemos.
-                if (valHash > numCajones)
+                if (valHash >= numCajones)
                 {
                     double multiploMasProximo = valHash / numCajones;
                     int redondeado = Convert.ToInt32(Math.Floor(multiploMasProximo));
@@ -504,6 +515,7 @@ namespace ArchivosTarea2
                     ent.listaCajones[valHash].listaCubetas.Add(newCubeta);
                     ent.listaCajones[valHash].str_apuntadorCubeta(newCubeta[0].regresa_posCubeta());
                     cubetaSender = newCubeta[0];
+                    cajonActual = ent.listaCajones[valHash];
                     seCambio = true;
                 }
                 else
@@ -524,6 +536,7 @@ namespace ArchivosTarea2
                                     cub.str_datoCubeta(dat);
                                     cub.str_apDato(dat.posDato);                       
                                     cubetaSender = cub;
+                                    cajonActual = ent.listaCajones[valHash];
                                     libre = true;
                                     break;
                                 }
@@ -535,11 +548,13 @@ namespace ArchivosTarea2
                     if (libre == false)
                     {
                         List<Cubeta> nuevasCubetas = regresa_cubetas(dat);
-                        int ultimoValor = Convert.ToInt32(regPorCubeta - 1);
+                        int ultimoValor = Convert.ToInt32(regPorCubeta);                     
 
                         // Se debe de ligar la cubeta nueva con la anterior usando la posicion de la nueva cubeta
                         ent.listaCajones[valHash].listaCubetas[ent.listaCajones[valHash].listaCubetas.Count - 1][ultimoValor].str_apSigCubeta(nuevasCubetas[0].regresa_posCubeta());
+                        ent.listaCajones[valHash].listaCubetas.Add(nuevasCubetas);
                         cubetaSender = nuevasCubetas[0];
+                        cajonActual = ent.listaCajones[valHash];
                     }
                 }
 
@@ -699,7 +714,9 @@ namespace ArchivosTarea2
 
             if(cajonEncontrado.regresa_apuntadorCubeta() != -1)
             {
-                cajonActual = cajonEncontrado; 
+                toolStripStatusLabel1.Text = "Listo.";
+                cajonActual = cajonEncontrado;
+                manejo_dataGrid_cubetas();
                 muestra_cubetas(cajonEncontrado);
             }
             else
@@ -737,6 +754,7 @@ namespace ArchivosTarea2
                 }
 
                 filas.Add(fila);
+                fila = new string[(int)regPorCubeta + 1];
             }
 
             foreach (string[] arr in filas)
@@ -824,6 +842,7 @@ namespace ArchivosTarea2
             }
             else
             {
+                toolStripStatusLabel1.Text = "Listo.";
                 rellena_dataGrid_datos(cubetaEncontrada);
             }
         }   
@@ -1016,14 +1035,15 @@ namespace ArchivosTarea2
 
                                                     if(compara_nuevo_hash(c, hash) == true)
                                                     {
-
+                                                        reordena_datos_cajon(c, datoCubeta);
+                                                        inserta_dato_hash(datoCubeta);
                                                     }
                                                 }
-                                            }
-                                        }
 
-                                        encontradoYmodificado = true;
-                                        break;
+                                                encontradoYmodificado = true;
+                                                break;
+                                            }
+                                        }             
                                     }
                                 }
 
@@ -1197,17 +1217,17 @@ namespace ArchivosTarea2
                             {
                                 if(j == i - 1 && caj.listaCubetas[j][caj.listaCubetas[j].Count - 1].regresa_apSigCubeta() != -2)
                                 {
-
+                                    // WIP
                                 }
                             }
 
-                            if (encontrado == true)
+                            if (encontrado == false)
                             {
+                                caj.str_apuntadorCubeta(-2);
                                 break;
                             }
                             else
-                            {
-                                caj.str_apuntadorCubeta(-2);
+                            { 
                                 break;
                             }
                         }
@@ -1286,14 +1306,35 @@ namespace ArchivosTarea2
         /// <param name="movido">El dato que se movio a otro cajon.</param>
         private void reordena_datos_cajon(Cajon caj, Dato movido)
         {
-            foreach(List<Cubeta> listaC in caj.listaCubetas)
+            for(int i = 0; i < caj.listaCubetas.Count; i++)
             {
-                List<Cubeta> cubetas = listaC;
-
                 // Si esta lista contiene el dato movido.
-                if(contains_eliminado(cubetas, movido) == true)
+                if(contains_eliminado(caj.listaCubetas[i], movido) == true)
                 {
+                    List<Cubeta> respaldo = new List<Cubeta>();
 
+                    foreach(Cubeta cub in caj.listaCubetas[i])
+                    {
+                        if(cub.regresa_apDato() != -1)
+                        {
+                            if (cub.regresa_datoCubeta() != movido)
+                            {
+                                respaldo.Add(cub);
+                            }
+                            else
+                            {
+                                cub.str_apDato(-1);
+                                cub.str_datoCubeta(new Dato());
+                                respaldo.Add(cub);
+                            }
+                        }
+                        else if(cub.regresa_apDato() == -1)
+                        {
+                            respaldo.Add(cub);
+                        }              
+                    }
+
+                    caj.listaCubetas[i] = respaldo;
                 }
             }
         }
@@ -1304,7 +1345,7 @@ namespace ArchivosTarea2
         /// <param name="lista">La lista de cubetas a recorrer en busca del dato.</param>
         /// <param name="mov">El dato que se movio a otro cajon.</param>
         /// <returns>Una bandera que indica si la lista de cubetas contiene a la cubeta con el dato movido.</returns>
-        private bool contains_eliminado(List<Cubeta> lista, Dato mov)
+        private static bool contains_eliminado(List<Cubeta> lista, Dato mov)
         {
             bool loContiene = false;
 
@@ -1318,6 +1359,36 @@ namespace ArchivosTarea2
             }
 
             return loContiene;
+        }
+
+        /// <summary>
+        /// Metodo que nos dira si una lista de cubetas esta vacia, es decir, no tiene datos.
+        /// </summary>
+        /// <param name="cubetas">La lista de cubetas a verificar.</param>
+        /// <returns>Booleano que nos indica si la lista de cajones esta vacia.</returns>
+        private bool verifica_cajones_vacios(List<Cubeta> cubetas)
+        {
+            bool vacio = false;
+            int count = 0;
+
+            for(int i = 0; i < cubetas.Count - 1; i++)
+            {
+                if(cubetas[i].regresa_apDato() == -1)
+                {
+                    count++;
+                }
+                else if(cubetas[i].regresa_apDato() == -2)
+                {
+                    count++;
+                }
+            }
+
+            if(count == regPorCubeta)
+            {
+                vacio = true;
+            }
+
+            return vacio;
         }
     }
 }
