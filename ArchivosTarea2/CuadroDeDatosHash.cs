@@ -215,7 +215,7 @@ namespace ArchivosTarea2
 
             for (int i = 0; i < caj.listaCubetas.Count; i++)
             {
-                if (verifica_cajones_vacios(caj.listaCubetas[i]) == false)
+                if (verifica_cubetas_vacias(caj.listaCubetas[i]) == false)
                 {
                     for (int j = 0; j < caj.listaCubetas[i].Count; j++)
                     {
@@ -481,7 +481,7 @@ namespace ArchivosTarea2
                 nuevoDato.datos.Add(obj);
             }
 
-            inserta_dato_hash(nuevoDato);
+            inserta_dato_hash(nuevoDato, false);
         }
 
         /// <summary>
@@ -490,7 +490,7 @@ namespace ArchivosTarea2
         /// el dato en dicha cubeta, y despues poner la posicion de dicha cubeta en la posicion del cajon que marque la funcion hash.
         /// </summary>
         /// <param name="dat">El dato que se desea insertar.</param>      
-        private void inserta_dato_hash(Dato dat)
+        private void inserta_dato_hash(Dato dat, bool reinsersion)
         {
             if (valida_dato(dat) == false)
             {
@@ -510,7 +510,7 @@ namespace ArchivosTarea2
                 if (ent.listaCajones[valHash].regresa_apuntadorCubeta() == -1)
                 {
                     // Se crea la cubeta y se coloca el dato en la primer posicion de esta.
-                    List<Cubeta> newCubeta = regresa_cubetas(dat);
+                    List<Cubeta> newCubeta = regresa_cubetas(dat, reinsersion);
 
                     ent.listaCajones[valHash].listaCubetas.Add(newCubeta);
                     ent.listaCajones[valHash].str_apuntadorCubeta(newCubeta[0].regresa_posCubeta());
@@ -531,8 +531,12 @@ namespace ArchivosTarea2
                             {
                                 if (cub.regresa_apDato() == -1)
                                 {
-                                    posMemoria += tamDato;
-                                    dat.posDato = posMemoria;
+                                    if (reinsersion == false)
+                                    {
+                                        posMemoria += tamDato;
+                                        dat.posDato = posMemoria;
+                                    }
+
                                     cub.str_datoCubeta(dat);
                                     cub.str_apDato(dat.posDato);                       
                                     cubetaSender = cub;
@@ -547,7 +551,7 @@ namespace ArchivosTarea2
                     // Si no se encontro un espacio disponible en la cubeta, se debe de crear una cubeta nueva
                     if (libre == false)
                     {
-                        List<Cubeta> nuevasCubetas = regresa_cubetas(dat);
+                        List<Cubeta> nuevasCubetas = regresa_cubetas(dat, reinsersion);
                         int ultimoValor = Convert.ToInt32(regPorCubeta);                     
 
                         // Se debe de ligar la cubeta nueva con la anterior usando la posicion de la nueva cubeta
@@ -638,8 +642,10 @@ namespace ArchivosTarea2
         /// Funcion que crea una nueva cubeta, que contendra en su primer elemento el dato correspondiente.
         /// </summary>
         /// <param name="dat">El dato a insertar en la lista de cubetas.</param>
+        /// <param name="reinsercion">Booleano que evaluara si un dato que ya se habia insertado se volvera a insertar debido a un
+        /// cambio de su valor de llave primaria.</param>
         /// <returns>La lista de cubetas con el dato insertado en la primer posicion.</returns>
-        private List<Cubeta> regresa_cubetas(Dato dat)
+        private List<Cubeta> regresa_cubetas(Dato dat, bool reinsercion)
         {
             List<Cubeta> listaCubetas = new List<Cubeta>();
 
@@ -656,8 +662,12 @@ namespace ArchivosTarea2
             posMemoria += tamCubeta;
             listaCubetas[0].str_posCubeta(posMemoria);
 
-            posMemoria += tamDato;
-            dat.posDato = posMemoria;
+            if (reinsercion == false)
+            {
+                posMemoria += tamDato;
+                dat.posDato = posMemoria;
+            }
+
             listaCubetas[0].str_datoCubeta(dat);
             listaCubetas[0].str_apDato(dat.posDato);
 
@@ -717,7 +727,7 @@ namespace ArchivosTarea2
                 toolStripStatusLabel1.Text = "Listo.";
                 cajonActual = cajonEncontrado;
                 manejo_dataGrid_cubetas();
-                muestra_cubetas(cajonEncontrado);
+                rellena_dataGrid_cubetas(cajonEncontrado);
             }
             else
             {
@@ -988,69 +998,76 @@ namespace ArchivosTarea2
                             {
                                 List<Cubeta> cubetL = cubL;
 
-                                for (int i = 0; i < cubetL.Count - 1; i++)
+                                if(verifica_cubetas_vacias(cubetL) == false)
                                 {
-                                    Cubeta cub = cubetL[i];
-                                    Dato datoCubeta = cub.regresa_datoCubeta();
-
-                                    dynamic valorLlave = 0;
-
-                                    switch (atrLlave.tipo)
+                                    for (int i = 0; i < cubetL.Count - 1; i++)
                                     {
-                                        case 'I':
-                                            valorLlave = Convert.ToInt32(datoCubeta.datos[indiceLlave]);
-                                            break;
-                                        case 'L':
-                                            valorLlave = Convert.ToInt64(datoCubeta.datos[indiceLlave]);
-                                            break;
-                                        case 'F':
-                                            valorLlave = Convert.ToSingle(datoCubeta.datos[indiceLlave]);
-                                            break;
-                                        case 'D':
-                                            valorLlave = Convert.ToDouble(datoCubeta.datos[indiceLlave]);
-                                            break;
-                                        case 'C':
-                                            valorLlave = Convert.ToChar(datoCubeta.datos[indiceLlave]);
-                                            break;
-                                        case 'S':
-                                            valorLlave = Convert.ToString(datoCubeta.datos[indiceLlave]);
-                                            break;
-                                        default: // default vacio
-                                            break;
-                                    }
+                                        Cubeta cub = cubetL[i];
 
-                                    if (valorLlave == datoBuscarLlave)
-                                    {
-                                        using(ModificaDatoHash modificaDato = new ModificaDatoHash(c, datoCubeta, ent, indiceLlave))
+                                        if(cub.regresa_apDato() != -1 && cub.regresa_apDato() != -2)
                                         {
-                                            var modifica = modificaDato.ShowDialog();
+                                            Dato datoCubeta = cub.regresa_datoCubeta();
 
-                                            if(modifica == DialogResult.OK)
+                                            dynamic valorLlave = 0;
+
+                                            switch (atrLlave.tipo)
                                             {
-                                                datoCubeta = modificaDato.regresa_datoHash();
+                                                case 'I':
+                                                    valorLlave = Convert.ToInt32(datoCubeta.datos[indiceLlave]);
+                                                    break;
+                                                case 'L':
+                                                    valorLlave = Convert.ToInt64(datoCubeta.datos[indiceLlave]);
+                                                    break;
+                                                case 'F':
+                                                    valorLlave = Convert.ToSingle(datoCubeta.datos[indiceLlave]);
+                                                    break;
+                                                case 'D':
+                                                    valorLlave = Convert.ToDouble(datoCubeta.datos[indiceLlave]);
+                                                    break;
+                                                case 'C':
+                                                    valorLlave = Convert.ToChar(datoCubeta.datos[indiceLlave]);
+                                                    break;
+                                                case 'S':
+                                                    valorLlave = Convert.ToString(datoCubeta.datos[indiceLlave]);
+                                                    break;
+                                                default: // default vacio
+                                                    break;
+                                            }
 
-                                                if(modificaDato.regresa_llavePrimariaCambiada() == true)
+                                            if (valorLlave == datoBuscarLlave)
+                                            {
+                                                using (ModificaDatoHash modificaDato = new ModificaDatoHash(c, datoCubeta, ent, indiceLlave))
                                                 {
-                                                    int hash = funcion_hash(datoCubeta);
+                                                    var modifica = modificaDato.ShowDialog();
 
-                                                    if(compara_nuevo_hash(c, hash) == true)
+                                                    if (modifica == DialogResult.OK)
                                                     {
-                                                        reordena_datos_cajon(c, datoCubeta);
-                                                        inserta_dato_hash(datoCubeta);
+                                                        datoCubeta = modificaDato.regresa_datoHash();
+
+                                                        if (modificaDato.regresa_llavePrimariaCambiada() == true)
+                                                        {
+                                                            int hash = funcion_hash(datoCubeta);
+
+                                                            if (compara_nuevo_hash(c, hash) == true)
+                                                            {
+                                                                reordena_datos_cajon(c, datoCubeta);
+                                                                inserta_dato_hash(datoCubeta, true);
+                                                            }
+                                                        }
+
+                                                        encontradoYmodificado = true;
+                                                        break;
                                                     }
                                                 }
-
-                                                encontradoYmodificado = true;
-                                                break;
                                             }
-                                        }             
+                                        }                                    
                                     }
-                                }
 
-                                if (encontradoYmodificado == true)
-                                {
-                                    break;
-                                }
+                                    if (encontradoYmodificado == true)
+                                    {
+                                        break;
+                                    }
+                                }                              
                             }
                         }
 
@@ -1366,7 +1383,7 @@ namespace ArchivosTarea2
         /// </summary>
         /// <param name="cubetas">La lista de cubetas a verificar.</param>
         /// <returns>Booleano que nos indica si la lista de cajones esta vacia.</returns>
-        private bool verifica_cajones_vacios(List<Cubeta> cubetas)
+        private bool verifica_cubetas_vacias(List<Cubeta> cubetas)
         {
             bool vacio = false;
             int count = 0;
