@@ -20,7 +20,7 @@ namespace ArchivosTarea2
         readonly int numAtributos;
         readonly Atributo atrLlave;
         readonly int indiceLlave;
-        long tamDato;
+        readonly long tamDato;
         long tamCajon = 8;
         long tamCubeta = 8;
         readonly List<Atributo> atributosVigentes = new List<Atributo>();
@@ -215,25 +215,22 @@ namespace ArchivosTarea2
 
             for (int i = 0; i < caj.listaCubetas.Count; i++)
             {
-                if (verifica_cubetas_vacias(caj.listaCubetas[i]) == false)
+                for (int j = 0; j < caj.listaCubetas[i].Count; j++)
                 {
-                    for (int j = 0; j < caj.listaCubetas[i].Count; j++)
+                    if (j == caj.listaCubetas[i].Count - 1)
                     {
-                        if (j == caj.listaCubetas[i].Count - 1)
-                        {
-                            long apSig = caj.listaCubetas[i][j].regresa_apSigCubeta();
-                            fila[j] = apSig.ToString();
-                        }
-                        else
-                        {
-                            long apDato = caj.listaCubetas[i][j].regresa_apDato();
-                            fila[j] = apDato.ToString();
-                        }
+                        long apSig = caj.listaCubetas[i][j].regresa_apSigCubeta();
+                        fila[j] = apSig.ToString();
                     }
-
-                    filas.Add(fila);
-                    fila = new string[(int)regPorCubeta + 1];
+                    else
+                    {
+                        long apDato = caj.listaCubetas[i][j].regresa_apDato();
+                        fila[j] = apDato.ToString();
+                    }
                 }
+
+                filas.Add(fila);
+                fila = new string[(int)regPorCubeta + 1];
             }
 
             foreach(string[] f in filas)
@@ -410,7 +407,7 @@ namespace ArchivosTarea2
                                 res = res.Remove(start, count);
                             }
 
-                            datos.Add(res.ToLower());
+                            datos.Add(res.ToLowerInvariant());
                         }
                         catch
                         {
@@ -529,7 +526,7 @@ namespace ArchivosTarea2
                         {
                             if (cub.regresa_apSigCubeta() == 0)
                             {
-                                if (cub.regresa_apDato() == -1)
+                                if (cub.regresa_apDato() == -1 || cub.regresa_apDato() == -2)
                                 {
                                     if (reinsersion == false)
                                     {
@@ -621,7 +618,7 @@ namespace ArchivosTarea2
                 String digitosCentrales = "" + c1 + c2;
                 int digitosFinales = Convert.ToInt32(digitosCentrales);
 
-                valorHash = (digitosFinales % 10) + 1;
+                valorHash = (digitosFinales % 10);
             }
             else
             {
@@ -632,7 +629,7 @@ namespace ArchivosTarea2
                 String digitosCentrales = "" + c1;
                 int digitosFinales = Convert.ToInt32(digitosCentrales);
 
-                valorHash = (digitosFinales % 10) + 1;
+                valorHash = (digitosFinales % 10);
             }
 
             return valorHash;
@@ -732,44 +729,6 @@ namespace ArchivosTarea2
             else
             {
                 toolStripStatusLabel1.Text = "Este cajon no posee cubetas.";
-            }
-        }
-
-        /// <summary>
-        /// Metodo que mostrara en el dataGridView correspondiente las cubetas correspondientes a un cajon en especifico.
-        /// </summary>
-        /// <param name="caj">El cajon con las cubetas a mostrar.</param>
-        private void muestra_cubetas(Cajon caj)
-        {
-            dataGridView2.Rows.Clear();
-
-            dataGridView2.ColumnCount = (int)regPorCubeta + 1;
-            dataGridView2.ColumnHeadersVisible = true;
-
-            List<String[]> filas = new List<string[]>();
-            String[] fila = new string[(int)regPorCubeta + 1];
-
-            foreach (List<Cubeta> cub in caj.listaCubetas)
-            {
-                for (int i = 0; i < dataGridView2.ColumnCount; i++)
-                {
-                    if(i == (dataGridView2.ColumnCount - 1))
-                    {
-                        fila[i] = cub[i].regresa_apSigCubeta().ToString();
-                    }
-                    else
-                    {
-                        fila[i] = cub[i].regresa_apDato().ToString();
-                    }
-                }
-
-                filas.Add(fila);
-                fila = new string[(int)regPorCubeta + 1];
-            }
-
-            foreach (string[] arr in filas)
-            {
-                dataGridView2.Rows.Add(arr);
             }
         }
 
@@ -998,76 +957,81 @@ namespace ArchivosTarea2
                             {
                                 List<Cubeta> cubetL = cubL;
 
-                                if(verifica_cubetas_vacias(cubetL) == false)
+                                for (int i = 0; i < cubetL.Count - 1; i++)
                                 {
-                                    for (int i = 0; i < cubetL.Count - 1; i++)
+                                    Cubeta cub = cubetL[i];
+
+                                    if(cub.regresa_apDato() != -1 && cub.regresa_apDato() != -2)
                                     {
-                                        Cubeta cub = cubetL[i];
+                                        Dato datoCubeta = cub.regresa_datoCubeta();
 
-                                        if(cub.regresa_apDato() != -1 && cub.regresa_apDato() != -2)
+                                        dynamic valorLlave = 0;
+
+                                        switch (atrLlave.tipo)
                                         {
-                                            Dato datoCubeta = cub.regresa_datoCubeta();
+                                            case 'I':
+                                                valorLlave = Convert.ToInt32(datoCubeta.datos[indiceLlave]);
+                                                break;
+                                            case 'L':
+                                                valorLlave = Convert.ToInt64(datoCubeta.datos[indiceLlave]);
+                                                break;
+                                            case 'F':
+                                                valorLlave = Convert.ToSingle(datoCubeta.datos[indiceLlave]);
+                                                break;
+                                            case 'D':
+                                                valorLlave = Convert.ToDouble(datoCubeta.datos[indiceLlave]);
+                                                break;
+                                            case 'C':
+                                                valorLlave = Convert.ToChar(datoCubeta.datos[indiceLlave]);
+                                                break;
+                                            case 'S':
+                                                valorLlave = Convert.ToString(datoCubeta.datos[indiceLlave]);
+                                                break;
+                                            default: // default vacio
+                                                break;
+                                        }
 
-                                            dynamic valorLlave = 0;
-
-                                            switch (atrLlave.tipo)
+                                        if (valorLlave == datoBuscarLlave)
+                                        {
+                                            using (ModificaDatoHash modificaDato = new ModificaDatoHash(c, datoCubeta, ent, indiceLlave))
                                             {
-                                                case 'I':
-                                                    valorLlave = Convert.ToInt32(datoCubeta.datos[indiceLlave]);
-                                                    break;
-                                                case 'L':
-                                                    valorLlave = Convert.ToInt64(datoCubeta.datos[indiceLlave]);
-                                                    break;
-                                                case 'F':
-                                                    valorLlave = Convert.ToSingle(datoCubeta.datos[indiceLlave]);
-                                                    break;
-                                                case 'D':
-                                                    valorLlave = Convert.ToDouble(datoCubeta.datos[indiceLlave]);
-                                                    break;
-                                                case 'C':
-                                                    valorLlave = Convert.ToChar(datoCubeta.datos[indiceLlave]);
-                                                    break;
-                                                case 'S':
-                                                    valorLlave = Convert.ToString(datoCubeta.datos[indiceLlave]);
-                                                    break;
-                                                default: // default vacio
-                                                    break;
-                                            }
+                                                var modifica = modificaDato.ShowDialog();
 
-                                            if (valorLlave == datoBuscarLlave)
-                                            {
-                                                using (ModificaDatoHash modificaDato = new ModificaDatoHash(c, datoCubeta, ent, indiceLlave))
+                                                if (modifica == DialogResult.OK)
                                                 {
-                                                    var modifica = modificaDato.ShowDialog();
+                                                    datoCubeta = modificaDato.regresa_datoHash();
 
-                                                    if (modifica == DialogResult.OK)
+                                                    if (modificaDato.regresa_llavePrimariaCambiada() == true)
                                                     {
-                                                        datoCubeta = modificaDato.regresa_datoHash();
+                                                        int hash = funcion_hash(datoCubeta);
 
-                                                        if (modificaDato.regresa_llavePrimariaCambiada() == true)
+                                                        if (compara_nuevo_hash(c, hash) == true)
                                                         {
-                                                            int hash = funcion_hash(datoCubeta);
-
-                                                            if (compara_nuevo_hash(c, hash) == true)
-                                                            {
-                                                                reordena_datos_cajon(c, datoCubeta);
-                                                                inserta_dato_hash(datoCubeta, true);
-                                                            }
+                                                            reordena_datos_cajon(c, datoCubeta);
+                                                            inserta_dato_hash(datoCubeta, true);
                                                         }
-
-                                                        encontradoYmodificado = true;
-                                                        break;
                                                     }
+                                                    else
+                                                    {
+                                                        rellena_dataGrid_cajones();
+                                                        manejo_dataGrid_cubetas();
+                                                        rellena_dataGrid_cubetas(c);
+                                                        rellena_dataGrid_datos(cub);
+                                                        toolStripStatusLabel1.Text = "Dato insertado con exito.";
+                                                    }
+
+                                                    encontradoYmodificado = true;
+                                                    break;
                                                 }
                                             }
-                                        }                                    
-                                    }
+                                        }
+                                    }                                    
+                                }
 
-                                    if (encontradoYmodificado == true)
-                                    {
+                                if (encontradoYmodificado == true)
+                                {
                                         break;
-                                    }
-                                }                              
+                                }                             
                             }
                         }
 
@@ -1076,6 +1040,16 @@ namespace ArchivosTarea2
                             break;
                         }
                     }
+                }
+
+                if(encontradoYmodificado == true)
+                {
+                    toolStripStatusLabel1.Text = "Dato modificado con exito.";
+                    seCambio = true;
+                }
+                else
+                {
+                    toolStripStatusLabel1.Text = "Error, dato no encontrado.";
                 }
             }
             else
@@ -1376,36 +1350,6 @@ namespace ArchivosTarea2
             }
 
             return loContiene;
-        }
-
-        /// <summary>
-        /// Metodo que nos dira si una lista de cubetas esta vacia, es decir, no tiene datos.
-        /// </summary>
-        /// <param name="cubetas">La lista de cubetas a verificar.</param>
-        /// <returns>Booleano que nos indica si la lista de cajones esta vacia.</returns>
-        private bool verifica_cubetas_vacias(List<Cubeta> cubetas)
-        {
-            bool vacio = false;
-            int count = 0;
-
-            for(int i = 0; i < cubetas.Count - 1; i++)
-            {
-                if(cubetas[i].regresa_apDato() == -1)
-                {
-                    count++;
-                }
-                else if(cubetas[i].regresa_apDato() == -2)
-                {
-                    count++;
-                }
-            }
-
-            if(count == regPorCubeta)
-            {
-                vacio = true;
-            }
-
-            return vacio;
         }
     }
 }

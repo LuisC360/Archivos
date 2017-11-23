@@ -62,6 +62,8 @@
             this.label10 = new System.Windows.Forms.Label();
             this.button12 = new System.Windows.Forms.Button();
             this.label11 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.comboBox3 = new System.Windows.Forms.ComboBox();
             this.statusStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -99,7 +101,7 @@
             this.toolStripStatusLabel1});
             this.statusStrip1.Location = new System.Drawing.Point(0, 518);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(784, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(746, 22);
             this.statusStrip1.TabIndex = 3;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -200,6 +202,8 @@
             // panel2
             // 
             this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel2.Controls.Add(this.comboBox3);
+            this.panel2.Controls.Add(this.label12);
             this.panel2.Controls.Add(this.label7);
             this.panel2.Controls.Add(this.comboBox2);
             this.panel2.Controls.Add(this.label6);
@@ -211,7 +215,7 @@
             this.panel2.Controls.Add(this.textBox3);
             this.panel2.Location = new System.Drawing.Point(271, 53);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(501, 79);
+            this.panel2.Size = new System.Drawing.Size(462, 79);
             this.panel2.TabIndex = 12;
             // 
             // label7
@@ -226,7 +230,7 @@
             // comboBox2
             // 
             this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(253, 22);
+            this.comboBox2.Location = new System.Drawing.Point(250, 22);
             this.comboBox2.Name = "comboBox2";
             this.comboBox2.Size = new System.Drawing.Size(85, 21);
             this.comboBox2.TabIndex = 16;
@@ -250,7 +254,7 @@
             // 
             // button7
             // 
-            this.button7.Location = new System.Drawing.Point(343, 21);
+            this.button7.Location = new System.Drawing.Point(87, 48);
             this.button7.Name = "button7";
             this.button7.Size = new System.Drawing.Size(75, 23);
             this.button7.TabIndex = 13;
@@ -260,7 +264,7 @@
             // 
             // button6
             // 
-            this.button6.Location = new System.Drawing.Point(421, 21);
+            this.button6.Location = new System.Drawing.Point(169, 48);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(75, 23);
             this.button6.TabIndex = 12;
@@ -283,7 +287,7 @@
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Location = new System.Drawing.Point(12, 181);
             this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(760, 183);
+            this.dataGridView1.Size = new System.Drawing.Size(721, 183);
             this.dataGridView1.TabIndex = 13;
             // 
             // label4
@@ -309,7 +313,7 @@
             this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView2.Location = new System.Drawing.Point(13, 383);
             this.dataGridView2.Name = "dataGridView2";
-            this.dataGridView2.Size = new System.Drawing.Size(759, 132);
+            this.dataGridView2.Size = new System.Drawing.Size(720, 132);
             this.dataGridView2.TabIndex = 16;
             // 
             // button9
@@ -388,11 +392,28 @@
             this.label11.TabIndex = 24;
             this.label11.Text = "Multilistas:";
             // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(338, 4);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(112, 13);
+            this.label12.TabIndex = 18;
+            this.label12.Text = "Es llave de busqueda:";
+            // 
+            // comboBox3
+            // 
+            this.comboBox3.FormattingEnabled = true;
+            this.comboBox3.Location = new System.Drawing.Point(341, 22);
+            this.comboBox3.Name = "comboBox3";
+            this.comboBox3.Size = new System.Drawing.Size(107, 21);
+            this.comboBox3.TabIndex = 19;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(784, 540);
+            this.ClientSize = new System.Drawing.Size(746, 540);
             this.Controls.Add(this.label11);
             this.Controls.Add(this.button12);
             this.Controls.Add(this.label10);
@@ -462,6 +483,8 @@
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Button button12;
         private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.ComboBox comboBox3;
+        private System.Windows.Forms.Label label12;
     }
 }
 

@@ -159,7 +159,7 @@ namespace ArchivosTarea2
             int celdaSeleccionada = dataGridView1.CurrentRow.Index;
             bool incompatible = false;
 
-            for (int i = 0; i < dataGridView1.CurrentRow.Cells.Count - 2; i++)
+            for (int i = 0; i < dataGridView1.CurrentRow.Cells.Count - 1; i++)
             {
                 if (dataGridView1.CurrentRow.Cells[i].ToString() != "")
                 {

@@ -47,7 +47,7 @@ namespace ArchivosTarea2
         // El numero de cajones y de registros por cajon para los archivos de hash estatica
         long numCajones;
         long regPorCajon;
-        // El tipo de ordenamiento del archivo (0- Secuencial ordenado, 1- Secuencial indezado, 3- Hash estatica)
+        // El tipo de ordenamiento del archivo (0- Secuencial ordenado, 1- Secuencial indezado, 3- Hash estatica, 4- Multilistas)
         int tipo;
 
         public Form1()
@@ -58,12 +58,14 @@ namespace ArchivosTarea2
             textBox3.ReadOnly = true;
             comboBox1.Enabled = false;
             comboBox2.Enabled = false;
+            comboBox3.Enabled = false;
             button9.Enabled = false;
             button10.Enabled = false;
             button11.Enabled = false;
             button12.Enabled = false;
             comboBox1.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox2.DropDownStyle = ComboBoxStyle.DropDownList;
+            comboBox3.DropDownStyle = ComboBoxStyle.DropDownList;
             rellena_lista_tipo();
             toolStripStatusLabel1.Text = "Listo.";
             dataGridView1.ReadOnly = true;
@@ -140,6 +142,16 @@ namespace ArchivosTarea2
                                 button11.Enabled = true;
 
                                 posicionMemoria += 16;
+
+                                toolStripStatusLabel1.Text = "Archivo creado con exito.";
+                                break;
+                        case 3:
+                                textBox2.ReadOnly = false;
+                                textBox3.ReadOnly = false;
+                                comboBox1.Enabled = true;
+                                comboBox2.Enabled = true;
+                                comboBox3.Enabled = true;
+                                button11.Enabled = true;
 
                                 toolStripStatusLabel1.Text = "Archivo creado con exito.";
                                 break;
@@ -2510,6 +2522,9 @@ namespace ArchivosTarea2
 
             comboBox2.Items.Add("Si");
             comboBox2.Items.Add("No");
+
+            comboBox3.Items.Add("Si");
+            comboBox3.Items.Add("No");
         }
 
         /// <summary>
@@ -3452,7 +3467,7 @@ namespace ArchivosTarea2
         // Boton que abre una ventana donde se insertaran los datos via multilistas.
         private void button12_Click(object sender, EventArgs e)
         {
-
+            // WIP
         }
     }
 }
