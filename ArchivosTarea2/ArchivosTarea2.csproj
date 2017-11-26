@@ -51,6 +51,7 @@
     <Compile Include="BusquedaModifica.Designer.cs">
       <DependentUpon>BusquedaModifica.cs</DependentUpon>
     </Compile>
+    <Compile Include="Cabecera.cs" />
     <Compile Include="Cajon.cs" />
     <Compile Include="CuadroDeDatos.cs">
       <SubType>Form</SubType>
@@ -69,6 +70,12 @@
     </Compile>
     <Compile Include="CuadroDeDatosIndexado.Designer.cs">
       <DependentUpon>CuadroDeDatosIndexado.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CuadroDeDatosMultilistas.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CuadroDeDatosMultilistas.Designer.cs">
+      <DependentUpon>CuadroDeDatosMultilistas.cs</DependentUpon>
     </Compile>
     <Compile Include="Cubeta.cs" />
     <Compile Include="Dato.cs" />
@@ -97,6 +104,12 @@
     </Compile>
     <Compile Include="ModificaDatoIndexado.Designer.cs">
       <DependentUpon>ModificaDatoIndexado.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ModificaDatoMultilistas.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ModificaDatoMultilistas.Designer.cs">
+      <DependentUpon>ModificaDatoMultilistas.cs</DependentUpon>
     </Compile>
     <Compile Include="ModificadorAtributo.cs">
       <SubType>Form</SubType>
@@ -130,6 +143,9 @@
     <EmbeddedResource Include="CuadroDeDatosIndexado.resx">
       <DependentUpon>CuadroDeDatosIndexado.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="CuadroDeDatosMultilistas.resx">
+      <DependentUpon>CuadroDeDatosMultilistas.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -141,6 +157,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ModificaDatoIndexado.resx">
       <DependentUpon>ModificaDatoIndexado.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ModificaDatoMultilistas.resx">
+      <DependentUpon>ModificaDatoMultilistas.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ModificadorAtributo.resx">
       <DependentUpon>ModificadorAtributo.cs</DependentUpon>

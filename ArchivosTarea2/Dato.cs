@@ -20,6 +20,8 @@ namespace ArchivosTarea2
         public int keyIndex;
         // El indice ligado al dato.
         Indice ind;
+        // El arreglo de apuntadores que el dato puede tener en caso de que alguno de sus atributos sea llave de busqueda.
+        public long[] apuntadoresLlaveBusq = new long[] { };
 
         /// <summary>
         /// Construccion de una nueva instancia de la clase Dato.
@@ -50,7 +52,7 @@ namespace ArchivosTarea2
         }
 
         /// <summary>
-        /// Constructor de una nueva isntancia de la clase Dato.
+        /// Constructor de una nueva instancia de la clase Dato.
         /// </summary>
         /// <param name="e">La entidad en la que se insertara el dato.</param>
         /// <param name="i">El indice ligado al dato.</param>
@@ -70,6 +72,29 @@ namespace ArchivosTarea2
             }
 
             ind = i;
+        }
+
+        /// <summary>
+        /// Constructor de una nueva instancia de la clase Dato.
+        /// </summary>
+        /// <param name="e">La entidad en la que se insertara el dato.</param>
+        /// <param name="apuntadoresBusqueda">El arreglo con los apuntadores de llave de busqueda.</param>
+        public Dato(Entidad e, long[] apuntadoresBusqueda)
+        {
+            foreach (Atributo at in e.listaAtributos)
+            {
+                if (at.apSigAtributo != -2 && at.apSigAtributo != -4)
+                {
+                    listaAtributosDato.Add(at);
+
+                    if (at.esLlavePrimaria == true)
+                    {
+                        atLlave = at;
+                    }
+                }
+            }
+
+            apuntadoresLlaveBusq = apuntadoresBusqueda;
         }
 
         /// <summary>

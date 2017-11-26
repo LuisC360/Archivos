@@ -112,8 +112,7 @@ namespace ArchivosTarea2
                                 comboBox1.Enabled = true;
                                 comboBox2.Enabled = true;
                                 button9.Enabled = true;
-
-                                toolStripStatusLabel1.Text = "Archivo creado con exito.";
+                               
                                 break;
                         // SECUENCIAL INDEXADO
                         case 1: crea_archivo_indexado(textBox1.Text);
@@ -128,9 +127,8 @@ namespace ArchivosTarea2
                                 button10.Enabled = true;
 
                                 posicionMemoria += 8;
-
-                                toolStripStatusLabel1.Text = "Archivo creado con exito.";
                                 break;
+                        // HASH ESTATICA
                         case 2: crea_archivo_hash(textBox1.Text);
 
                                 manejo_dataGrid_hash(textBox1.Text);
@@ -142,20 +140,22 @@ namespace ArchivosTarea2
                                 button11.Enabled = true;
 
                                 posicionMemoria += 16;
-
-                                toolStripStatusLabel1.Text = "Archivo creado con exito.";
                                 break;
-                        case 3:
+                        // MULTILISTAS
+                        case 3: crea_archivo_multilistas(textBox1.Text);
+
+                                manejo_dataGrid_multilistas(textBox1.Text);
+
                                 textBox2.ReadOnly = false;
                                 textBox3.ReadOnly = false;
                                 comboBox1.Enabled = true;
                                 comboBox2.Enabled = true;
                                 comboBox3.Enabled = true;
-                                button11.Enabled = true;
-
-                                toolStripStatusLabel1.Text = "Archivo creado con exito.";
+                                button12.Enabled = true;
                                 break;
                     }
+
+                    toolStripStatusLabel1.Text = "Archivo creado con exito.";
                 }
                 else // Si el archivo ya existe, se abre
                 {
@@ -202,6 +202,15 @@ namespace ArchivosTarea2
                                     comboBox2.Enabled = true;
                                     button11.Enabled = true;
                                     break;
+                            case 3: manejo_dataGrid_multilistas(textBox1.Text);
+
+                                    textBox2.ReadOnly = false;
+                                    textBox3.ReadOnly = false;
+                                    comboBox1.Enabled = true;
+                                    comboBox2.Enabled = true;
+                                    comboBox3.Enabled = true;
+                                    button12.Enabled = true;
+                                    break;
                         }
                         
 
@@ -241,6 +250,11 @@ namespace ArchivosTarea2
                                 manejo_dataGrid_hash(textBox1.Text);
 
                                 break;
+                        case 3: crea_archivo_multilistas(textBox1.Text);
+
+                                manejo_dataGrid_multilistas(textBox1.Text);
+
+                                break;
                     }
 
                     toolStripStatusLabel1.Text = "Archivo creado con exito.";
@@ -263,6 +277,8 @@ namespace ArchivosTarea2
                                 case 1: cabecera = 16;
                                     break;
                                 case 2: cabecera = 24;
+                                    break;
+                                case 3: cabecera = 8;
                                     break;
                                 default: // Default vacio
                                     break;
@@ -308,6 +324,8 @@ namespace ArchivosTarea2
                                         break;
                                     case 2: entidad.posEntidad += 24;
                                         break;
+                                    case 3: entidad.posEntidad += 8;
+                                        break;
                                     default: // Default vacio
                                         break;
                                 }
@@ -341,6 +359,12 @@ namespace ArchivosTarea2
                                         entidadesLeidas = new List<Entidad>();
 
                                         manejo_dataGrid_hash(textBox1.Text);
+                                        break;
+                                case 3: escribe_archivo_multilistas(textBox1.Text);
+
+                                        entidadesLeidas = new List<Entidad>();
+
+                                        manejo_dataGrid_multilistas(textBox1.Text);
                                         break;
                             }
                             
@@ -519,6 +543,10 @@ namespace ArchivosTarea2
 
                                             manejo_dataGrid_hash(textBox1.Text);
                                             break;
+                                    case 3: escribe_archivo_multilistas(textBox1.Text);
+
+                                            manejo_dataGrid_multilistas(textBox1.Text);
+                                            break;
                                 }
                                 break;
                             }
@@ -554,6 +582,10 @@ namespace ArchivosTarea2
                                     case 2: escribe_archivo_hash(textBox1.Text);
 
                                             manejo_dataGrid_hash(textBox1.Text);
+                                            break;
+                                    case 3: escribe_archivo_multilistas(textBox1.Text);
+
+                                            manejo_dataGrid_multilistas(textBox1.Text);
                                             break;
                                 }
                                 break;
@@ -594,6 +626,10 @@ namespace ArchivosTarea2
                                 case 2: escribe_archivo_hash(textBox1.Text);
 
                                         manejo_dataGrid_hash(textBox1.Text);
+                                        break;
+                                case 3: escribe_archivo_multilistas(textBox1.Text);
+
+                                        manejo_dataGrid_multilistas(textBox1.Text);
                                         break;
                             }
                             break;
@@ -935,7 +971,7 @@ namespace ArchivosTarea2
         /// En esta funcion se haran 3 cosas importantes:
         /// 1- Refrescar e inicializar ambos dataGridView.
         /// 2- Leer el archivo binario indexado especificado en el parametro "archivo".
-        /// 3. Poblar el dataGridView con los datos del archivo en el orden correspondiente.
+        /// 3- Poblar el dataGridView con los datos del archivo en el orden correspondiente.
         /// </summary>
         /// <param name="archivo">Nombre del archivo a abrirse.</param>
         public void manejo_dataGrid_indexado(String archivo)
@@ -1094,7 +1130,7 @@ namespace ArchivosTarea2
         /// En esta funcion se haran 3 cosas importantes:
         /// 1- Refrescar e inicializar ambos dataGridView.
         /// 2- Leer el archivo binario con hash estatica especificado en el parametro "archivo".
-        /// 3. Poblar el dataGridView con los datos del archivo en el orden correspondiente.
+        /// 3- Poblar el dataGridView con los datos del archivo en el orden correspondiente.
         /// </summary>
         /// <param name="archivo">Nombre del archivo a abrirse.</param>
         public void manejo_dataGrid_hash(String archivo)
@@ -1246,6 +1282,94 @@ namespace ArchivosTarea2
 
                     filas.Add(fila);
                     fila = new string[] { };
+                }
+            }
+
+            foreach (string[] arr in filas)
+            {
+                dataGridView1.Rows.Add(arr);
+            }
+
+            reader.Close();
+            streamR.Close();
+
+            seAbrio = true;
+        }
+
+        /// <summary>
+        /// En esta funcion se haran 3 cosas importantes:
+        /// 1- Refrescar e inicializar ambos dataGridView.
+        /// 2- Leer el archivo binario con multilistas especificado en el parametro "archivo".
+        /// 3- Poblar el dataGridView con los datos del archivo en el orden correspondiente.
+        /// </summary>
+        /// <param name="archivo"></param>
+        public void manejo_dataGrid_multilistas(String archivo)
+        {
+            posicionMemoria = 8;
+            tamDato = 8;
+
+            data.Clear();
+            entidades.Clear();
+            entidadesLeidas.Clear();
+
+            // Refrescar el dataGridView
+            dataGridView1.Rows.Clear();
+            dataGridView1.Refresh();
+
+            // Se inicializa el dataGridView correspondiente
+            dataGridView1.ColumnCount = 5;
+            dataGridView1.ColumnHeadersVisible = true;
+
+            dataGridView1.Columns[0].Name = "Nombre";
+            dataGridView1.Columns[1].Name = "Ap. Atributos";
+            dataGridView1.Columns[2].Name = "Ap. Datos";
+            dataGridView1.Columns[3].Name = "Pos. Inicial";
+            dataGridView1.Columns[4].Name = "Ap. Sig. Entidad";
+
+            // Se lee el archivo binario
+            FileStream streamR = new FileStream(archivo, FileMode.Open, FileAccess.Read);
+            BinaryReader reader = new BinaryReader(streamR);
+
+            Boolean bandCabecera = false;
+
+
+            // Se popula el primer dataGridView con los datos de las entidades
+            List<String[]> filas = new List<string[]>();
+            String[] fila;
+            String nombreEntidad = "";
+            long apAt = 0;
+            long apDat = 0;
+            long posInic = 0;
+            long apSigAt = 0;
+
+            foreach (Entidad ent in entidadesLeidas)
+            {
+                if (ent.apSigEntidad > -2)
+                {
+                    nombreEntidad = new string(ent.nombre);
+                    apAt += ent.apAtributos;
+                    apDat += ent.apDatos;
+                    posInic += ent.posEntidad;
+                    apSigAt += ent.apSigEntidad;
+
+                    if (ent.apAtributos < -1)
+                    {
+                        apAt = -1;
+                    }
+
+                    if (ent.apDatos < -1)
+                    {
+                        apDat = -1;
+                    }
+
+                    fila = new string[] { nombreEntidad, apAt.ToString(), apDat.ToString(), posInic.ToString(), apSigAt.ToString() };
+
+                    apAt = 0;
+                    apDat = 0;
+                    posInic = 0;
+                    apSigAt = 0;
+
+                    filas.Add(fila);
                 }
             }
 
@@ -1709,13 +1833,16 @@ namespace ArchivosTarea2
         }
 
         /// <summary>
-        /// Funcion recursiva que se encargara de leer todos los atributos de una entidad en un archivo
+        /// Funcion recursiva que se encargara de leer todos los atributos de una entidad en un archivo.
         /// </summary>
-        /// <param name="f">El FileStream con el que se manipulan los archivos</param>
-        /// <param name="r">El lector de archivos binarios</param>
-        /// <param name="ent">La entidad que contiene los atributos</param>
+        /// <param name="f">El FileStream con el que se manipulan los archivos.</param>
+        /// <param name="r">El lector de archivos binarios.</param>
+        /// <param name="ent">La entidad que contiene los atributos.</param>
         void lee_atributos_de_entidad(FileStream f, BinaryReader r, Entidad ent)
         {
+            Atributo nAtributo = new Atributo();
+            bool isSearch = false;
+
             // Leer nombre de atributo
             for (int i = 0; i < nombreAT.Length; i++)
             {
@@ -1727,11 +1854,24 @@ namespace ArchivosTarea2
             long lon = r.ReadInt64();
             long posAt = r.ReadInt64();
             bool isKey = r.ReadBoolean();
+
+            if(tipo == 3)
+            {
+                isSearch = r.ReadBoolean();
+            }
+
             long apSigAt = r.ReadInt64();
 
-            Atributo nAtributo = new Atributo(nombreAT, type, lon, posAt, isKey, apSigAt);
-
-            posicionMemoria = posicionMemoria + tamAtributo;
+            if (tipo != 3)
+            {
+                nAtributo = new Atributo(nombreAT, type, lon, posAt, isKey, apSigAt);
+                posicionMemoria = posicionMemoria + tamAtributo;
+            }
+            else
+            {
+                nAtributo = new Atributo(nombre, type, lon, posAt, isKey, isSearch, apSigAt);
+                posicionMemoria = posicionMemoria + tamAtributo + 1;
+            }
 
             ent.listaAtributos.Add(nAtributo);
 
@@ -2008,6 +2148,46 @@ namespace ArchivosTarea2
                     writer.Write(registros);
                 }
                 else 
+                {
+                    for (int j = 0; j < entidades.Count; j++)
+                    {
+                        for (int k = 0; k < entidades[j].nombre.Length; k++)
+                        {
+                            writer.Write(entidades[j].nombre[k]);
+                        }
+
+                        writer.Write(entidades[j].apAtributos);
+                        writer.Write(entidades[j].apDatos);
+                        writer.Write(entidades[j].posEntidad);
+                        writer.Write(entidades[j].apSigEntidad);
+                    }
+                }
+            }
+
+            writer.Close();
+            stream.Close();
+        }
+
+        /// <summary>
+        /// Esta funcion nos creara un nuevo archivo binario para el metodo de ordenacion por multilistas, por lo que no es necesario
+        /// añadir algo entre la cabecera y la primer entidad.
+        /// </summary>
+        /// <param name="nombreArchivo">El nombre del archivo a crearse.</param>
+        public void crea_archivo_multilistas(String nombreArchivo)
+        {
+            FileStream stream = new FileStream(nombreArchivo, FileMode.Create, FileAccess.Write);
+            BinaryWriter writer = new BinaryWriter(stream);
+            long cabecera = -1;
+
+            data.Add(cabecera);
+
+            for (int i = 0; i < data.Count; i++)
+            {
+                if (i == 0)
+                {
+                    writer.Write(cabecera);
+                }
+                else
                 {
                     for (int j = 0; j < entidades.Count; j++)
                     {
@@ -2454,6 +2634,128 @@ namespace ArchivosTarea2
         }
 
         /// <summary>
+        /// Esta funcion es parecida a la de crea_archivo_hash, pero difiere en el hecho de que no crea el archivo, solo lo actualiza.
+        /// </summary>
+        /// <param name="archivo">El nombre del archivo que sera actualizado</param>
+        public void escribe_archivo_multilistas(String archivo)
+        {
+            FileStream stream = new FileStream(archivo, FileMode.Create, FileAccess.Write);
+            BinaryWriter writer = new BinaryWriter(stream);
+            long cabecera = 8;
+
+            for (int i = 0; i < data.Count; i++)
+            {
+                if (i == 0)
+                {
+                    writer.Write(cabecera);
+                    break;
+                }
+            }
+
+            for (int j = 0; j < entidades.Count; j++)
+            {
+                for (int k = 0; k < entidades[j].nombre.Length; k++)
+                {
+                    writer.Write(entidades[j].nombre[k]);
+                }
+
+                writer.Write(entidades[j].apAtributos);
+                writer.Write(entidades[j].apDatos);
+                writer.Write(entidades[j].posEntidad);
+                writer.Write(entidades[j].apSigEntidad);
+
+                if (entidades[j].apAtributos != -1)
+                {
+                    for (int l = 0; l < entidades[j].listaAtributos.Count; l++)
+                    {
+                        for (int m = 0; m < entidades[j].listaAtributos[l].nombre.Length; m++)
+                        {
+                            writer.Write(entidades[j].listaAtributos[l].nombre[m]);
+                        }
+
+                        writer.Write(entidades[j].listaAtributos[l].tipo);
+                        writer.Write(entidades[j].listaAtributos[l].bytes);
+                        writer.Write(entidades[j].listaAtributos[l].posAtributo);
+                        writer.Write(entidades[j].listaAtributos[l].esLlavePrimaria);
+                        writer.Write(entidades[j].listaAtributos[l].esLlaveDeBusqueda);
+                        writer.Write(entidades[j].listaAtributos[l].apSigAtributo);
+                    }
+                }
+
+                if (entidades[j].apDatos != -1)
+                {
+                    for (int n = 0; n < entidades[j].listaDatos.Count; n++)
+                    {
+                        for (int m = 0; m < entidades[j].listaDatos[n].datos.Count; m++)
+                        {
+                            if (entidades[j].listaDatos[n].listaAtributosDato[m].tipo == 'I')
+                            {
+                                writer.Write(Convert.ToInt32(entidades[j].listaDatos[n].datos[m]));
+                            }
+                            else if (entidades[j].listaDatos[n].listaAtributosDato[m].tipo == 'F')
+                            {
+                                writer.Write((float)entidades[j].listaDatos[n].datos[m]);
+                            }
+                            else if (entidades[j].listaDatos[n].listaAtributosDato[m].tipo == 'L')
+                            {
+                                writer.Write(Convert.ToInt64(entidades[j].listaDatos[n].datos[m]));
+                            }
+                            else if (entidades[j].listaDatos[n].listaAtributosDato[m].tipo == 'D')
+                            {
+                                writer.Write(Convert.ToDouble(entidades[j].listaDatos[n].datos[m]));
+                            }
+                            else if (entidades[j].listaDatos[n].listaAtributosDato[m].tipo == 'C')
+                            {
+                                writer.Write(Convert.ToChar(entidades[j].listaDatos[n].datos[m]));
+                            }
+                            else if (entidades[j].listaDatos[n].listaAtributosDato[m].tipo == 'S')
+                            {
+                                String nuSt = "";
+
+                                if (entidades[j].listaDatos[n].datos[m] is char[])
+                                {
+                                    nuSt = new string((char[])entidades[j].listaDatos[n].datos[m]);
+                                }
+
+                                char[] cadenaTemporal = new char[entidades[j].listaDatos[n].listaAtributosDato[m].bytes / 2];
+
+                                for (int i = 0; i < entidades[j].listaDatos[n].listaAtributosDato[m].bytes / 2; i++)
+                                {
+                                    cadenaTemporal[i] = '\0';
+                                }
+
+                                if (nuSt.Length > 0)
+                                {
+                                    for (int o = 0; o < nuSt.Length; o++)
+                                    {
+                                        cadenaTemporal[o] = nuSt[o];
+                                    }
+                                }
+                                else
+                                {
+                                    for (int o = 0; o < entidades[j].listaDatos[n].datos[m].ToString().Length; o++)
+                                    {
+                                        cadenaTemporal[o] = entidades[j].listaDatos[n].datos[m].ToString()[o];
+                                    }
+                                }
+
+                                for (int p = 0; p < cadenaTemporal.Length; p++)
+                                {
+                                    writer.Write(cadenaTemporal[p]);
+                                }
+                            }
+                        }
+
+                        writer.Write(entidades[j].listaDatos[n].apSigDato);
+                    }
+                }
+            }
+
+            writer.Close();
+            stream.Close();
+        }
+
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="e"></param>
@@ -2650,6 +2952,10 @@ namespace ArchivosTarea2
 
                                                         manejo_dataGrid_hash(textBox1.Text);
                                                         break;
+                                                case 3: escribe_archivo_multilistas(textBox1.Text);
+
+                                                        manejo_dataGrid_multilistas(textBox1.Text);
+                                                        break;
                                             }                                            
 
                                             manejo_dataGrid_atributos(entidadEncontrada);  
@@ -2679,6 +2985,10 @@ namespace ArchivosTarea2
                                                 case 2: escribe_archivo_hash(textBox1.Text);
 
                                                         manejo_dataGrid_hash(textBox1.Text);
+                                                        break;
+                                                case 3: escribe_archivo_multilistas(textBox1.Text);
+
+                                                        manejo_dataGrid_multilistas(textBox1.Text);
                                                         break;
                                             }  
 
@@ -2719,6 +3029,10 @@ namespace ArchivosTarea2
 
                                                     manejo_dataGrid_hash(textBox1.Text);
                                                     break;
+                                            case 3: escribe_archivo_multilistas(textBox1.Text);
+
+                                                    manejo_dataGrid_multilistas(textBox1.Text);
+                                                    break;
                                         }  
 
                                         manejo_dataGrid_atributos(entidadEncontrada);  
@@ -2748,6 +3062,10 @@ namespace ArchivosTarea2
                                             case 2: escribe_archivo_hash(textBox1.Text);
 
                                                     manejo_dataGrid_hash(textBox1.Text);
+                                                    break;
+                                            case 3: escribe_archivo_multilistas(textBox1.Text);
+
+                                                    manejo_dataGrid_multilistas(textBox1.Text);
                                                     break;
                                         }  
 
@@ -2909,6 +3227,15 @@ namespace ArchivosTarea2
 
                                         manejo_dataGrid_atributos(entidadEncontrada);
                                         break;
+                                    case 3:
+                                        escribe_archivo_multilistas(textBox1.Text);
+
+                                        entidadesLeidas = new List<Entidad>();
+
+                                        manejo_dataGrid_multilistas(textBox1.Text);
+
+                                        manejo_dataGrid_atributos(entidadEncontrada);
+                                        break;
                                 }
                                 
                                 toolStripStatusLabel1.Text = "Atributo modificado con exito.";
@@ -2993,6 +3320,15 @@ namespace ArchivosTarea2
                                         break;
                                     case 2:
                                         escribe_archivo_hash(textBox1.Text);
+
+                                        entidadesLeidas = new List<Entidad>();
+
+                                        manejo_dataGrid_hash(textBox1.Text);
+
+                                        manejo_dataGrid_atributos(entidadEncontrada);
+                                        break;
+                                    case 3:
+                                        escribe_archivo_multilistas(textBox1.Text);
 
                                         entidadesLeidas = new List<Entidad>();
 
@@ -3256,6 +3592,11 @@ namespace ArchivosTarea2
 
                                     manejo_dataGrid_hash(textBox1.Text);
                                     break;
+                                case 3:
+                                    escribe_archivo_multilistas(textBox1.Text);
+
+                                    manejo_dataGrid_multilistas(textBox1.Text);
+                                    break;
                             }
 
                             manejo_dataGrid_atributos(entidadEncontrada);
@@ -3467,7 +3808,22 @@ namespace ArchivosTarea2
         // Boton que abre una ventana donde se insertaran los datos via multilistas.
         private void button12_Click(object sender, EventArgs e)
         {
-            // WIP
+            if (textBox2.Text.Length > 0 && validacion(textBox2.Text) == true)
+            {
+                Entidad ent = busca_entidad(textBox2.Text);
+
+                if (ent.apAtributos > -1 && hay_llave_primaria(ent) == true)
+                {
+                    using (CuadroDeDatosHash datosHash = new CuadroDeDatosHash(ent, posicionMemoria, tamDato, numCajones, regPorCajon))
+                    {
+                        
+                    }
+                }
+                else
+                {
+                    toolStripStatusLabel1.Text = "Error, esta entidad no tiene atributos o llave primaria.";
+                }
+            }
         }
     }
 }

@@ -8,17 +8,25 @@ namespace ArchivosTarea2
 {
     public class Cubeta
     {
+        // El apuntador a dato de la cubeta.
         public long apDato { get; set; }
+        // La posicion de la cubeta en memoria.
         public long posCubeta { get; set; }
+        // El apuntador a la siguiente cubeta.
         public long apSigCubeta { get; set; }
+        // El dato de la cubeta.
         public Dato datoCubeta { get; set; }
 
+        /// <summary>
+        /// Constructor de una nueva instancia de la clase cubeta.
+        /// </summary>
         public Cubeta()
         {
             apDato = -1;
             apSigCubeta = 0;
         }
 
+        // Funciones para inicializar informacion de la cubeta.
         public void str_apDato(long ap)
         {
             apDato = ap;
@@ -39,6 +47,7 @@ namespace ArchivosTarea2
             datoCubeta = dato;
         }
 
+        // Funciones de retorno de informacion de la cubeta.
         public long regresa_apDato()
         {
             return apDato;

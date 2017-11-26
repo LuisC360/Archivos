@@ -99,7 +99,7 @@ namespace ArchivosTarea2
                     {
                         long apDato = c.regresa_apDato();
 
-                        if(apDato != -1)
+                        if(apDato != -1 && apDato != -2)
                         {
                             Dato dat = c.regresa_datoCubeta();
                             dat.posDato = apDato;
@@ -225,6 +225,12 @@ namespace ArchivosTarea2
                     else
                     {
                         long apDato = caj.listaCubetas[i][j].regresa_apDato();
+
+                        if(apDato == -2)
+                        {
+                            apDato = -1;
+                        }
+
                         fila[j] = apDato.ToString();
                     }
                 }
@@ -250,7 +256,7 @@ namespace ArchivosTarea2
             dataGridView3.ColumnCount = numAtributos + 1;
             dataGridView3.ColumnHeadersVisible = true;
 
-            string[] fila = new string[(int)regPorCubeta + 1];
+            string[] fila = new string[(int)numAtributos + 1];
             List<String[]> filas = new List<string[]>();
             Dato datoCubeta = cub.regresa_datoCubeta();
             int count = 0;
@@ -583,34 +589,45 @@ namespace ArchivosTarea2
             int valorHash = 0;
 
             var valorLlavePrimaria = dat.datos[indiceLlave];
-
-            String convertToASCII = valorLlavePrimaria.ToString();
-            byte[] bytes = Encoding.ASCII.GetBytes(convertToASCII);
-
-            String valueASCII = "";
-            StringBuilder bld = new StringBuilder();
-
-            foreach(byte b in bytes)
-            {
-                bld.Append(b.ToString());
-            }
-
-            valueASCII = bld.ToString();
-
-            double ASCIIdouble = Convert.ToDouble(valueASCII);            
+            double cuadrado = 0;
+            int digitos = 0;
             double potencia = 2;
 
-            double cuadrado = Math.Pow(ASCIIdouble, potencia);
-            int cuadradoInt = Convert.ToInt32(cuadrado);
+            if (atrLlave.tipo == 'S' || atrLlave.tipo == 'C')
+            {
+                String convertToASCII = valorLlavePrimaria.ToString();
+                byte[] bytes = Encoding.ASCII.GetBytes(convertToASCII);
 
-            int digitos = cuadradoInt.ToString().Length;
+                String valueASCII = "";
+                StringBuilder bld = new StringBuilder();
 
-            if(digitos % 2 == 0)
+                foreach (byte b in bytes)
+                {
+                    bld.Append(b.ToString());
+                }
+
+                valueASCII = bld.ToString();
+
+                double ASCIIdouble = Convert.ToDouble(valueASCII);              
+
+                cuadrado = Math.Pow(ASCIIdouble, potencia);            
+            }
+            else
+            {
+                dynamic valorDato = convierte_dato_a_encontrar(valorLlavePrimaria.ToString());
+                double datoDouble = Convert.ToDouble(valorDato);
+
+                cuadrado = Math.Pow(datoDouble, potencia);
+            }
+
+            digitos = cuadrado.ToString().Length;
+
+            if (digitos % 2 == 0)
             {
                 int mitad = digitos / 2;
 
-                String subString1 = cuadradoInt.ToString().Substring(0, mitad);
-                String subString2 = cuadradoInt.ToString().Substring(mitad, mitad);
+                String subString1 = cuadrado.ToString().Substring(0, mitad);
+                String subString2 = cuadrado.ToString().Substring(mitad, mitad);
 
                 Char c1 = subString1[subString1.Length - 1];
                 Char c2 = subString2[0];
@@ -622,9 +639,9 @@ namespace ArchivosTarea2
             }
             else
             {
-                int mitad = digitos - 1 / 2;
+                int mitad = (digitos - 1) / 2;
 
-                Char c1 = cuadradoInt.ToString()[mitad + 1];
+                Char c1 = cuadrado.ToString()[mitad];
 
                 String digitosCentrales = "" + c1;
                 int digitosFinales = Convert.ToInt32(digitosCentrales);
@@ -750,15 +767,18 @@ namespace ArchivosTarea2
                     {
                         long apDato = c.regresa_apDato();
 
-                        if (apDato != -1)
+                        if (apDato != -1 && apDato != -2)
                         {
                             Dato datoComparar = c.regresa_datoCubeta();
 
-                            if (dat.datos[indiceLlave].ToString() == datoComparar.datos[indiceLlave].ToString())
+                            if (datoComparar != dat)
                             {
-                                repetido = true;
-                                encontrado = true;
-                                break;
+                                if (dat.datos[indiceLlave].ToString() == datoComparar.datos[indiceLlave].ToString())
+                                {
+                                    repetido = true;
+                                    encontrado = true;
+                                    break;
+                                }
                             }
                         }
                     }
@@ -805,7 +825,7 @@ namespace ArchivosTarea2
                 }
             }
 
-            if(cubetaEncontrada.regresa_apDato() == -1)
+            if(cubetaEncontrada.regresa_apDato() == -1 || cubetaEncontrada.regresa_apDato() == -2)
             {
                 toolStripStatusLabel1.Text = "Error, esta cubeta no tiene ningun dato.";
             }
@@ -823,6 +843,7 @@ namespace ArchivosTarea2
             this.Close();
         }
 
+        // Funciones de retorno de informacion a la ventana principal.
         public long regresa_apuntador_cajones()
         {
             return ent.apCajones;
@@ -852,6 +873,7 @@ namespace ArchivosTarea2
         {
             return ent.listaCajones;
         }
+        // Funciones de retorno de informacion a la ventaana principal.
 
         // Boton con el que se hara la eliminación de un dato.
         private void button3_Click(object sender, EventArgs e)
@@ -876,40 +898,52 @@ namespace ArchivosTarea2
                                 for(int i = 0; i < cubetL.Count - 1; i++)
                                 {
                                     Cubeta cub = cubetL[i];
-                                    Dato datoCubeta = cub.regresa_datoCubeta();
 
-                                    dynamic valorLlave = 0;
-
-                                    switch(atrLlave.tipo)
+                                    if (cub.regresa_apDato() != -1 && cub.regresa_apDato() != -2)
                                     {
-                                        case 'I': valorLlave = Convert.ToInt32(datoCubeta.datos[indiceLlave]);
-                                            break;
-                                        case 'L': valorLlave = Convert.ToInt64(datoCubeta.datos[indiceLlave]);
-                                            break;
-                                        case 'F': valorLlave = Convert.ToSingle(datoCubeta.datos[indiceLlave]);
-                                            break;
-                                        case 'D': valorLlave = Convert.ToDouble(datoCubeta.datos[indiceLlave]);
-                                            break;
-                                        case 'C': valorLlave = Convert.ToChar(datoCubeta.datos[indiceLlave]);
-                                            break;
-                                        case 'S': valorLlave = Convert.ToString(datoCubeta.datos[indiceLlave]);
-                                            break;
-                                        default: // default vacio
-                                            break;
-                                    }
+                                        Dato datoCubeta = cub.regresa_datoCubeta();
 
-                                    if(valorLlave == datoBuscarLlave)
-                                    {
-                                        cub.str_apDato(-2);
-                                        encontradoYeliminado = true;
+                                        dynamic valorLlave = 0;
 
-                                        if(cubeta_vacia(cubetL) == true)
+                                        switch (atrLlave.tipo)
                                         {
-                                            cubetL[cubetL.Count - 1].str_apSigCubeta(-2);
-                                            enlaza_nuevas_cubetas(c, cubetL);
+                                            case 'I':
+                                                valorLlave = Convert.ToInt32(datoCubeta.datos[indiceLlave]);
+                                                break;
+                                            case 'L':
+                                                valorLlave = Convert.ToInt64(datoCubeta.datos[indiceLlave]);
+                                                break;
+                                            case 'F':
+                                                valorLlave = Convert.ToSingle(datoCubeta.datos[indiceLlave]);
+                                                break;
+                                            case 'D':
+                                                valorLlave = Convert.ToDouble(datoCubeta.datos[indiceLlave]);
+                                                break;
+                                            case 'C':
+                                                valorLlave = Convert.ToChar(datoCubeta.datos[indiceLlave]);
+                                                break;
+                                            case 'S':
+                                                valorLlave = Convert.ToString(datoCubeta.datos[indiceLlave]);
+                                                break;
                                         }
 
-                                        break;
+                                        if (valorLlave == datoBuscarLlave)
+                                        {
+                                            cub.str_apDato(-2);
+
+                                            encontradoYeliminado = true;
+
+                                            rellena_dataGrid_cajones();
+                                            manejo_dataGrid_cubetas();
+                                            rellena_dataGrid_cubetas(c);
+
+                                            dataGridView3.Rows.Clear();
+
+                                            dataGridView3.ColumnCount = numAtributos + 1;
+                                            dataGridView3.ColumnHeadersVisible = true;
+
+                                            break;
+                                        }
                                     }
                                 }
 
@@ -924,7 +958,17 @@ namespace ArchivosTarea2
                         {
                             break;
                         }
-                    }                   
+                    }
+                    
+                    if(encontradoYeliminado == true)
+                    {
+                        toolStripStatusLabel1.Text = "Dato eliminado con exito.";
+                        seCambio = true;
+                    }
+                    else
+                    {
+                        toolStripStatusLabel1.Text = "Error: Dato no encontrado.";
+                    }
                 }
                 else
                 {
@@ -1017,7 +1061,6 @@ namespace ArchivosTarea2
                                                         manejo_dataGrid_cubetas();
                                                         rellena_dataGrid_cubetas(c);
                                                         rellena_dataGrid_datos(cub);
-                                                        toolStripStatusLabel1.Text = "Dato insertado con exito.";
                                                     }
 
                                                     encontradoYmodificado = true;
@@ -1129,136 +1172,6 @@ namespace ArchivosTarea2
         }
 
         /// <summary>
-        /// Metodo que contara los datos que no han sido borrados de una cubeta.
-        /// </summary>
-        /// <param name="listaCubetas">La cubeta de la que se contaran los datos.</param>
-        /// <returns>Booleano que indica si la lista de cubetas esta vacia.</returns>
-        private bool cubeta_vacia(List<Cubeta> listaCubetas)
-        {
-            bool vacia = false;
-            int contador = listaCubetas.Count - 1;
-            int vigentes = 0;
-
-            for(int i = 0; i < contador; i++)
-            {
-                if(listaCubetas[i].regresa_apDato() != -2)
-                {
-                    vigentes++;
-                }
-            }
-
-            if(vigentes == 0)
-            {
-                vacia = true;
-            }
-
-            return vacia;
-        }
-
-        /// <summary>
-        /// Metodo que enlazara el apuntador a las cubetas del cajon correspondiente a un nuevo cajon, siempre y cuando se cuente con
-        /// mas de una lista de cubetas a las cuales poner dicho enlace.
-        /// </summary>
-        /// <param name="caj">El cajon al que se le actualizará el apuntador a las cubetas.</param>
-        /// <param name="eliminada">La lista de cubetas que ha sido eliminada debido a que todos los datos de cada una de las
-        /// cubetas han sido eliminados.</param>
-        private void enlaza_nuevas_cubetas(Cajon caj, List<Cubeta> eliminada)
-        {
-            // Si se cuenta con mas de una lista de cubetas, se tiene que revisar si se puede enlazar el apuntador a las cubetas
-            // del cajon a una nueva lista de cubetas.
-            if(caj.listaCubetas.Count > 1)
-            {
-                for(int i = 0; i < caj.listaCubetas.Count;i++)
-                {
-                    // Si encontramos la lista de cubetas que fue eliminada.
-                    if(caj.listaCubetas[i][0].regresa_posCubeta() == eliminada[0].regresa_posCubeta())
-                    {
-                        // Si la primer lista de cubetas se elimino, se debe revisar si alguna de las otras listas de cubetas
-                        // esta disponible para hacer el enlace.
-                        if(i == 0)
-                        {
-                            bool encontrado = false;
-
-                            for(int j = i + 1; j < caj.listaCubetas.Count; j++)
-                            {
-                                if (caj.listaCubetas[j][caj.listaCubetas[j].Count - 1].regresa_apSigCubeta() != -2)
-                                {
-                                    caj.str_apuntadorCubeta(caj.listaCubetas[j][0].regresa_posCubeta());
-                                    encontrado = true;
-                                    break;
-                                }
-                            }
-
-                            if(encontrado == true)
-                            {
-                                break;
-                            }
-                            else
-                            {
-                                caj.str_apuntadorCubeta(-2);
-                                break;
-                            }
-                        }
-                        // Si se elimino alguna cubeta que no este al principio ni al final de la lista de cubetas del cajon.
-                        else if(i != 0 && i != caj.listaCubetas.Count - 1)
-                        {
-                            bool encontrado = false;
-
-                            for(int j = 0; j < caj.listaCubetas.Count; j++)
-                            {
-                                if(j == i - 1 && caj.listaCubetas[j][caj.listaCubetas[j].Count - 1].regresa_apSigCubeta() != -2)
-                                {
-                                    // WIP
-                                }
-                            }
-
-                            if (encontrado == false)
-                            {
-                                caj.str_apuntadorCubeta(-2);
-                                break;
-                            }
-                            else
-                            { 
-                                break;
-                            }
-                        }
-                        // Si se elimino la cubeta que esta al final de la lista.
-                        else if(i == caj.listaCubetas.Count - 1)
-                        {
-                            caj.listaCubetas[i][caj.listaCubetas[i].Count - 1].str_apSigCubeta(-4);
-                            bool encontrado = false;
-
-                            for(int j = caj.listaCubetas.Count - 2; j > 0; j--)
-                            {
-                                if (caj.listaCubetas[j][caj.listaCubetas[j].Count - 1].regresa_apSigCubeta() != -2)
-                                {
-                                    caj.listaCubetas[j][caj.listaCubetas[j].Count - 1].str_apSigCubeta(-3);
-                                    encontrado = true;
-                                    break;
-                                }
-                            }
-
-                            if(encontrado == true)
-                            {
-                                break;
-                            }
-                            else
-                            {
-                                caj.str_apuntadorCubeta(-2);
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-            // Si no se cuenta con mas listas, solo se modifica el apuntador a las cubetas del cajon.
-            else
-            {
-                caj.str_apuntadorCubeta(-2);
-            }
-        }
-
-        /// <summary>
         /// Metodo con el cual se comparara el hash aplicado al dato que se acaba de cambiar con el numero de cajon en el que estaba,
         /// y regresara una bandera que indicara si el dato cambia su hash.
         /// </summary>
@@ -1297,16 +1210,16 @@ namespace ArchivosTarea2
         /// <param name="movido">El dato que se movio a otro cajon.</param>
         private void reordena_datos_cajon(Cajon caj, Dato movido)
         {
-            for(int i = 0; i < caj.listaCubetas.Count; i++)
+            for (int i = 0; i < caj.listaCubetas.Count; i++)
             {
                 // Si esta lista contiene el dato movido.
-                if(contains_eliminado(caj.listaCubetas[i], movido) == true)
+                if (contains_eliminado(caj.listaCubetas[i], movido) == true)
                 {
                     List<Cubeta> respaldo = new List<Cubeta>();
 
-                    foreach(Cubeta cub in caj.listaCubetas[i])
+                    foreach (Cubeta cub in caj.listaCubetas[i])
                     {
-                        if(cub.regresa_apDato() != -1)
+                        if (cub.regresa_apDato() != -1 && cub.regresa_apDato() != -2)
                         {
                             if (cub.regresa_datoCubeta() != movido)
                             {
@@ -1319,10 +1232,10 @@ namespace ArchivosTarea2
                                 respaldo.Add(cub);
                             }
                         }
-                        else if(cub.regresa_apDato() == -1)
+                        else if (cub.regresa_apDato() == -1)
                         {
                             respaldo.Add(cub);
-                        }              
+                        }
                     }
 
                     caj.listaCubetas[i] = respaldo;

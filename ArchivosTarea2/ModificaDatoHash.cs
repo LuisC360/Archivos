@@ -21,6 +21,13 @@ namespace ArchivosTarea2
         readonly Dato datoRespaldo;
         readonly List<Atributo> listaAtributosVigentes = new List<Atributo>();
 
+        /// <summary>
+        /// Constructor de la ventana de modificacion de un dato en hash estatica.
+        /// </summary>
+        /// <param name="c">El cajon que contiene la cubeta que contiene a su vez el dato a ser modificado.</param>
+        /// <param name="d">El dato a ser modificado.</param>
+        /// <param name="e">La entidad que contiene toda la informacion requerida.</param>
+        /// <param name="indK">El indice de la llave primaria.</param>
         public ModificaDatoHash(Cajon c, Dato d, Entidad e, int indK)
         {
             cajon = c;
@@ -154,6 +161,7 @@ namespace ArchivosTarea2
             dataGridView1.Rows.Add(fila);
         }
 
+        // Boton de captura de los datos y de cierre de la ventana de cambios.
         private void button1_Click(object sender, EventArgs e)
         {
             int celdaSeleccionada = dataGridView1.CurrentRow.Index;
@@ -444,6 +452,7 @@ namespace ArchivosTarea2
             return duplicada;
         }
 
+        // Funciones de retorno de informacion a la ventana de manipulacion de datos en hash estatica.
         public Dato regresa_datoHash()
         {
             return dato;
@@ -453,5 +462,6 @@ namespace ArchivosTarea2
         {
             return llavePrimariaCambiada;
         }
+        // Funciones de retorno de informacion a la ventana de manipulacion de datos en hash estatica.
     }
 }

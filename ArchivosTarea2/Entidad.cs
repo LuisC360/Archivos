@@ -16,10 +16,12 @@ namespace ArchivosTarea2
         public long apSigEntidad = -1;
         public long apIndices = -1;
         public long apCajones = -1;
+        public long apCabeceras = -1;
         public List<Atributo> listaAtributos = new List<Atributo>();
         public List<Dato> listaDatos = new List<Dato>();
         public List<Indice> listaIndices = new List<Indice>();
         public List<Cajon> listaCajones = new List<Cajon>();
+    
 
         /// <summary>
         /// Construccion de una nueva instancia de la clase Entidad.
