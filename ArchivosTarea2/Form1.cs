@@ -22,7 +22,7 @@ namespace ArchivosTarea2
         // Lista para entidades leidas
         List<Entidad> entidadesLeidas = new List<Entidad>();
         // Tamaño de una entidad
-        int tamEntidad = 62;
+        readonly int tamEntidad = 62;
         // Tamaño de un atributo
         readonly int tamAtributo = 56;
         // Tamaño de un dato
@@ -152,6 +152,9 @@ namespace ArchivosTarea2
                                 comboBox2.Enabled = true;
                                 comboBox3.Enabled = true;
                                 button12.Enabled = true;
+
+                                break;
+                        default: // Default vacio
                                 break;
                     }
 
@@ -272,15 +275,13 @@ namespace ArchivosTarea2
 
                             switch(tipo)
                             {
-                                case 0: cabecera = 8;
+                                case 0:
+                                case 3:
+                                    cabecera = 8;
                                     break;
                                 case 1: cabecera = 16;
                                     break;
                                 case 2: cabecera = 24;
-                                    break;
-                                case 3: cabecera = 8;
-                                    break;
-                                default: // Default vacio
                                     break;
                             }
 
@@ -318,13 +319,13 @@ namespace ArchivosTarea2
                             {
                                 switch(tipo)
                                 {
-                                    case 0: entidad.posEntidad += 8;
+                                    case 0:
+                                    case 3:
+                                        entidad.posEntidad += 8;
                                         break;
                                     case 1: entidad.posEntidad += 16;
                                         break;
                                     case 2: entidad.posEntidad += 24;
-                                        break;
-                                    case 3: entidad.posEntidad += 8;
                                         break;
                                     default: // Default vacio
                                         break;
@@ -1003,7 +1004,6 @@ namespace ArchivosTarea2
 
             Boolean bandCabecera = false;
             Boolean bandRango = false;
-            long archivoPos;
 
             while (reader.BaseStream.Position != reader.BaseStream.Length)
             {
@@ -1032,7 +1032,6 @@ namespace ArchivosTarea2
                     long apInd = reader.ReadInt64();
                     long posIn = reader.ReadInt64();
                     long apSigE = reader.ReadInt64();
-                    archivoPos = reader.BaseStream.Position;
 
                     Entidad nEntidad = new Entidad(nombre, apAtr, apInd, posIn, apSigE, 0);
 
@@ -1075,7 +1074,7 @@ namespace ArchivosTarea2
 
             // Se popula el primer dataGridView con los datos de las entidades
             List<String[]> filas = new List<string[]>();
-            String[] fila = new string[] { };
+            String[] fila;
             String nombreEntidad = "";
             long apAt = 0;
             long apIndi = 0;
@@ -1541,8 +1540,6 @@ namespace ArchivosTarea2
                             {
                                 chara[i] = r.ReadChar();
                             }
-                            break;
-                        default: // Default vacio.
                             break;
                     }
                 }
@@ -2865,6 +2862,8 @@ namespace ArchivosTarea2
                 case 5: numBytes = sizeof(long);
                         break;
                 case 6: numBytes = sizeof(bool);
+                        break;
+                default: // Default vacio
                         break;
             }
 
