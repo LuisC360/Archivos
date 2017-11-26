@@ -2909,176 +2909,29 @@ namespace ArchivosTarea2
                         // Despues se hace la validacion para ver si ese atributo no esta ya en los atributos de la entidad
                         if(valida_atributo(textBox3.Text, entidadEncontrada) == false)
                         {
-                            if(comboBox1.SelectedIndex > -1 && comboBox2.SelectedIndex > -1)
+                            if (tipo != -3)
                             {
-                                // Se tiene que validar si ya se tiene un atributo que es llave primaria
-                                if(comboBox2.SelectedIndex == 0)
+                                if (comboBox1.SelectedIndex > -1 && comboBox2.SelectedIndex > -1)
                                 {
-                                    bool yaEsLlave = false;
-
-                                    foreach(Atributo at in entidadEncontrada.listaAtributos)
-                                    {
-                                        if(at.esLlavePrimaria == true)
-                                        {
-                                            yaEsLlave = true;
-                                            break;
-                                        }
-                                    }
-
-                                    if(yaEsLlave == false)
-                                    {
-                                        if (entidadEncontrada.listaAtributos.Count > 0)
-                                        {
-                                            int byteSize = escoje_num_bytes();
-                                            Atributo nuevoAtributo = new Atributo(textBox3.Text, comboBox1.SelectedItem.ToString(), 
-                                                byteSize, comboBox2.SelectedItem.ToString());
-                                            nuevoAtributo.posAtributo = posicionMemoria;
-                                            posicionMemoria += tamAtributo;
-                                            entidadEncontrada.listaAtributos.Add(nuevoAtributo);
-                                            entidadEncontrada.listaAtributos[entidadEncontrada.listaAtributos.Count - 2].apSigAtributo = 
-                                                nuevoAtributo.posAtributo;
-
-                                            switch(tipo)
-                                            {
-                                                case 0: escribe_archivo(textBox1.Text);
-
-                                                        manejo_dataGrid(textBox1.Text);
-                                                        break;
-                                                case 1: escribe_archivo_indexado(textBox1.Text);
-
-                                                        manejo_dataGrid_indexado(textBox1.Text);
-                                                        break;
-                                                case 2: escribe_archivo_hash(textBox1.Text);
-
-                                                        manejo_dataGrid_hash(textBox1.Text);
-                                                        break;
-                                                case 3: escribe_archivo_multilistas(textBox1.Text);
-
-                                                        manejo_dataGrid_multilistas(textBox1.Text);
-                                                        break;
-                                            }                                            
-
-                                            manejo_dataGrid_atributos(entidadEncontrada);  
-
-                                            toolStripStatusLabel1.Text = "Atributo añadido con exito.";
-                                        }
-                                        else
-                                        {
-                                            int byteSize = escoje_num_bytes();
-                                            Atributo nuevoAtributo = new Atributo(textBox3.Text, comboBox1.SelectedItem.ToString(), 
-                                                byteSize, comboBox2.SelectedItem.ToString());
-                                            nuevoAtributo.posAtributo = posicionMemoria;
-                                            posicionMemoria += tamAtributo;
-                                            entidadEncontrada.listaAtributos.Add(nuevoAtributo);
-                                            entidadEncontrada.apAtributos = nuevoAtributo.posAtributo;
-
-                                            switch (tipo)
-                                            {
-                                                case 0: escribe_archivo(textBox1.Text);
-
-                                                        manejo_dataGrid(textBox1.Text);
-                                                        break;
-                                                case 1: escribe_archivo_indexado(textBox1.Text);
-
-                                                        manejo_dataGrid_indexado(textBox1.Text);
-                                                        break;
-                                                case 2: escribe_archivo_hash(textBox1.Text);
-
-                                                        manejo_dataGrid_hash(textBox1.Text);
-                                                        break;
-                                                case 3: escribe_archivo_multilistas(textBox1.Text);
-
-                                                        manejo_dataGrid_multilistas(textBox1.Text);
-                                                        break;
-                                            }  
-
-                                            manejo_dataGrid_atributos(entidadEncontrada);  
-
-                                            toolStripStatusLabel1.Text = "Atributo añadido con exito.";
-                                        }    
-                                    }
-                                    else
-                                    {
-                                        toolStripStatusLabel1.Text = "Error, solo puede haber una llave primaria.";
-                                    }
-                                }           
+                                    insercion_atributo(entidadEncontrada);
+                                }
                                 else
                                 {
-                                    if (entidadEncontrada.listaAtributos.Count > 0)
-                                    {
-                                        int byteSize = escoje_num_bytes();
-                                        Atributo nuevoAtributo = 
-                                            new Atributo(textBox3.Text, comboBox1.SelectedItem.ToString(), byteSize, comboBox2.SelectedItem.ToString());
-                                        nuevoAtributo.posAtributo = posicionMemoria;
-                                        posicionMemoria += tamAtributo;
-                                        entidadEncontrada.listaAtributos.Add(nuevoAtributo);
-                                        entidadEncontrada.listaAtributos[entidadEncontrada.listaAtributos.Count - 2].apSigAtributo = 
-                                            nuevoAtributo.posAtributo;
-
-                                        switch (tipo)
-                                        {
-                                            case 0: escribe_archivo(textBox1.Text);
-
-                                                    manejo_dataGrid(textBox1.Text);
-                                                    break;
-                                            case 1: escribe_archivo_indexado(textBox1.Text);
-
-                                                    manejo_dataGrid_indexado(textBox1.Text);
-                                                    break;
-                                            case 2: escribe_archivo_hash(textBox1.Text);
-
-                                                    manejo_dataGrid_hash(textBox1.Text);
-                                                    break;
-                                            case 3: escribe_archivo_multilistas(textBox1.Text);
-
-                                                    manejo_dataGrid_multilistas(textBox1.Text);
-                                                    break;
-                                        }  
-
-                                        manejo_dataGrid_atributos(entidadEncontrada);  
-
-                                        toolStripStatusLabel1.Text = "Atributo añadido con exito.";
-                                    }
-                                    else
-                                    {
-                                        int byteSize = escoje_num_bytes();
-                                        Atributo nuevoAtributo = 
-                                            new Atributo(textBox3.Text, comboBox1.SelectedItem.ToString(), byteSize, comboBox2.SelectedItem.ToString());
-                                        nuevoAtributo.posAtributo = posicionMemoria;
-                                        posicionMemoria += tamAtributo;
-                                        entidadEncontrada.listaAtributos.Add(nuevoAtributo);
-                                        entidadEncontrada.apAtributos = nuevoAtributo.posAtributo;
-
-                                        switch (tipo)
-                                        {
-                                            case 0: escribe_archivo(textBox1.Text);
-
-                                                    manejo_dataGrid(textBox1.Text);
-                                                    break;
-                                            case 1: escribe_archivo_indexado(textBox1.Text);
-
-                                                    manejo_dataGrid_indexado(textBox1.Text);
-                                                    break;
-                                            case 2: escribe_archivo_hash(textBox1.Text);
-
-                                                    manejo_dataGrid_hash(textBox1.Text);
-                                                    break;
-                                            case 3: escribe_archivo_multilistas(textBox1.Text);
-
-                                                    manejo_dataGrid_multilistas(textBox1.Text);
-                                                    break;
-                                        }  
-
-                                        manejo_dataGrid_atributos(entidadEncontrada);  
-
-                                        toolStripStatusLabel1.Text = "Atributo añadido con exito.";
-                                    }   
-                                }                                                              
+                                    toolStripStatusLabel1.Text = "Error, selecciona el tipo de dato y si es llave primaria.";
+                                }
                             }
                             else
                             {
-                                toolStripStatusLabel1.Text = "Error, selecciona el tipo de dato y si es llave primaria.";
-                            }
+                                if(comboBox1.SelectedIndex > -1 && comboBox2.SelectedIndex > -1 && comboBox3.SelectedIndex > -1)
+                                {
+                                    insercion_atributo(entidadEncontrada);
+                                }
+                                else
+                                {
+                                    toolStripStatusLabel1.Text = "Error, selecciona el tipo de dato, si es llave primaria y si es" +
+                                        " llave de busqueda.";
+                                }
+                            }                           
                         }
                         else
                         {
@@ -3107,6 +2960,184 @@ namespace ArchivosTarea2
             {
                 toolStripStatusLabel1.Text = "Error, no se ha especificado un nombre de atributo.";
             }
+        }
+
+        /// <summary>
+        /// Metodo que permitira la insersión de un atributo en una entidad.
+        /// </summary>
+        /// <param name="entidadEncontrada">La entidad en la que se insertará el atributo.</param>
+        private void insercion_atributo(Entidad entidadEncontrada)
+        {
+            // Se tiene que validar si ya se tiene un atributo que es llave primaria
+            if (comboBox2.SelectedIndex == 0)
+            {
+                bool yaEsLlave = false;
+
+                foreach (Atributo at in entidadEncontrada.listaAtributos)
+                {
+                    if (at.esLlavePrimaria == true)
+                    {
+                        yaEsLlave = true;
+                        break;
+                    }
+                }
+
+                if (yaEsLlave == false)
+                {
+                    if (tipo != 3 || (tipo == 3 && comboBox3.SelectedItem.ToString() == "No"))
+                    {
+                        if (entidadEncontrada.listaAtributos.Count > 0)
+                        {
+                            int byteSize = escoje_num_bytes();
+
+                            if (tipo != 3)
+                            {
+                                Atributo nuevoAtributo = new Atributo(textBox3.Text, comboBox1.SelectedItem.ToString(),
+                                    byteSize, comboBox2.SelectedItem.ToString());
+                                nuevoAtributo.posAtributo = posicionMemoria;
+                                posicionMemoria += tamAtributo;
+                                entidadEncontrada.listaAtributos.Add(nuevoAtributo);
+                                entidadEncontrada.listaAtributos[entidadEncontrada.listaAtributos.Count - 2].apSigAtributo =
+                                    nuevoAtributo.posAtributo;
+                            }
+                            else
+                            {
+                                Atributo nuevoAtributo = new Atributo(textBox3.Text, comboBox1.SelectedItem.ToString(),
+                                    byteSize, comboBox2.SelectedItem.ToString(), comboBox3.SelectedItem.ToString());
+                                nuevoAtributo.posAtributo = posicionMemoria;
+                                posicionMemoria += tamAtributo + 1;
+                                entidadEncontrada.listaAtributos.Add(nuevoAtributo);
+                                entidadEncontrada.listaAtributos[entidadEncontrada.listaAtributos.Count - 2].apSigAtributo =
+                                    nuevoAtributo.posAtributo;
+                            }
+
+                            actualiza_archivo_atributo(entidadEncontrada);
+                        }
+                        else
+                        {
+                            int byteSize = escoje_num_bytes();
+
+                            if (tipo != 3)
+                            {
+                                Atributo nuevoAtributo = new Atributo(textBox3.Text, comboBox1.SelectedItem.ToString(),
+                                    byteSize, comboBox2.SelectedItem.ToString());
+                                nuevoAtributo.posAtributo = posicionMemoria;
+                                posicionMemoria += tamAtributo;
+                                entidadEncontrada.listaAtributos.Add(nuevoAtributo);
+                                entidadEncontrada.apAtributos = nuevoAtributo.posAtributo;
+                            }
+                            else
+                            {
+                                Atributo nuevoAtributo = new Atributo(textBox3.Text, comboBox1.SelectedItem.ToString(),
+                                    byteSize, comboBox2.SelectedItem.ToString(), comboBox3.SelectedItem.ToString());
+                                nuevoAtributo.posAtributo = posicionMemoria;
+                                posicionMemoria += tamAtributo + 1;
+                                entidadEncontrada.listaAtributos.Add(nuevoAtributo);
+                                entidadEncontrada.apAtributos = nuevoAtributo.posAtributo;
+                            }
+
+                            actualiza_archivo_atributo(entidadEncontrada);
+                        }
+                    }
+                    else if(tipo == 3 && comboBox3.SelectedItem.ToString() == "Si")
+                    {
+                        toolStripStatusLabel1.Text = "Error, una llave primaria no puede ser llave de busqueda.";
+                    }
+                }
+                else
+                {
+                    toolStripStatusLabel1.Text = "Error, solo puede haber una llave primaria.";
+                }
+            }
+            else
+            {
+                if (entidadEncontrada.listaAtributos.Count > 0)
+                {
+                    int byteSize = escoje_num_bytes();
+
+                    if (tipo != 3)
+                    {
+                        Atributo nuevoAtributo =
+                            new Atributo(textBox3.Text, comboBox1.SelectedItem.ToString(), byteSize, comboBox2.SelectedItem.ToString());
+                        nuevoAtributo.posAtributo = posicionMemoria;
+                        posicionMemoria += tamAtributo;
+                        entidadEncontrada.listaAtributos.Add(nuevoAtributo);
+                        entidadEncontrada.listaAtributos[entidadEncontrada.listaAtributos.Count - 2].apSigAtributo =
+                            nuevoAtributo.posAtributo;
+                    }
+                    else
+                    {
+                        Atributo nuevoAtributo =
+                            new Atributo(textBox3.Text, comboBox1.SelectedItem.ToString(), byteSize, comboBox2.SelectedItem.ToString(), comboBox3.SelectedItem.ToString());
+                        nuevoAtributo.posAtributo = posicionMemoria;
+                        posicionMemoria += tamAtributo + 1;
+                        entidadEncontrada.listaAtributos.Add(nuevoAtributo);
+                        entidadEncontrada.listaAtributos[entidadEncontrada.listaAtributos.Count - 2].apSigAtributo =
+                            nuevoAtributo.posAtributo;
+                    }
+
+                    actualiza_archivo_atributo(entidadEncontrada);
+                }
+                else
+                {
+                    int byteSize = escoje_num_bytes();
+
+                    if (tipo != 3)
+                    {
+                        Atributo nuevoAtributo =
+                            new Atributo(textBox3.Text, comboBox1.SelectedItem.ToString(), byteSize, comboBox2.SelectedItem.ToString());
+                        nuevoAtributo.posAtributo = posicionMemoria;
+                        posicionMemoria += tamAtributo;
+                        entidadEncontrada.listaAtributos.Add(nuevoAtributo);
+                        entidadEncontrada.apAtributos = nuevoAtributo.posAtributo;
+                    }
+                    else
+                    {
+                        Atributo nuevoAtributo =
+                            new Atributo(textBox3.Text, comboBox1.SelectedItem.ToString(), byteSize, comboBox2.SelectedItem.ToString(), comboBox3.SelectedItem.ToString());
+                        nuevoAtributo.posAtributo = posicionMemoria;
+                        posicionMemoria += tamAtributo + 1;
+                        entidadEncontrada.listaAtributos.Add(nuevoAtributo);
+                        entidadEncontrada.apAtributos = nuevoAtributo.posAtributo;
+                    }
+
+                    actualiza_archivo_atributo(entidadEncontrada);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Metodo con el cual se actualizara un archivo tras la insercion de un atributo.
+        /// </summary>
+        private void actualiza_archivo_atributo(Entidad entidadEncontrada)
+        {
+            switch (tipo)
+            {
+                case 0:
+                    escribe_archivo(textBox1.Text);
+
+                    manejo_dataGrid(textBox1.Text);
+                    break;
+                case 1:
+                    escribe_archivo_indexado(textBox1.Text);
+
+                    manejo_dataGrid_indexado(textBox1.Text);
+                    break;
+                case 2:
+                    escribe_archivo_hash(textBox1.Text);
+
+                    manejo_dataGrid_hash(textBox1.Text);
+                    break;
+                case 3:
+                    escribe_archivo_multilistas(textBox1.Text);
+
+                    manejo_dataGrid_multilistas(textBox1.Text);
+                    break;
+            }
+
+            manejo_dataGrid_atributos(entidadEncontrada);
+
+            toolStripStatusLabel1.Text = "Atributo añadido con exito.";
         }
 
         // Boton para modificar el nombre y tipo de dato de un atributo

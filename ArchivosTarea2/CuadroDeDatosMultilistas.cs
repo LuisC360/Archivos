@@ -24,9 +24,33 @@ namespace ArchivosTarea2
 
         public CuadroDeDatosMultilistas(Entidad e, long pMem, long tD)
         {
+            ent = e;
+            posMemoria = pMem;
+            tamDato = tD;
+            int indLlave = 0;
+
+            foreach(Atributo atr in ent.listaAtributos)
+            {
+                if (atr.apSigAtributo != -2 && atr.apSigAtributo != -4)
+                {
+                    numAtributos++;
+                    atributosVigentes.Add(atr);
+
+                    if (atr.esLlavePrimaria == true)
+                    {
+                        atrLlave = atr;
+                        indiceLlave = indLlave;
+                    }
+                    else
+                    {
+                        indLlave++;
+                    }
+                }
+            }
+
             InitializeComponent();
 
-            dataGridView2.ReadOnly = false;
+            dataGridView2.ReadOnly = true;
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -52,6 +76,22 @@ namespace ArchivosTarea2
         private void button5_Click(object sender, EventArgs e)
         {
 
+        }
+
+        /// <summary>
+        /// Metodo que pondra en el comboBox correspondiente todos los atributos de la entidad que sean llaves de busqueda.
+        /// </summary>
+        private void rellenaLavesBusqueda()
+        {
+            foreach(Atributo atr in atributosVigentes)
+            {
+                if(atr.esLlaveDeBusqueda == true)
+                {
+                    String ll = new string(atr.nombre);
+
+                    comboBox1.Items.Add(ll);
+                }
+            }
         }
 
         public long regresa_apuntador_cabeceras()
