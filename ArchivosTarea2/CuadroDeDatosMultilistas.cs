@@ -21,7 +21,14 @@ namespace ArchivosTarea2
         readonly int indiceLlave;
         readonly long tamDato;
         readonly List<Atributo> atributosVigentes = new List<Atributo>();
+        readonly List<Atributo> atributosBusqueda = new List<Atributo>();
 
+        /// <summary>
+        /// Constructor de la ventana de manipulacion de datos en multilistas.
+        /// </summary>
+        /// <param name="e">La entidad con las cabeceras que apuntaran a los datos con multilistas.</param>
+        /// <param name="pMem">La posicion actual en memoria.</param>
+        /// <param name="tD">El tamaño actual del dato.</param>
         public CuadroDeDatosMultilistas(Entidad e, long pMem, long tD)
         {
             ent = e;
@@ -45,37 +52,49 @@ namespace ArchivosTarea2
                     {
                         indLlave++;
                     }
+
+                    if(atr.esLlaveDeBusqueda == true)
+                    {
+                        atributosBusqueda.Add(atr);
+                    }
                 }
             }
 
             InitializeComponent();
 
             dataGridView2.ReadOnly = true;
+            rellenaLavesBusqueda();
         }
 
+        // Boton para insertar un dato.
         private void button4_Click(object sender, EventArgs e)
         {
 
         }
 
+        // Boton para modificar un dato.
         private void button1_Click(object sender, EventArgs e)
         {
 
         }
 
+        // Boton para eliminar un dato.
         private void button2_Click(object sender, EventArgs e)
         {
 
         }
-
+        
+        // Boton para mostrar solo los datos de una llave de busqueda definida por .
         private void button3_Click(object sender, EventArgs e)
         {
 
         }
 
+        // Boton para cerrar el cuadro de manipulacion de datos.
         private void button5_Click(object sender, EventArgs e)
         {
-
+            this.DialogResult = DialogResult.OK;
+            this.Close();
         }
 
         /// <summary>
