@@ -20,8 +20,8 @@ namespace ArchivosTarea2
         public int keyIndex;
         // El indice ligado al dato.
         Indice ind;
-        // El arreglo de apuntadores que el dato puede tener en caso de que alguno de sus atributos sea llave de busqueda.
-        public long[] apuntadoresLlaveBusq = new long[] { };
+        // La lista de apuntadores que el dato puede tener en caso de que alguno de sus atributos sea llave de busqueda.
+        public List<long> apuntadoresLlaveBusq = new List<long>();
 
         /// <summary>
         /// Construccion de una nueva instancia de la clase Dato.
@@ -78,8 +78,8 @@ namespace ArchivosTarea2
         /// Constructor de una nueva instancia de la clase Dato.
         /// </summary>
         /// <param name="e">La entidad en la que se insertara el dato.</param>
-        /// <param name="apuntadoresBusqueda">El arreglo con los apuntadores de llave de busqueda.</param>
-        public Dato(Entidad e, long[] apuntadoresBusqueda)
+        /// <param name="apuntadores">Los apuntadores de llave de busqueda del dato.</param>
+        public Dato(Entidad e, List<long> apuntadores)
         {
             foreach (Atributo at in e.listaAtributos)
             {
@@ -94,7 +94,7 @@ namespace ArchivosTarea2
                 }
             }
 
-            apuntadoresLlaveBusq = apuntadoresBusqueda;
+            apuntadoresLlaveBusq = apuntadores;
         }
 
         /// <summary>
@@ -134,6 +134,17 @@ namespace ArchivosTarea2
             }
 
             return index;
+        }
+
+        /// <summary>
+        /// Metodo con el cual se inicializaran los apuntadores para cada llave de busqueda.
+        /// </summary>
+        public void inicia_apuntadores_busqueda()
+        {
+            foreach(Atributo atr in listaAtributosDato)
+            {
+                apuntadoresLlaveBusq.Add(-1);
+            }
         }
     }
 }
