@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ArchivosTarea2
 {
-    class Cabecera
+    public class Cabecera
     {
         // El apuntador a los datos de la cabecera.
         public long apDatos { get; set; }

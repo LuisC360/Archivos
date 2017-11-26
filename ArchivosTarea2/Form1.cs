@@ -3814,9 +3814,25 @@ namespace ArchivosTarea2
 
                 if (ent.apAtributos > -1 && hay_llave_primaria(ent) == true)
                 {
-                    using (CuadroDeDatosHash datosHash = new CuadroDeDatosHash(ent, posicionMemoria, tamDato, numCajones, regPorCajon))
+                    using (CuadroDeDatosMultilistas datosMultilistas = new CuadroDeDatosMultilistas(ent, posicionMemoria, tamDato))
                     {
-                        
+                        var cuadroMultilistas = datosMultilistas.ShowDialog();
+
+                        if(cuadroMultilistas == DialogResult.OK)
+                        {
+                            ent.apCabeceras = datosMultilistas.regresa_apuntador_cabeceras();
+                            posicionMemoria = datosMultilistas.regresa_posicion_memoria();
+                            ent.listaCabeceras = datosMultilistas.regresa_lista_cabeceras();
+
+                            if(datosMultilistas.regresa_se_cambio())
+                            {
+                                // Escribe archivo
+                                escribe_archivo_multilistas(textBox1.Text);
+
+                                // Manejo dataGrid
+                                manejo_dataGrid_multilistas(textBox1.Text);
+                            }
+                        }
                     }
                 }
                 else

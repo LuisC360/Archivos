@@ -21,7 +21,7 @@ namespace ArchivosTarea2
         public List<Dato> listaDatos = new List<Dato>();
         public List<Indice> listaIndices = new List<Indice>();
         public List<Cajon> listaCajones = new List<Cajon>();
-    
+        public List<Cabecera> listaCabeceras = new List<Cabecera>();
 
         /// <summary>
         /// Construccion de una nueva instancia de la clase Entidad.

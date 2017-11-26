@@ -22,9 +22,11 @@ namespace ArchivosTarea2
         readonly long tamDato;
         readonly List<Atributo> atributosVigentes = new List<Atributo>();
 
-        public CuadroDeDatosMultilistas()
+        public CuadroDeDatosMultilistas(Entidad e, long pMem, long tD)
         {
             InitializeComponent();
+
+            dataGridView2.ReadOnly = false;
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -50,6 +52,26 @@ namespace ArchivosTarea2
         private void button5_Click(object sender, EventArgs e)
         {
 
+        }
+
+        public long regresa_apuntador_cabeceras()
+        {
+            return ent.apCabeceras;
+        }
+
+        public bool regresa_se_cambio()
+        {
+            return seCambio;
+        }
+
+        public long regresa_posicion_memoria()
+        {
+            return posMemoria;
+        }
+
+        public List<Cabecera> regresa_lista_cabeceras()
+        {
+            return ent.listaCabeceras;
         }
     }
 }
