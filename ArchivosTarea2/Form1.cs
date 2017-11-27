@@ -1301,7 +1301,7 @@ namespace ArchivosTarea2
         /// 2- Leer el archivo binario con multilistas especificado en el parametro "archivo".
         /// 3- Poblar el dataGridView con los datos del archivo en el orden correspondiente.
         /// </summary>
-        /// <param name="archivo"></param>
+        /// <param name="archivo">Nombre del archivo a abrirse.</param>
         public void manejo_dataGrid_multilistas(String archivo)
         {
             posicionMemoria = 8;
@@ -1331,13 +1331,75 @@ namespace ArchivosTarea2
 
             Boolean bandCabecera = false;
 
+            while (reader.BaseStream.Position != reader.BaseStream.Length)
+            {
+                if (bandCabecera == false)
+                {
+                    long header = reader.ReadInt64();
+                    data.Add(header);
+                    bandCabecera = true;
+                }
+
+                if (reader.BaseStream.Position != reader.BaseStream.Length)
+                {
+                    for (int i = 0; i < nombre.Length; i++)
+                    {
+                        char car = reader.ReadChar();
+                        nombre[i] = car;
+                    }
+
+                    long apAtr = reader.ReadInt64();
+                    long apCabec = reader.ReadInt64();
+                    long posIn = reader.ReadInt64();
+                    long apSigE = reader.ReadInt64();
+                    double dif = 0;
+
+                    Entidad nEntidad = new Entidad(nombre, apAtr, apCabec, posIn, apSigE, dif);
+
+                    posicionMemoria = posicionMemoria + tamEntidad;
+
+                    // Verificar si la entidad tiene atributos
+                    if (nEntidad.apAtributos != -1)
+                    {
+                        lee_atributos_de_entidad(streamR, reader, nEntidad);
+
+                        if (nEntidad.apCabeceras != -1)
+                        {
+                            lee_cabeceras_de_entidad(reader, nEntidad);
+                            lee_datos_de_entidad(streamR, reader, nEntidad);
+                        }
+                    }
+                    else
+                    {
+                        dataGridView2.Rows.Clear();
+
+                        dataGridView2.ColumnCount = 6;
+                        dataGridView2.ColumnHeadersVisible = true;
+
+                        dataGridView2.Columns[0].Name = "Nombre";
+                        dataGridView2.Columns[1].Name = "Tipo";
+                        dataGridView2.Columns[2].Name = "Longitud";
+                        dataGridView2.Columns[3].Name = "Pos. del Atributo";
+                        dataGridView2.Columns[4].Name = "Ap. Sig. Atributo";
+                        dataGridView2.Columns[5].Name = "Es llave primaria";
+                    }
+
+                    // Verificar si la entidad no fue eliminada
+                    entidadesLeidas.Add(nEntidad);
+                    data.Add(nEntidad);
+                    entidades.Add(nEntidad);
+
+                    nombre = new char[30];
+                    nombre[29] = '\n';
+                }
+            }
 
             // Se popula el primer dataGridView con los datos de las entidades
             List<String[]> filas = new List<string[]>();
             String[] fila;
             String nombreEntidad = "";
             long apAt = 0;
-            long apDat = 0;
+            long apCab = 0;
             long posInic = 0;
             long apSigAt = 0;
 
@@ -1347,7 +1409,7 @@ namespace ArchivosTarea2
                 {
                     nombreEntidad = new string(ent.nombre);
                     apAt += ent.apAtributos;
-                    apDat += ent.apDatos;
+                    apCab += ent.apCabeceras;
                     posInic += ent.posEntidad;
                     apSigAt += ent.apSigEntidad;
 
@@ -1358,13 +1420,13 @@ namespace ArchivosTarea2
 
                     if (ent.apDatos < -1)
                     {
-                        apDat = -1;
+                        apCab = -1;
                     }
 
-                    fila = new string[] { nombreEntidad, apAt.ToString(), apDat.ToString(), posInic.ToString(), apSigAt.ToString() };
+                    fila = new string[] { nombreEntidad, apAt.ToString(), apCab.ToString(), posInic.ToString(), apSigAt.ToString() };
 
                     apAt = 0;
-                    apDat = 0;
+                    apCab = 0;
                     posInic = 0;
                     apSigAt = 0;
 
@@ -1770,9 +1832,33 @@ namespace ArchivosTarea2
         }
 
         /// <summary>
+        /// Funcion con la que se leera una a una las cabeceras de la entidad.
+        /// </summary>
+        /// <param name="r">El lector de archivos binarios.</param>
+        /// <param name="ent">La entidad que contiene los atributos.</param>
+        void lee_cabeceras_de_entidad(BinaryReader r, Entidad ent)
+        {
+            foreach(Atributo atr in ent.listaAtributos)
+            {
+                if (atr.apSigAtributo != -2 && atr.apSigAtributo != -4)
+                {
+                    long apDatos = r.ReadInt64();
+
+                    Cabecera cab = new Cabecera(apDatos);
+
+                    ent.listaCabeceras.Add(cab);
+                }
+                else
+                {
+                    r.ReadInt64();
+                }
+            }
+        }
+
+        /// <summary>
         /// En esta funcion se rellenará el dataGridView correspondiente a los atributos de una entidad.
         /// </summary>
-        /// <param name="ent">La entidad que posee la lista de atributos</param>
+        /// <param name="ent">La entidad que posee la lista de atributos.</param>
         void manejo_dataGrid_atributos(Entidad ent)
         {
             dataGridView2.Rows.Clear();
@@ -1887,11 +1973,11 @@ namespace ArchivosTarea2
         }
 
         /// <summary>
-        /// Funcion recursiva que se encargara de de leer los datos de la entidad
+        /// Funcion recursiva que se encargara de de leer los datos de la entidad.
         /// </summary>
-        /// <param name="f">El FileStream con el que se manipulan los archivos</param>
-        /// <param name="r">El lector de archivos binarios</param>
-        /// <param name="ent">La entidad que contiene la lista de datos</param>
+        /// <param name="f">El FileStream con el que se manipulan los archivos.</param>
+        /// <param name="r">El lector de archivos binarios.</param>
+        /// <param name="ent">La entidad que contiene la lista de datos.</param>
         void lee_datos_de_entidad(FileStream f, BinaryReader r, Entidad ent)
         {
             Dato dataRead = new Dato(ent);
@@ -2025,6 +2111,148 @@ namespace ArchivosTarea2
             {
                 lee_datos_de_entidad(f, r, ent);
             }
+        }
+
+        /// <summary>
+        /// Funcion recursiva que se encargara de de leer los datos de la entidad para un archivo con multilistas.
+        /// </summary>
+        /// <param name="f">El FileStream con el que se manipulan los archivos.</param>
+        /// <param name="r">El lector de archivos binarios.</param>
+        /// <param name="ent">La entidad que contiene la lista de datos.</param>
+        void lee_datos_de_entidad_multilistas(FileStream f, BinaryReader r, Entidad ent)
+        {
+            Dato dataRead = new Dato(ent);
+
+            // Primero se recorre la lista de atributos
+            foreach (Atributo atr in ent.listaAtributos)
+            {
+                // Verificamos si el atributo no fue borrado
+                if (atr.apSigAtributo != -2 && atr.apSigAtributo != -4)
+                {
+                    // Si no fue borrado, entonces revisamos de que tipo es ese atributo para leer el dato
+                    if (atr.tipo == 'I')
+                    {
+                        try
+                        {
+                            int datoI = r.ReadInt32();
+                            dataRead.datos.Add(datoI);
+                        }
+                        catch
+                        {
+                            toolStripStatusLabel1.Text = "Error al leer los datos.";
+                            return;
+                        }
+                    }
+                    else if (atr.tipo == 'F')
+                    {
+                        try
+                        {
+                            float datoI = r.ReadSingle();
+                            dataRead.datos.Add(datoI);
+                        }
+                        catch
+                        {
+                            toolStripStatusLabel1.Text = "Error al leer los datos.";
+                            return;
+                        }
+                    }
+                    else if (atr.tipo == 'D')
+                    {
+                        try
+                        {
+                            double datoI = r.ReadDouble();
+                            dataRead.datos.Add(datoI);
+                        }
+                        catch
+                        {
+                            toolStripStatusLabel1.Text = "Error al leer los datos.";
+                            return;
+                        }
+                    }
+                    else if (atr.tipo == 'L')
+                    {
+                        try
+                        {
+                            long datoI = r.ReadInt64();
+                            dataRead.datos.Add(datoI);
+                        }
+                        catch
+                        {
+                            toolStripStatusLabel1.Text = "Error al leer los datos.";
+                            return;
+                        }
+                    }
+                    else if (atr.tipo == 'C')
+                    {
+                        try
+                        {
+                            char datoI = r.ReadChar();
+                            dataRead.datos.Add(datoI);
+                        }
+                        catch
+                        {
+                            toolStripStatusLabel1.Text = "Error al leer los datos.";
+                            return;
+                        }
+                    }
+                    else if (atr.tipo == 'S')
+                    {
+                        try
+                        {
+                            char[] chara = new char[atr.bytes / 2];
+
+                            for (int i = 0; i < chara.Length; i++)
+                            {
+                                chara[i] = r.ReadChar();
+                            }
+
+                            dataRead.datos.Add(chara);
+                        }
+                        catch
+                        {
+                            toolStripStatusLabel1.Text = "Error al leer los datos.";
+                            return;
+                        }
+                    }
+                }
+                else
+                {
+                    switch (atr.tipo)
+                    {
+                        case 'I':
+                            r.ReadInt32();
+                            break;
+                        case 'F':
+                            r.ReadSingle();
+                            break;
+                        case 'C':
+                            r.ReadChar();
+                            break;
+                        case 'D':
+                            r.ReadDouble();
+                            break;
+                        case 'L':
+                            r.ReadInt64();
+                            break;
+                        case 'S':
+                            char[] chara = new char[atr.bytes / 2];
+
+                            for (int i = 0; i < chara.Length; i++)
+                            {
+                                chara[i] = r.ReadChar();
+                            }
+                            break;
+                    }
+                }
+            }
+
+            long apSigD = r.ReadInt64();
+
+            dataRead.apSigDato = apSigD;
+
+            posicionMemoria += tamDato;
+
+            ent.listaDatos.Add(dataRead);
         }
 
         /// <summary>
@@ -2194,7 +2422,7 @@ namespace ArchivosTarea2
                         }
 
                         writer.Write(entidades[j].apAtributos);
-                        writer.Write(entidades[j].apDatos);
+                        writer.Write(entidades[j].apCabeceras);
                         writer.Write(entidades[j].posEntidad);
                         writer.Write(entidades[j].apSigEntidad);
                     }
@@ -2657,7 +2885,7 @@ namespace ArchivosTarea2
                 }
 
                 writer.Write(entidades[j].apAtributos);
-                writer.Write(entidades[j].apDatos);
+                writer.Write(entidades[j].apCabeceras);
                 writer.Write(entidades[j].posEntidad);
                 writer.Write(entidades[j].apSigEntidad);
 
@@ -2679,7 +2907,15 @@ namespace ArchivosTarea2
                     }
                 }
 
-                if (entidades[j].apDatos != -1)
+                if(entidades[j].apCabeceras != -1)
+                {
+                    for(int n = 0; n < entidades[j].listaCabeceras.Count; n++)
+                    {
+                        writer.Write(Convert.ToInt64(entidades[j].listaCabeceras[n].return_apDatos()));
+                    }
+                }
+
+                if (entidades[j].listaDatos.Count > 0)
                 {
                     for (int n = 0; n < entidades[j].listaDatos.Count; n++)
                     {
@@ -3163,8 +3399,10 @@ namespace ArchivosTarea2
                             char nuevoTipoAtributo = ' ';
                             long nuevosBytesAtributo = 0;
                             bool esLlave = false;
+                            int busq = 0;
+                            bool esBusqueda = false;
 
-                            using (ModificadorAtributo modificaAt = new ModificadorAtributo())
+                            using (ModificadorAtributo modificaAt = new ModificadorAtributo(tipo))
                             {
                                 var nuevoAtributo = modificaAt.ShowDialog();
 
@@ -3173,14 +3411,37 @@ namespace ArchivosTarea2
                                     nuevoNombreAtributo = modificaAt.newNombre;
                                     nuevoTipoAtributo = modificaAt.newTipo;
                                     nuevosBytesAtributo = modificaAt.newBytes;
+                                    if(tipo == 3)
+                                    {
+                                        busq = modificaAt.esBusqueda;
+                                    }
 
                                     if(modificaAt.esLlave == 0)
                                     {
                                         esLlave = true;
+
+                                        if(tipo == 3 && busq == 0)
+                                        {
+                                            toolStripStatusLabel1.Text = "Error, una llave primaria no puede ser llave de busqueda.";
+                                            return;
+                                        }
+                                        else if(tipo == 3)
+                                        {
+                                            esBusqueda = false;
+                                        }
                                     }
                                     else
                                     {
                                         esLlave = false;
+
+                                        if(tipo == 3 && busq == 0)
+                                        {
+                                            esBusqueda = true;
+                                        }
+                                        else if(tipo == 3 && busq == 1)
+                                        {
+                                            esBusqueda = false;
+                                        }
                                     }
                                 }
                             }
@@ -3377,12 +3638,12 @@ namespace ArchivosTarea2
                         }
                         else
                         {
-                            toolStripStatusLabel1.Text = "Error, este etributo no existe en esta entidad";
+                            toolStripStatusLabel1.Text = "Error, este atributo no existe en esta entidad";
                         }
                     }
                     else
                     {
-                        toolStripStatusLabel1.Text = "Error, entidad no econtrada.";
+                        toolStripStatusLabel1.Text = "Error, entidad no encontrada.";
                     }
                 }
                 else
@@ -3844,7 +4105,7 @@ namespace ArchivosTarea2
 
                 if (ent.apAtributos > -1 && hay_llave_primaria(ent) == true)
                 {
-                    using (CuadroDeDatosMultilistas datosMultilistas = new CuadroDeDatosMultilistas(ent, posicionMemoria, tamDato))
+                    using (CuadroDeDatosMultilistas datosMultilistas = new CuadroDeDatosMultilistas(ent, posicionMemoria, tamDato, ent.apCabeceras))
                     {
                         var cuadroMultilistas = datosMultilistas.ShowDialog();
 

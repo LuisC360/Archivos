@@ -17,15 +17,26 @@ namespace ArchivosTarea2
         public char newTipo { get; set; }
         public long newBytes { get; set; }
         public int esLlave { get; set; }
+        public int esBusqueda { get; set; }
+        readonly long tipo;
 
         /// <summary>
         /// Construccion de la ventana para modificar un atributo.
         /// </summary>
-        public ModificadorAtributo()
+        public ModificadorAtributo(long t)
         {
             InitializeComponent();
             comboBox1.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox2.DropDownStyle = ComboBoxStyle.DropDownList;
+            comboBox3.Enabled = false;
+            tipo = t;
+
+            if(tipo == 3)
+            {
+                comboBox3.Enabled = true;
+                comboBox3.DropDownStyle = ComboBoxStyle.DropDownList;
+            }
+
             rellena_lista_tipo();
         }
 
@@ -36,6 +47,11 @@ namespace ArchivosTarea2
             this.newTipo = comboBox1.SelectedItem.ToString()[0];
             this.newBytes = escoje_num_bytes();
             this.esLlave = comboBox2.SelectedIndex;
+            if(tipo == 3)
+            {
+                this.esBusqueda = comboBox3.SelectedIndex;
+            }
+
             this.DialogResult = DialogResult.OK;
             this.Close();
         }
@@ -60,6 +76,12 @@ namespace ArchivosTarea2
 
             comboBox2.Items.Add("Si");
             comboBox2.Items.Add("No");
+
+            if(tipo == 3)
+            {
+                comboBox3.Items.Add("Si");
+                comboBox3.Items.Add("No");
+            }
         }
 
         /// <summary>

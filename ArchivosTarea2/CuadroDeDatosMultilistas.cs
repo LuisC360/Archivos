@@ -16,10 +16,12 @@ namespace ArchivosTarea2
         public bool seCambio { get; set; }
         public Entidad ent { get; set; }
         public long posMemoria { get; set; }
+        public long apMultilistas { get; set; }
         readonly int numAtributos;
         readonly Atributo atrLlave;
         readonly int indiceLlave;
         readonly long tamDato;
+        readonly long tamCabecera = 8;
         readonly List<Atributo> atributosVigentes = new List<Atributo>();
         readonly List<Atributo> atributosBusqueda = new List<Atributo>();
 
@@ -29,11 +31,13 @@ namespace ArchivosTarea2
         /// <param name="e">La entidad con las cabeceras que apuntaran a los datos con multilistas.</param>
         /// <param name="pMem">La posicion actual en memoria.</param>
         /// <param name="tD">El tamaño actual del dato.</param>
-        public CuadroDeDatosMultilistas(Entidad e, long pMem, long tD)
+        /// <param name="apM">El apuntador a las multilistas de la entidad.</param>
+        public CuadroDeDatosMultilistas(Entidad e, long pMem, long tD, long apM)
         {
             ent = e;
             posMemoria = pMem;
             tamDato = tD;
+            apMultilistas = apM;
             int indLlave = 0;
 
             foreach(Atributo atr in ent.listaAtributos)
@@ -60,12 +64,23 @@ namespace ArchivosTarea2
                 }
             }
 
+            if(apMultilistas != -1)
+            {
+
+            }
+            else
+            {
+                inicia_cabeceras();
+            }
+
             InitializeComponent();
 
             dataGridView2.ReadOnly = true;
             rellenaLavesBusqueda();
             rellena_dataGrid_cabeceras();
             rellena_dataGrid_datos();
+
+            inicia_dataGrid_cabeceras();
         }
 
         // Boton para insertar un dato.
@@ -208,6 +223,8 @@ namespace ArchivosTarea2
                 nuevoDato.datos.Add(obj);
             }
 
+            nuevoDato.inicia_apuntadores_busqueda();
+
             insercion_dato(nuevoDato);
         }
 
@@ -269,6 +286,33 @@ namespace ArchivosTarea2
         }
 
         /// <summary>
+        /// Metodo que rellenara el dataGridView correspondiente a las cabeceras con la informacion de estas.
+        /// </summary>
+        private void inicia_dataGrid_cabeceras()
+        {
+            dataGridView2.Rows.Clear();
+
+            dataGridView2.ColumnCount = atributosVigentes.Count();
+            dataGridView2.ColumnHeadersVisible = true;
+
+            string[] fila = new string[atributosVigentes.Count()];
+            List<String[]> filas = new List<string[]>();
+
+            for(int i = 0; i < ent.listaCabeceras.Count; i++)
+            {
+                long apDat = ent.listaCabeceras[i].return_apDatos();
+                fila[i] = apDat.ToString();
+            }
+
+            filas.Add(fila);
+
+            foreach(String[] s in filas)
+            {
+                dataGridView2.Rows.Add(s);
+            }
+        }
+
+        /// <summary>
         /// Metodo que pondra el nombre de los atributos vigentes como los nombres de cada columna en el dataGridView correspondiente
         /// a los datos, ademas de poner las columnas correspondientes a los atributos que sean llave de busqueda.
         /// </summary>
@@ -323,8 +367,6 @@ namespace ArchivosTarea2
                 case 'L':
                     tipoAtr = typeof(long);
                     break;
-                default: // Default vacio
-                    break;
             }
 
             return tipoAtr;
@@ -358,6 +400,48 @@ namespace ArchivosTarea2
         }
 
         /// <summary>
+        /// Metodo con el cual se actualizaran las cabeceras, unicamente modificandose aquellas que sean llaves de busqueda.
+        /// </summary>
+        private void actualiza_cabeceras(Dato dato)
+        {
+            if (ent.listaDatos.Count > 0)
+            {
+                for(int i = 0; i < ent.listaDatos.Count; i++)
+                {
+                    
+                }
+            }
+            else
+            {
+                for (int i = 0; i < atributosVigentes.Count; i++)
+                {
+                    if (atributosVigentes[i].esLlaveDeBusqueda == true)
+                    {
+                        ent.listaCabeceras[i].str_apDatos(dato.posDato);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Metodo con el cual se iniciaran las cabeceras para las multilistas.
+        /// </summary>
+        private void inicia_cabeceras()
+        {
+            for(int i = 0; i < atributosVigentes.Count; i++)
+            {
+                Cabecera cab = new Cabecera(-1);
+
+                if(i == 0)
+                {
+                    cab.str_posCabecera(posMemoria);
+                }
+
+                ent.listaCabeceras.Add(cab);
+            }
+        }
+
+        /// <summary>
         /// Metodo con el cual se realizara la insercion del dato via multilistas.
         /// </summary>
         /// <param name="datoInsertar"></param>
@@ -365,12 +449,51 @@ namespace ArchivosTarea2
         {
             if(valida_dato(datoInsertar) == false)
             {
-                ent.listaDatos.Add(datoInsertar);
+                if (ent.listaDatos.Count > 0)
+                {
+                    Dato datoAnterior = new Dato();
+
+                    for (int i = 0; i < ent.listaDatos.Count; i++)
+                    {
+                        dynamic datoLlavePrim = ent.listaDatos[i].datos[indiceLlave];
+                        dynamic datoInsertarLlavePrim = datoInsertar.datos[indiceLlave];
+
+                        if (datoLlavePrim > datoInsertarLlavePrim)
+                        {
+                            datoInsertar.apSigDato = ent.listaDatos[i].posDato;
+                            datoInsertar.posDato = posMemoria;
+                            posMemoria += tamDato;
+                            datoAnterior.apSigDato = datoInsertar.posDato;
+                            ent.listaDatos.Add(datoInsertar);
+                        }
+                        else
+                        {
+                            datoAnterior = ent.listaDatos[i];
+                        }
+                    }
+                }
+                else
+                {
+                    ent.listaDatos.Add(datoInsertar);
+                }
+
+                actualiza_cabeceras(datoInsertar);                
             }
             else
             {
                 toolStripStatusLabel1.Text = "Error, llave primaria duplicada.";
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        private bool busca_llave_busqueda()
+        {
+            bool encontrada = false;
+
+            return encontrada;
         }
 
         // Funciones de retorno de informacion.

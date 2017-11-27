@@ -28,7 +28,7 @@ namespace ArchivosTarea2
         /// </summary>
         public Dato()
         {
-
+            posDato = 0;
         }
 
         /// <summary>
