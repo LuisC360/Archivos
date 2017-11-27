@@ -90,7 +90,7 @@ namespace ArchivosTarea2
             bool incompatible = false;
             List<object> datos = new List<object>();
 
-            for(int i = 0; i < dataGridView1.CurrentRow.Cells.Count - atributosBusqueda.Count; i++)
+            for(int i = 0; i < dataGridView1.CurrentRow.Cells.Count - atributosBusqueda.Count - 2; i++)
             {
                 if (dataGridView1.CurrentRow.Cells[i].ToString() != "")
                 {
@@ -318,7 +318,7 @@ namespace ArchivosTarea2
         /// </summary>
         private void rellena_dataGrid_datos()
         {
-            dataGridView1.ColumnCount = atributosVigentes.Count + atributosBusqueda.Count;
+            dataGridView1.ColumnCount = atributosVigentes.Count + atributosBusqueda.Count + 2;
             dataGridView1.ColumnHeadersVisible = true;
             int columnCount = 0;
 
@@ -329,12 +329,54 @@ namespace ArchivosTarea2
                 columnCount++;
             }
 
+            dataGridView1.Columns[columnCount].Name = "Pos. Dato";
+            columnCount++;
+            dataGridView1.Columns[columnCount].Name = "Ap. Sig. Dato";
+            columnCount++;
+
             for(int j = 0; j < atributosBusqueda.Count; j++)
             {
                 String columnName1 = new string(atributosBusqueda[j].nombre);
                 String columnName2 = "Ap_" + columnName1;
                 dataGridView1.Columns[columnCount].Name = columnName2;
                 columnCount++;
+            }
+        }
+
+        /// <summary>
+        /// Metodo que rellenara el dataGridView correspondiente a los datos con la informacion de estos.
+        /// </summary>
+        private void inicia_dataGrid_datos()
+        {
+            dataGridView1.Rows.Clear();
+
+            dataGridView1.ColumnCount = atributosVigentes.Count + atributosBusqueda.Count + 2;
+            dataGridView1.ColumnHeadersVisible = true;
+
+            string[] fila = new string[(int)atributosVigentes.Count + atributosBusqueda.Count + 2];
+            List<String[]> filas = new List<string[]>();
+            int count = 0;
+
+            foreach(Dato dat in ent.listaDatos)
+            {
+                for (int i = 0; i < dat.datos.Count; i++)
+                {
+                    if (dat.datos[i] is char[])
+                    {
+                        char[] arr = (char[])dat.datos[i];
+                        String objeto = new string(arr);
+                        fila[i] = objeto;
+                    }
+                    else
+                    {
+                        fila[i] = dat.datos[i].ToString();
+                    }
+                    count++;
+                }
+
+                fila[count] = dat.posDato.ToString();
+
+                filas.Add(fila);
             }
         }
 
@@ -404,7 +446,7 @@ namespace ArchivosTarea2
         /// </summary>
         private void actualiza_cabeceras(Dato dato)
         {
-            if (ent.listaDatos.Count > 0)
+            if (ent.listaDatos.Count > 1)
             {
                 for(int i = 0; i < ent.listaDatos.Count; i++)
                 {
@@ -444,7 +486,7 @@ namespace ArchivosTarea2
         /// <summary>
         /// Metodo con el cual se realizara la insercion del dato via multilistas.
         /// </summary>
-        /// <param name="datoInsertar"></param>
+        /// <param name="datoInsertar">El dato que se desea insertar.</param>
         private void insercion_dato(Dato datoInsertar)
         {
             if(valida_dato(datoInsertar) == false)
