@@ -516,6 +516,8 @@ namespace ArchivosTarea2
                 }
                 else
                 {
+                    datoInsertar.posDato = posMemoria;
+                    posMemoria += tamDato;
                     ent.listaDatos.Add(datoInsertar);
                 }
 

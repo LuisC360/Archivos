@@ -596,19 +596,15 @@ namespace ArchivosTarea2
             if (atrLlave.tipo == 'S' || atrLlave.tipo == 'C')
             {
                 String convertToASCII = valorLlavePrimaria.ToString();
-                byte[] bytes = Encoding.ASCII.GetBytes(convertToASCII);
+                int[] asciiArray = convertToASCII.Select(r => (int)r).ToArray();
+                long sumaValores = 0;
 
-                String valueASCII = "";
-                StringBuilder bld = new StringBuilder();
-
-                foreach (byte b in bytes)
+                foreach(var item in asciiArray)
                 {
-                    bld.Append(b.ToString());
+                    sumaValores += item;
                 }
 
-                valueASCII = bld.ToString();
-
-                double ASCIIdouble = Convert.ToDouble(valueASCII);              
+                double ASCIIdouble = Convert.ToDouble(sumaValores);              
 
                 cuadrado = Math.Pow(ASCIIdouble, potencia);            
             }
