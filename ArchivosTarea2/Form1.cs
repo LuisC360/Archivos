@@ -1952,7 +1952,7 @@ namespace ArchivosTarea2
             }
             else
             {
-                nAtributo = new Atributo(nombre, type, lon, posAt, isKey, isSearch, apSigAt);
+                nAtributo = new Atributo(nombreAT, type, lon, posAt, isKey, isSearch, apSigAt);
                 posicionMemoria = posicionMemoria + tamAtributo + 1;
             }
 
@@ -2249,6 +2249,20 @@ namespace ArchivosTarea2
             long apSigD = r.ReadInt64();
 
             dataRead.apSigDato = apSigD;
+
+            foreach(Atributo atr in ent.listaAtributos)
+            {
+                if(atr.apSigAtributo != -2 && atr.apSigAtributo != -4)
+                {
+                    long apCab = r.ReadInt64();
+
+                    dataRead.apuntadoresLlaveBusq.Add(apCab);
+                }
+                else
+                {
+                    r.ReadInt64();
+                }
+            }
 
             posicionMemoria += tamDato;
 
@@ -2980,6 +2994,11 @@ namespace ArchivosTarea2
                         }
 
                         writer.Write(entidades[j].listaDatos[n].apSigDato);
+
+                        for(int o = 0; o < entidades[j].listaDatos[n].apuntadoresLlaveBusq.Count; o++)
+                        {
+                            writer.Write(entidades[j].listaDatos[n].apuntadoresLlaveBusq[o]);
+                        }
                     }
                 }
             }
