@@ -1863,55 +1863,114 @@ namespace ArchivosTarea2
         {
             dataGridView2.Rows.Clear();
 
-            dataGridView2.ColumnCount = 6;
-            dataGridView2.ColumnHeadersVisible = true;
-
-            dataGridView2.Columns[0].Name = "Nombre";
-            dataGridView2.Columns[1].Name = "Tipo";
-            dataGridView2.Columns[2].Name = "Longitud";
-            dataGridView2.Columns[3].Name = "Pos. del Atributo";
-            dataGridView2.Columns[4].Name = "Ap. Sig. Atributo";
-            dataGridView2.Columns[5].Name = "Es llave primaria";
-
-            List<String[]> filas = new List<string[]>();
-            String[] fila = new string[] { };
-            String nombreAtributo = "";
-            char tipo;
-            long longitud = 0;
-            long posAt = 0;
-            long apSigAt = 0;
-            bool isLlave;
-
-            foreach(Atributo at in ent.listaAtributos)
+            if (tipo != 3)
             {
-                if (at.apSigAtributo != -2 && at.apSigAtributo != -4)
+                dataGridView2.ColumnCount = 6;
+                dataGridView2.ColumnHeadersVisible = true;
+
+                dataGridView2.Columns[0].Name = "Nombre";
+                dataGridView2.Columns[1].Name = "Tipo";
+                dataGridView2.Columns[2].Name = "Longitud";
+                dataGridView2.Columns[3].Name = "Pos. del Atributo";
+                dataGridView2.Columns[4].Name = "Ap. Sig. Atributo";
+                dataGridView2.Columns[5].Name = "Es llave primaria";
+
+                List<String[]> filas = new List<string[]>();
+                String[] fila = new string[] { };
+                String nombreAtributo = "";
+                char tipoD;
+                long longitud = 0;
+                long posAt = 0;
+                long apSigAt = 0;
+                bool isLlave;
+
+                foreach (Atributo at in ent.listaAtributos)
                 {
-                    nombreAtributo = new String(at.nombre);
-                    tipo = at.tipo;
-                    longitud = at.bytes;
-                    posAt = at.posAtributo;
-                    apSigAt = at.apSigAtributo;
-                    isLlave = at.esLlavePrimaria;
-
-                    if(apSigAt < -1)
+                    if (at.apSigAtributo != -2 && at.apSigAtributo != -4)
                     {
-                        apSigAt = -1;
+                        nombreAtributo = new String(at.nombre);
+                        tipoD = at.tipo;
+                        longitud = at.bytes;
+                        posAt = at.posAtributo;
+                        apSigAt = at.apSigAtributo;
+                        isLlave = at.esLlavePrimaria;
+
+                        if (apSigAt < -1)
+                        {
+                            apSigAt = -1;
+                        }
+
+                        if (at.tipo == 'S')
+                        {
+                            longitud = longitud / 2;
+                        }
+
+                        fila = new string[] { nombreAtributo, tipoD.ToString(), longitud.ToString(), posAt.ToString(), apSigAt.ToString(), isLlave.ToString() };
+
+                        filas.Add(fila);
                     }
+                }
 
-                    if(at.tipo == 'S')
-                    {
-                        longitud = longitud / 2;
-                    }
-
-                    fila = new string[] { nombreAtributo, tipo.ToString(), longitud.ToString(), posAt.ToString(), apSigAt.ToString(), isLlave.ToString() };
-
-                    filas.Add(fila);
+                foreach (string[] arr in filas)
+                {
+                    dataGridView2.Rows.Add(arr);
                 }
             }
-
-            foreach (string[] arr in filas)
+            else
             {
-                dataGridView2.Rows.Add(arr);
+                dataGridView2.ColumnCount = 7;
+                dataGridView2.ColumnHeadersVisible = true;
+
+                dataGridView2.Columns[0].Name = "Nombre";
+                dataGridView2.Columns[1].Name = "Tipo";
+                dataGridView2.Columns[2].Name = "Longitud";
+                dataGridView2.Columns[3].Name = "Pos. del Atributo";
+                dataGridView2.Columns[4].Name = "Ap. Sig. Atributo";
+                dataGridView2.Columns[5].Name = "Es llave primaria";
+                dataGridView2.Columns[6].Name = "Es llave de busqueda.";
+
+                List<String[]> filas = new List<string[]>();
+                String[] fila = new string[] { };
+                String nombreAtributo = "";
+                char tipoD;
+                long longitud = 0;
+                long posAt = 0;
+                long apSigAt = 0;
+                bool isLlave;
+                bool isBusqueda;
+
+                foreach (Atributo at in ent.listaAtributos)
+                {
+                    if (at.apSigAtributo != -2 && at.apSigAtributo != -4)
+                    {
+                        nombreAtributo = new String(at.nombre);
+                        tipoD = at.tipo;
+                        longitud = at.bytes;
+                        posAt = at.posAtributo;
+                        apSigAt = at.apSigAtributo;
+                        isLlave = at.esLlavePrimaria;
+                        isBusqueda = at.esLlaveDeBusqueda;
+
+                        if (apSigAt < -1)
+                        {
+                            apSigAt = -1;
+                        }
+
+                        if (at.tipo == 'S')
+                        {
+                            longitud = longitud / 2;
+                        }
+
+                        fila = new string[] { nombreAtributo, tipoD.ToString(), longitud.ToString(), posAt.ToString(), apSigAt.ToString(), isLlave.ToString(), isBusqueda.ToString() };
+
+                        filas.Add(fila);
+                    }
+                }
+
+                foreach (string[] arr in filas)
+                {
+                    dataGridView2.Rows.Add(arr);
+                }
             }
         }
 
@@ -3163,7 +3222,7 @@ namespace ArchivosTarea2
                         // Despues se hace la validacion para ver si ese atributo no esta ya en los atributos de la entidad
                         if(valida_atributo(textBox3.Text, entidadEncontrada) == false)
                         {
-                            if (tipo != -3)
+                            if (tipo != 3)
                             {
                                 if (comboBox1.SelectedIndex > -1 && comboBox2.SelectedIndex > -1)
                                 {

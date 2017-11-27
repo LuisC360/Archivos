@@ -117,7 +117,7 @@ namespace ArchivosTarea2
             bytes = by;
             posAtributo = posAt;
             esLlavePrimaria = esLl;
-            esLlaveDeBusqueda = esLl;
+            esLlaveDeBusqueda = esLlB;
             apSigAtributo = apSig;
         }
 
