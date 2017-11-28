@@ -10,14 +10,38 @@ using System.Windows.Forms;
 
 namespace ArchivosTarea2
 {
+    /// <summary>
+    /// Clase que representa la ventana de modificacion de un dato en secuencial ordenada.
+    /// </summary>
     public partial class ModificaDato : Form
     {
+        /// <summary>
+        /// La entidad que posee el dato a modificarse.
+        /// </summary>
         public Entidad ent;
+        /// <summary>
+        /// El dato a modificarse.
+        /// </summary>
         public Dato dat;
+        /// <summary>
+        /// Booleano que nos dira si la llave primaria del dato se cambio.
+        /// </summary>
         public bool llavePrimariaCambiada;
+        /// <summary>
+        /// La lista de atributos vigentes de la entidad (aquellos que no han sido eliminados).
+        /// </summary>
         List<Atributo> listaAtributosVigentes = new List<Atributo>();
+        /// <summary>
+        /// El numero de atributos vigentes de la entidad.
+        /// </summary>
         int atributosVigentes;
+        /// <summary>
+        /// El indice del atributo que es llave primaria en la lista de atributos de la entidad.
+        /// </summary>
         readonly int indexLlavePrimaria;      
+        /// <summary>
+        /// Un respaldo que se hara del dato para ver si se cambio la llave primaria.
+        /// </summary>
         readonly Dato datoRespaldo;
 
         /// <summary>
@@ -51,7 +75,11 @@ namespace ArchivosTarea2
             }
         }
 
-        // Boton que aceptara los cambios.
+        /// <summary>
+        /// Boton que aceptara los cambios.
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">EventArgs.</param>
         private void button1_Click(object sender, EventArgs e)
         {
             int celdaSeleccionada = dataGridView1.CurrentRow.Index;

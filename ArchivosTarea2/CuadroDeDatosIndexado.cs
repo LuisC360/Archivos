@@ -10,19 +10,59 @@ using System.Windows.Forms;
 
 namespace ArchivosTarea2
 {
+    /// <summary>
+    /// Clase que representa la ventana para manipulacion de datos secuencial indexados.
+    /// </summary>
     public partial class CuadroDeDatosIndexado : Form
     {
+        /// <summary>
+        /// La entidad en la que se insertaran los datos.
+        /// </summary>
         public Entidad ent { get; set; }
+        /// <summary>
+        /// El numero de atributos vigentes de la entidad (los que no fueron eliminados).
+        /// </summary>
         readonly int numAtributos;
+        /// <summary>
+        /// El numero total de indices.
+        /// </summary>
         readonly int numIndices;
+        /// <summary>
+        /// El atributo que es la llave primaria.
+        /// </summary>
         readonly Atributo atrLlave;
+        /// <summary>
+        /// La lista con los atributos vigentes de la entidad (los que no fueron eliminados).
+        /// </summary>
         readonly List<Atributo> atributosVigentes = new List<Atributo>();
+        /// <summary>
+        /// La posicion actual en memoria.
+        /// </summary>
         public long posMemoria { get; set; }
+        /// <summary>
+        /// El tamaño total del dato.
+        /// </summary>
         long tamDato;
+        /// <summary>
+        /// El rango de valores actual.
+        /// </summary>
         public long rango { get; set; }
+        /// <summary>
+        /// El tamaño en bytes del indice.
+        /// </summary>
         long tamIndice = 40;
+        /// <summary>
+        /// Booleano que nos indica si se hicieron cambios en los datos (insercion, modificacion y eliminacion) y que nos indicara
+        /// si se debe actualizar el archivo.
+        /// </summary>
         public bool bandChanged { get; set; }
+        /// <summary>
+        /// La lista con los indices vigentes (aquellos que no han sido eliminados).
+        /// </summary>
         readonly List<Indice> indicesVigentes = new List<Indice>();
+        /// <summary>
+        /// El indice del atributo llave primaria en la lista de atributos de la entidad.
+        /// </summary>
         readonly int indiceLlave;
 
         /// <summary>
@@ -95,6 +135,9 @@ namespace ArchivosTarea2
             dataGridView1.ReadOnly = true;
         }
 
+        /// <summary>
+        /// Funcion que rellena los nombres de las columnas del dataGridView de los indices.
+        /// </summary>
         private void inicia_dataGridIndices()
         {
             dataGridView1.ColumnCount = 5;
@@ -107,6 +150,9 @@ namespace ArchivosTarea2
             dataGridView1.Columns[4].Name = "Ap. Datos";
         }
 
+        /// <summary>
+        /// Funcion que rellena los nombres de las columnas del dataGridView de los datos.
+        /// </summary>
         private void inicia_dataGridDatos()
         {
             dataGridView2.ColumnCount = numAtributos + 2;
@@ -210,7 +256,11 @@ namespace ArchivosTarea2
             }
         }
 
-        // Boton que define el rango, dependiendo de que tipo de dato sea la llave primaria.
+        /// <summary>
+        ///  Boton que define el rango, dependiendo de que tipo de dato sea la llave primaria.
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">EventArgs.</param>
         private void button1_Click(object sender, EventArgs e)
         {
             if (textBox1.Text.Length > 0 && rango == 0)
@@ -233,8 +283,12 @@ namespace ArchivosTarea2
             }
         }
 
-        // Boton con el que se insertara un dato. Primero se capturará el dato, despues se buscara el indice que le corresponda, y si no
-        // existe dicho indice, se va a crear, para despues insertar el dato en el indice.
+        /// <summary>
+        /// Boton con el que se insertara un dato. Primero se capturará el dato, despues se buscara el indice que le corresponda, y si no
+        /// existe dicho indice, se va a crear, para despues insertar el dato en el indice.
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">EventArgs.</param>
         private void button5_Click(object sender, EventArgs e)
         {
             int celdaSeleccionada = dataGridView2.CurrentRow.Index;
@@ -1070,39 +1124,67 @@ namespace ArchivosTarea2
             return nuevoIndice;
         }
 
+        /// <summary>
+        /// Funcion que regresa el apuntador a los indices.
+        /// </summary>
+        /// <returns>El apuntador a los indices.</returns>
         public long regresa_apuntador_listas()
         {
             return ent.apIndices;
         }
 
+        /// <summary>
+        /// Funcion que regresa la posicion en el archivo.
+        /// </summary>
+        /// <returns>La posicion en el archivo.</returns>
         public long regresa_posMemoria()
         {
             return posMemoria;
         }
 
+        /// <summary>
+        /// Funcion que regresa el rango de valores.
+        /// </summary>
+        /// <returns>El rango de valores.</returns>
         public long regresa_rango()
         {
             return rango;
         }
 
+        /// <summary>
+        /// Funcion que regresa la bandera de cambio de datos.
+        /// </summary>
+        /// <returns>La bandera de cambio de datos.</returns>
         public bool regresa_seCambio()
         {
             return bandChanged;
         }
 
+        /// <summary>
+        /// Funcion que regresa la lista de indices.
+        /// </summary>
+        /// <returns>La lista de indices.</returns>
         public List<Indice> regresa_listaIndices()
         {
             return ent.listaIndices;
         }
 
-        // Boton que cierra el cuadro actual.
+        /// <summary>
+        ///  Boton que cierra el cuadro actual.
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">EventArgs.</param>
         private void button6_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.OK;
             this.Close();
         }
 
-        // Boton para modificar un dato.
+        /// <summary>
+        /// Boton para modificar un dato.
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">EventArgs.</param>
         private void button2_Click(object sender, EventArgs e)
         {
             bool encontradoYmodificado = false;
@@ -1289,7 +1371,11 @@ namespace ArchivosTarea2
             }
         }
 
-        // Boton para eliminar un dato (y quiza hasta el indice si se da el caso).
+        /// <summary>
+        /// Boton para eliminar un dato (y quiza hasta el indice si se da el caso).
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">EventArgs.</param>
         private void button3_Click(object sender, EventArgs e)
         {
             bool encontradoYeliminado = false;
@@ -1536,7 +1622,11 @@ namespace ArchivosTarea2
             }
         }
 
-        // Boton que muestra los datos ligados a un indice.
+        /// <summary>
+        /// Boton que muestra los datos ligados a un indice.
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">EventArgs.</param>
         private void button4_Click(object sender, EventArgs e)
         {
             muestra_dataGrid_datos();

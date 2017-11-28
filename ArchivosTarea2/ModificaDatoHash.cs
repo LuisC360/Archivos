@@ -10,15 +10,42 @@ using System.Windows.Forms;
 
 namespace ArchivosTarea2
 {
+    /// <summary>
+    /// Clase que representa el cuadro donde se modificara un dato en Hash Estatica.
+    /// </summary>
     public partial class ModificaDatoHash : Form
     {
+        /// <summary>
+        /// La entidad con el dato a ser modificado.
+        /// </summary>
         readonly Entidad ent;
+        /// <summary>
+        /// El cajon donde esta la lista de cubetas donde esta el dato a modificarse.
+        /// </summary>
         public Cajon cajon { get; set; }
+        /// <summary>
+        /// El dato a modificarse.
+        /// </summary>
         public Dato dato { get; set; }
+        /// <summary>
+        /// Bandera que nos dira si la llave primaria del dato fue cambiada.
+        /// </summary>
         public bool llavePrimariaCambiada { get; set; }
+        /// <summary>
+        /// El numero de atributos vigentes de la entidad (aquellos que no se han eliminado).
+        /// </summary>
         int atributosVigentes;
+        /// <summary>
+        /// El indice de la llave primaria en la lista de atributos de la entidad.
+        /// </summary>
         readonly int indiceLlavePrimaria;
+        /// <summary>
+        /// Un respaldo del dato a modificarse para ver si se modifico la llave primaria del dato.
+        /// </summary>
         readonly Dato datoRespaldo;
+        /// <summary>
+        /// La lista con los atributos vigentes de la entidad (aquellos que no se han eliminado).
+        /// </summary>
         readonly List<Atributo> listaAtributosVigentes = new List<Atributo>();
 
         /// <summary>
@@ -161,7 +188,11 @@ namespace ArchivosTarea2
             dataGridView1.Rows.Add(fila);
         }
 
-        // Boton de captura de los datos y de cierre de la ventana de cambios.
+        /// <summary>
+        /// Boton de captura de los datos y de cierre de la ventana de cambios.
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">EventArgs.</param>
         private void button1_Click(object sender, EventArgs e)
         {
             int celdaSeleccionada = dataGridView1.CurrentRow.Index;
@@ -452,16 +483,22 @@ namespace ArchivosTarea2
             return duplicada;
         }
 
-        // Funciones de retorno de informacion a la ventana de manipulacion de datos en hash estatica.
+        /// <summary>
+        /// Funcion que regresa el dato que se modifico.
+        /// </summary>
+        /// <returns>El dato que se modifico.</returns>
         public Dato regresa_datoHash()
         {
             return dato;
         }
 
+        /// <summary>
+        /// Funcion que refresa la bandera de si se cambio la llave primaria.
+        /// </summary>
+        /// <returns>La bandera de si se cambio la llave primaria.</returns>
         public bool regresa_llavePrimariaCambiada()
         {
             return llavePrimariaCambiada;
         }
-        // Funciones de retorno de informacion a la ventana de manipulacion de datos en hash estatica.
     }
 }

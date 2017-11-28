@@ -10,14 +10,38 @@ using System.Windows.Forms;
 
 namespace ArchivosTarea2
 {
+    /// <summary>
+    /// Clase que representa la ventana donde se modificara un atributo.
+    /// </summary>
     public partial class ModificadorAtributo : Form
     {
+        /// <summary>
+        /// La lista con los tipos de dato disponibles.
+        /// </summary>
         List<char> tiposDato = new List<char>();
+        /// <summary>
+        /// El nuevo nombre del atributo.
+        /// </summary>
         public String newNombre { get; set; }
+        /// <summary>
+        /// El nuevo tipo de dato del atributo.
+        /// </summary>
         public char newTipo { get; set; }
+        /// <summary>
+        /// El nuevo tamaño en bytes del atributo.
+        /// </summary>
         public long newBytes { get; set; }
+        /// <summary>
+        /// Bandera que representa si el atributo sera o no llave primaria.
+        /// </summary>
         public int esLlave { get; set; }
+        /// <summary>
+        /// Bandera que representa si el atributo sera o no llave de busqueda.
+        /// </summary>
         public int esBusqueda { get; set; }
+        /// <summary>
+        /// El tipo de ordenamiento de datos actual.
+        /// </summary>
         readonly long tipo;
 
         /// <summary>
@@ -40,7 +64,11 @@ namespace ArchivosTarea2
             rellena_lista_tipo();
         }
 
-        // Boton para aceptar los cambios.
+        /// <summary>
+        /// Boton para aceptar los cambios.
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">EventArgs.</param>
         private void button1_Click(object sender, EventArgs e)
         {
             this.newNombre = textBox1.Text;

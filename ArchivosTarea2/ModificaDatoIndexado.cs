@@ -10,15 +10,42 @@ using System.Windows.Forms;
 
 namespace ArchivosTarea2
 {
+    /// <summary>
+    /// Clase que representa la ventana para modificar un dato en secuencial indexado.
+    /// </summary>
     public partial class ModificaDatoIndexado : Form
     {
+        /// <summary>
+        /// La entidad que posee el dato a modificarse.
+        /// </summary>
         readonly Entidad ent;
+        /// <summary>
+        /// El indice que contiene el dato a modificarse.
+        /// </summary>
         public Indice ind { get; set; }
+        /// <summary>
+        /// El dato a modificarse.
+        /// </summary>
         public Dato dat { get; set; }
+        /// <summary>
+        /// Bandera que nos dira si se modifico la llave primaria del dato.
+        /// </summary>
         public bool llavePrimariaCambiada { get; set; }
+        /// <summary>
+        /// La lista de atributos vigentes de la entidad (aquellos que no fueron eliminados).
+        /// </summary>
         readonly List<Atributo> listaAtributosVigentes = new List<Atributo>();
+        /// <summary>
+        /// El numero de atributos vigentes de la entidad (aquellos que no fueron eliminados).
+        /// </summary>
         int atributosVigentes;
+        /// <summary>
+        /// El indice del atributo que es la llave primaria en la lista de atriburos de la entidad.
+        /// </summary>
         readonly int indexLlavePrimaria;
+        /// <summary>
+        /// Un respaldo del dato a modificarse para ver si se cambio la llave primaria de este.
+        /// </summary>
         readonly Dato datoRespaldo;
 
         /// <summary>
@@ -127,7 +154,11 @@ namespace ArchivosTarea2
             dataGridView1.Rows.Add(fila);
         }
 
-        // Boton que acepta los cambios realizados.
+        /// <summary>
+        /// Boton que acepta los cambios realizados.
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">EventArgs.</param>
         private void button1_Click(object sender, EventArgs e)
         {
             int celdaSeleccionada = dataGridView1.CurrentRow.Index;
@@ -437,11 +468,19 @@ namespace ArchivosTarea2
             return tipoAtr;
         }
 
+        /// <summary>
+        /// Funcion que regresa la bandera que indica si se modifico la llave primaria.
+        /// </summary>
+        /// <returns>La bandera que indica si se modifico la llave primaria.</returns>
         public bool regresa_llavePrimariaCambiada()
         {
             return llavePrimariaCambiada;
         }
 
+        /// <summary>
+        /// Funcion que regresa el dato modificado.
+        /// </summary>
+        /// <returns>El dato modificado.</returns>
         public Dato regresa_datoIndexado()
         {
             return dat;
