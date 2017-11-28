@@ -2020,6 +2020,14 @@ namespace ArchivosTarea2
             if (apSigAt != -2 && apSigAt != -4)
             {
                 tamDato += Convert.ToInt32(nAtributo.bytes);
+
+                if(tipo == 3)
+                {
+                    if(isSearch == true)
+                    {
+                        tamDato += 8;
+                    }
+                }
             }
 
             nombreAT = new char[30];

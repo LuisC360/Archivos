@@ -353,7 +353,7 @@ namespace ArchivosTarea2
             dataGridView1.ColumnCount = atributosVigentes.Count + atributosBusqueda.Count + 2;
             dataGridView1.ColumnHeadersVisible = true;
 
-            string[] fila = new string[(int)atributosVigentes.Count + atributosBusqueda.Count + 2];
+            string[] fila = new string[atributosVigentes.Count + atributosBusqueda.Count + 2];
             List<String[]> filas = new List<string[]>();
             int count = 0;
 
@@ -479,6 +479,7 @@ namespace ArchivosTarea2
                     cab.str_posCabecera(posMemoria);
                 }
 
+                posMemoria += tamCabecera;
                 ent.listaCabeceras.Add(cab);
             }
         }
