@@ -64,6 +64,10 @@ namespace ArchivosTarea2
         /// Lista de cabeceras.
         /// </summary>
         public List<Cabecera> listaCabeceras = new List<Cabecera>();
+        /// <summary>
+        /// El tamaño del dato de la entidad.
+        /// </summary>
+        public long tamDato;
 
         /// <summary>
         /// Construccion de una nueva instancia de la clase Entidad.

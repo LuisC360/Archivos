@@ -117,7 +117,11 @@ namespace ArchivosTarea2
             dataGridView2.ReadOnly = true;
         }
 
-        // Boton para abrir archivo
+        /// <summary>
+        /// Boton para abrir archivo.
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">EventArgs.</param>
         private void button1_Click(object sender, EventArgs e)
         {
             data.Clear();
@@ -272,7 +276,11 @@ namespace ArchivosTarea2
             }
         }
 
-        // Boton para añadir Entidad
+        /// <summary>
+        /// Boton para añadir Entidad.
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">EventArgs.</param>
         private void button2_Click(object sender, EventArgs e)
         {
             if(seAbrio == true && textBox2.Text.Length > 0 && textBox2.Text.Length < 29)
@@ -442,7 +450,11 @@ namespace ArchivosTarea2
             }
         }
 
-        // Boton para modificar una Entidad (o al menos solo el nombre de este)
+        /// <summary>
+        /// Boton para modificar una Entidad (o al menos solo el nombre de este).
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">EventArgs.</param>
         private void button3_Click(object sender, EventArgs e)
         {
             if (seAbrio == true && textBox2.Text.Length > 0)
@@ -509,7 +521,11 @@ namespace ArchivosTarea2
             }
         }
 
-        // Boton para eliminar una Entidad
+        /// <summary>
+        /// Boton para eliminar una Entidad.
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">EventArgs.</param>
         private void button4_Click(object sender, EventArgs e)
         {
             if(seAbrio == true)
@@ -930,6 +946,8 @@ namespace ArchivosTarea2
                     // Verificar si la entidad tiene atributos
                     if(nEntidad.apAtributos != -1)
                     {
+                        tamDato = 16;
+
                         lee_atributos_de_entidad(streamR, reader, nEntidad);
 
                         if (nEntidad.apDatos != -1)
@@ -1085,6 +1103,8 @@ namespace ArchivosTarea2
                     // Verificar si la entidad tiene atributos
                     if (nEntidad.apAtributos != -1)
                     {
+                        tamDato = 16;
+
                         lee_atributos_de_entidad(streamR, reader, nEntidad);
 
                         if (nEntidad.apIndices != -1)
@@ -1252,6 +1272,8 @@ namespace ArchivosTarea2
                     // Verificar si la entidad tiene atributos
                     if (nEntidad.apAtributos != -1)
                     {
+                        tamDato = 8;
+
                         lee_atributos_de_entidad(streamR, reader, nEntidad);
 
                         if (nEntidad.apCajones != -1)
@@ -2065,7 +2087,15 @@ namespace ArchivosTarea2
 
             if (apSigAt != -2 && apSigAt != -4)
             {
-                tamDato += Convert.ToInt32(nAtributo.bytes);
+                if (nAtributo.tipo == 'S')
+                {
+                    long bytes = nAtributo.bytes / 2;
+                    tamDato += Convert.ToInt32(bytes);
+                }
+                else
+                {
+                    tamDato += Convert.ToInt32(nAtributo.bytes);
+                }
 
                 if(tipo == 3)
                 {
@@ -2083,6 +2113,8 @@ namespace ArchivosTarea2
             {
                 lee_atributos_de_entidad(f, r, ent);
             }
+
+            ent.tamDato = tamDato;
         }
 
         /// <summary>
@@ -3260,7 +3292,11 @@ namespace ArchivosTarea2
             return yaTieneLlave;
         }
 
-        // Boton para añadir un atributo a una entidad.
+        /// <summary>
+        /// Boton para añadir un atributo a una entidad.
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">EventArgs.</param>
         private void button5_Click(object sender, EventArgs e)
         {            
             if (seAbrio == true && textBox2.Text.Length > 0 && textBox3.Text.Length > 0)
@@ -3507,7 +3543,11 @@ namespace ArchivosTarea2
             toolStripStatusLabel1.Text = "Atributo añadido con exito.";
         }
 
-        // Boton para modificar el nombre y tipo de dato de un atributo
+        /// <summary>
+        /// Boton para modificar el nombre y tipo de dato de un atributo.
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">EventArgs.</param>
         private void button6_Click(object sender, EventArgs e)
         {
             if(seAbrio == true && textBox2.Text.Length > 0 && textBox3.Text.Length > 0)
@@ -3785,7 +3825,11 @@ namespace ArchivosTarea2
             }
         }
 
-        // Boton para eliminar un atributo (solo se requiere el nombre)
+        /// <summary>
+        /// Boton para eliminar un atributo (solo se requiere el nombre).
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">EventArgs.</param>
         private void button7_Click(object sender, EventArgs e)
         {
             if (seAbrio == true && textBox2.Text.Length > 0 && textBox3.Text.Length > 0)
@@ -4055,7 +4099,11 @@ namespace ArchivosTarea2
             }
         }
 
-        // Boton que muestra los atributos de una entidad escrita en el textBox correspondiente
+        /// <summary>
+        /// Boton que muestra los atributos de una entidad escrita en el textBox correspondiente.
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">EventArgs.</param>
         private void button8_Click(object sender, EventArgs e)
         {
             if(seAbrio == true && textBox2.Text.Length > 0)
@@ -4087,7 +4135,11 @@ namespace ArchivosTarea2
             }
         }
 
-        // Boton que abre una ventana donde se insertaran los datos de forma secuencial ordenada
+        /// <summary>
+        /// Boton que abre una ventana donde se insertaran los datos de forma secuencial ordenada.
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">EventArgs.</param>
         private void button9_Click(object sender, EventArgs e)
         {
             if(textBox2.Text.Length > 0 && validacion(textBox2.Text) == true)
@@ -4149,7 +4201,11 @@ namespace ArchivosTarea2
             return hayLlave;
         }
 
-        // Boton que abre una ventana donde se insertaran los datos de forma secuencial indexada.
+        /// <summary>
+        /// Boton que abre una ventana donde se insertaran los datos de forma secuencial indexada.
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">EventArgs.</param>
         private void button10_Click(object sender, EventArgs e)
         {
             if (textBox2.Text.Length > 0 && validacion(textBox2.Text) == true)
@@ -4189,7 +4245,11 @@ namespace ArchivosTarea2
             }
         }
 
-        // Boton que abre una ventana donde se insertaran los datos via hash estatica.
+        /// <summary>
+        /// Boton que abre una ventana donde se insertaran los datos via hash estatica.
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">EventArgs.</param>
         private void button11_Click(object sender, EventArgs e)
         {
             if (textBox2.Text.Length > 0 && validacion(textBox2.Text) == true)
@@ -4228,7 +4288,11 @@ namespace ArchivosTarea2
             }
         }
 
-        // Boton que abre una ventana donde se insertaran los datos via multilistas.
+        /// <summary>
+        /// Boton que abre una ventana donde se insertaran los datos via multilistas.
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">EventArgs.</param>
         private void button12_Click(object sender, EventArgs e)
         {
             if (textBox2.Text.Length > 0 && validacion(textBox2.Text) == true)
