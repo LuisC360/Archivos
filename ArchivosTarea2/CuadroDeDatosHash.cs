@@ -15,18 +15,58 @@ namespace ArchivosTarea2
     /// </summary>
     public partial class CuadroDeDatosHash : Form
     {
+        /// <summary>
+        /// El numero de cajones.
+        /// </summary>
         public long numCajones { get; set; }
+        /// <summary>
+        /// El numero de registros por cubeta.
+        /// </summary>
         public long regPorCubeta { get; set; }
+        /// <summary>
+        /// Bandera que representara si se hizo un cambio en los datos (insercion, modificacion y eliminacion), para que de esa
+        /// forma saber si se actualizara el archivo.
+        /// </summary>
         public bool seCambio { get; set; }
+        /// <summary>
+        /// La entidad sobre la que se insertaran los datos.
+        /// </summary>
         public Entidad ent { get; set; }
+        /// <summary>
+        /// La posicion actual en memoria.
+        /// </summary>
         public long posMemoria { get; set; }
+        /// <summary>
+        /// El numero total de atributos (excepto los eliminados).
+        /// </summary>
         readonly int numAtributos;
+        /// <summary>
+        /// El atributo que es la llave primaria.
+        /// </summary>
         readonly Atributo atrLlave;
+        /// <summary>
+        /// El indice de la llave primaria en la lista de atributos.
+        /// </summary>
         readonly int indiceLlave;
+        /// <summary>
+        /// El tamaño en bytes del dato.
+        /// </summary>
         readonly long tamDato;
+        /// <summary>
+        /// El tamaño en bytes del cajon.
+        /// </summary>
         long tamCajon = 8;
+        /// <summary>
+        /// El tamaño en bytes de la cubeta.
+        /// </summary>
         long tamCubeta = 8;
+        /// <summary>
+        /// La lista con los atributos vigentes.
+        /// </summary>
         readonly List<Atributo> atributosVigentes = new List<Atributo>();
+        /// <summary>
+        /// El cajon actual.
+        /// </summary>
         Cajon cajonActual = new Cajon();
 
         /// <summary>
@@ -81,6 +121,8 @@ namespace ArchivosTarea2
 
                 button1.Enabled = false;
 
+                tamCubeta = tamCubeta + (tamCubeta * regPorCubeta);
+
                 pon_posiciones_datos();
                 manejo_dataGrid_cajones();
                 rellena_dataGrid_cajones();
@@ -112,7 +154,11 @@ namespace ArchivosTarea2
             }
         }
 
-        // Boton para poner el tamaño del cajon y el numero de registros por cubeta.
+        /// <summary>
+        /// Boton para poner el tamaño del cajon y el numero de registros por cubeta.
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">EventArgs.</param>
         private void button1_Click(object sender, EventArgs e)
         {
             if(textBox1.Text.Length > 0 && textBox2.Text.Length > 0)
@@ -345,9 +391,13 @@ namespace ArchivosTarea2
             dataGridView3.Columns[j].Name = "Pos. Dato.";
         }
 
-        // Boton para insertar datos a un registro dentro de una cubeta. El criterio que decidira en que numero de cubeta se insertara sera
-        // mediante el uso de la funcion hash "centro de cuadrados", a la que despues se le aplicara la funcion hash "modulo 10". Al
-        // resultado de cada funcion hash se le debe de sumar 1.
+        /// <summary>
+        /// Boton para insertar datos a un registro dentro de una cubeta. El criterio que decidira en que numero de cubeta se insertara sera
+        /// mediante el uso de la funcion hash "centro de cuadrados", a la que despues se le aplicara la funcion hash "modulo 10". Al
+        /// resultado de cada funcion hash se le debe de sumar 1.
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">EventArgs.</param>
         private void button6_Click(object sender, EventArgs e)
         {
             int celdaSeleccionada = dataGridView3.CurrentRow.Index;
@@ -717,8 +767,12 @@ namespace ArchivosTarea2
             return tipoAtr;
         }
 
-        // Boton que muestra en el dataGrid correspondiente las cubetas correspondientes a un cajon, seleccionando la celda correspondiente
-        // a dicho cajon en el dataGridView correspondiente. 
+        /// <summary>
+        /// Boton que muestra en el dataGrid correspondiente las cubetas correspondientes a un cajon, seleccionando la celda correspondiente
+        /// a dicho cajon en el dataGridView correspondiente.
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">EventArgs.</param>        
         private void button4_Click(object sender, EventArgs e)
         {
             long valorSeleccionado = Convert.ToInt64(dataGridView1.CurrentCell.Value);
@@ -797,7 +851,11 @@ namespace ArchivosTarea2
             return repetido;
         }
 
-        // Boton con el que se mostraran los datos de una cubeta seleccionada en el dataGridView correspondiente.
+        /// <summary>
+        /// Boton con el que se mostraran los datos de una cubeta seleccionada en el dataGridView correspondiente.
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">EventArgs.</param>
         private void button5_Click(object sender, EventArgs e)
         {
             long cajonSeleccionado = Convert.ToInt64(dataGridView2.CurrentCell.Value);
@@ -833,48 +891,78 @@ namespace ArchivosTarea2
                 toolStripStatusLabel1.Text = "Listo.";
                 rellena_dataGrid_datos(cubetaEncontrada);
             }
-        }   
+        }
 
-        // Boton que cierra la ventana actual.
+        /// <summary>
+        /// Boton que cierra la ventana actual.
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">EventArgs.</param>
         private void button7_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.OK;
             this.Close();
         }
 
-        // Funciones de retorno de informacion a la ventana principal.
+        /// <summary>
+        /// Funcion que regresa el apuntador a los cajones.
+        /// </summary>
+        /// <returns>El apuntador a los cajones.</returns>
         public long regresa_apuntador_cajones()
         {
             return ent.apCajones;
         }
 
+        /// <summary>
+        /// Funcion que regresa la posicion en memoria.
+        /// </summary>
+        /// <returns>La posicion en memoria.</returns>
         public long regresa_posMemoria()
         {
             return posMemoria;
         }
 
+        /// <summary>
+        /// Funcion que regresa el numero de cajones.
+        /// </summary>
+        /// <returns>El numero de cajones.</returns>
         public long regresa_numCajones()
         {
             return numCajones;
         }
 
+        /// <summary>
+        /// Funcion que regresa el numero de registros por cubeta.
+        /// </summary>
+        /// <returns>El numero de registros por cubeta.</returns>
         public long regresa_regPorCubeta()
         {
             return regPorCubeta;
         }
 
+        /// <summary>
+        /// Funcion que regresa el booleano que indica si hubo cambios en los datos.
+        /// </summary>
+        /// <returns>El booleano que indica si hubo cambios en los datos.</returns>
         public bool regresa_seCambio()
         {
             return seCambio;
         }
 
+        /// <summary>
+        /// Funcion que regresa la lista de cajones.
+        /// </summary>
+        /// <returns>La lista de cajones.</returns>
         public List<Cajon> regresa_lista_cajones()
         {
             return ent.listaCajones;
         }
-        // Funciones de retorno de informacion a la ventaana principal.
-
-        // Boton con el que se hara la eliminación de un dato.
+      
+        /// <summary>
+        /// Boton con el que se hara la eliminación de un dato.
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">EventArgs.</param>
         private void button3_Click(object sender, EventArgs e)
         {
             if(textBox3.Text.Length > 0)
@@ -980,7 +1068,11 @@ namespace ArchivosTarea2
             }
         }
 
-        // Boton con el que se abrira una ventana para modificar un dato.
+        /// <summary>
+        /// Boton con el que se abrira una ventana para modificar un dato.
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">EventArgs.</param>
         private void button2_Click(object sender, EventArgs e)
         {
             if(textBox3.Text.Length > 0)

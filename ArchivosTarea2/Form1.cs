@@ -4148,7 +4148,7 @@ namespace ArchivosTarea2
 
                 if(ent.apAtributos > -1 && hay_llave_primaria(ent) == true)
                 {
-                    using (CuadroDeDatos datosEntidad = new CuadroDeDatos(ent, posicionMemoria, ent.apDatos, tamDato))
+                    using (CuadroDeDatos datosEntidad = new CuadroDeDatos(ent, posicionMemoria, ent.apDatos, ent.tamDato))
                     {
                         var cuadroDatos = datosEntidad.ShowDialog();
 
@@ -4216,7 +4216,7 @@ namespace ArchivosTarea2
                 {
                     button9.Enabled = false;
                     
-                    using(CuadroDeDatosIndexado datosIndexado = new CuadroDeDatosIndexado(ent, posicionMemoria, tamDato, rango))
+                    using(CuadroDeDatosIndexado datosIndexado = new CuadroDeDatosIndexado(ent, posicionMemoria, ent.tamDato, rango))
                     {
                         var cuadroIndice = datosIndexado.ShowDialog();
 
@@ -4258,7 +4258,7 @@ namespace ArchivosTarea2
 
                 if (ent.apAtributos > -1 && hay_llave_primaria(ent) == true)
                 {
-                    using (CuadroDeDatosHash datosHash = new CuadroDeDatosHash(ent, posicionMemoria, tamDato, numCajones, regPorCajon))
+                    using (CuadroDeDatosHash datosHash = new CuadroDeDatosHash(ent, posicionMemoria, ent.tamDato, numCajones, regPorCajon))
                     {
                         var cuadroHash = datosHash.ShowDialog();
 
@@ -4301,7 +4301,7 @@ namespace ArchivosTarea2
 
                 if (ent.apAtributos > -1 && hay_llave_primaria(ent) == true)
                 {
-                    using (CuadroDeDatosMultilistas datosMultilistas = new CuadroDeDatosMultilistas(ent, posicionMemoria, tamDato, ent.apCabeceras))
+                    using (CuadroDeDatosMultilistas datosMultilistas = new CuadroDeDatosMultilistas(ent, posicionMemoria, ent.tamDato, ent.apCabeceras))
                     {
                         var cuadroMultilistas = datosMultilistas.ShowDialog();
 
