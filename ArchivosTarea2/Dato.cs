@@ -6,21 +6,42 @@ using System.Threading.Tasks;
 
 namespace ArchivosTarea2
 {
+    /// <summary>
+    /// Clase que representara un dato o un registro.
+    /// </summary>
     public class Dato
     {
+        /// <summary>
+        /// La posicion del dato en el archivo.
+        /// </summary>
         public long posDato;
+        /// <summary>
+        /// El apuntador al siguiente dato.
+        /// </summary>
         public long apSigDato = -1;
-        // Los atributos que posee el dato
+        /// <summary>
+        /// Los atributos que posee el dato.
+        /// </summary>
         public List<Atributo> listaAtributosDato = new List<Atributo>();
-        // Los datos que posee la clase Dato. Debido a que pueden ser de tipos distintos, esta lista sera de tipo object.
+        /// <summary>
+        /// Los datos que posee la clase Dato. Debido a que pueden ser de tipos distintos, esta lista sera de tipo object.
+        /// </summary>
         public List<object> datos = new List<object>();
-        // El atributo considerado como llave primaria
+        /// <summary>
+        /// El atributo considerado como llave primaria
+        /// </summary>
         public Atributo atLlave = new Atributo();
-        // El indice del atributo llave primaria
+        /// <summary>
+        /// El indice del atributo llave primaria
+        /// </summary>
         public int keyIndex;
-        // El indice ligado al dato.
+        /// <summary>
+        /// El indice ligado al dato.
+        /// </summary>
         Indice ind;
-        // La lista de apuntadores que el dato puede tener en caso de que alguno de sus atributos sea llave de busqueda.
+        /// <summary>
+        /// La lista de apuntadores que el dato puede tener en caso de que alguno de sus atributos sea llave de busqueda.
+        /// </summary>
         public List<long> apuntadoresLlaveBusq = new List<long>();
 
         /// <summary>

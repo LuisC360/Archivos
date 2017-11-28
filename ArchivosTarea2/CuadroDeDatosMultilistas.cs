@@ -10,15 +10,43 @@ using System.Windows.Forms;
 
 namespace ArchivosTarea2
 {
+    /// <summary>
+    /// Clase que representara el cuadro de dialogo en el que se manipularan los datos mediante el uso de multilistas.
+    /// </summary>
     public partial class CuadroDeDatosMultilistas : Form
     {
+        /// <summary>
+        /// El arreglo de cabeceras.
+        /// </summary>
         public long[] cabeceras { get; set; }
+        /// <summary>
+        /// Booleano que nos avisara si se hicieron cambios en los datos (insercion, eliminacion y modificacion), para de esa forma
+        /// saber si se tendra que actualizar el archivo.
+        /// </summary>
         public bool seCambio { get; set; }
+        /// <summary>
+        /// La entidad actual sobre la que se insertaran los datos.
+        /// </summary>
         public Entidad ent { get; set; }
+        /// <summary>
+        /// La posicion actual en memoria.
+        /// </summary>
         public long posMemoria { get; set; }
+        /// <summary>
+        /// El apuntador a multilistas de la entidad.
+        /// </summary>
         public long apMultilistas { get; set; }
+        /// <summary>
+        /// El numero de atributos totales (excluyendo a los que se hayan eliminado).
+        /// </summary>
         readonly int numAtributos;
+        /// <summary>
+        /// El atributo que sera la llave primaria.
+        /// </summary>
         readonly Atributo atrLlave;
+        /// <summary>
+        /// El indice de la llave primaria en la lista de atributos de la entidad.
+        /// </summary>
         readonly int indiceLlave;
         readonly long tamDato;
         readonly long tamCabecera = 8;
@@ -83,7 +111,11 @@ namespace ArchivosTarea2
             inicia_dataGrid_cabeceras();
         }
 
-        // Boton para insertar un dato.
+        /// <summary>
+        /// Boton para insertar un dato.
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">EventArgs.</param>
         private void button4_Click(object sender, EventArgs e)
         {
             int celdaSeleccionada = dataGridView1.CurrentRow.Index;
@@ -228,13 +260,21 @@ namespace ArchivosTarea2
             insercion_dato(nuevoDato);
         }
 
-        // Boton para modificar un dato.
+        /// <summary>
+        /// Boton para modificar un dato.
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">EventArgs.</param>
         private void button1_Click(object sender, EventArgs e)
         {
 
         }
 
-        // Boton para eliminar un dato.
+        /// <summary>
+        /// Boton para eliminar un dato.
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">EventArgs.</param>
         private void button2_Click(object sender, EventArgs e)
         {
 
@@ -448,9 +488,17 @@ namespace ArchivosTarea2
         {
             if (ent.listaDatos.Count > 1)
             {
+                // Se debe recorrer la lista de datos de la entidad.
                 for(int i = 0; i < ent.listaDatos.Count; i++)
                 {
-                    
+                    // Despues, se tiene que recorrer la lista de atributos para averiguar cuales son llaves de busqueda.
+                    for(int j = 0; j < ent.listaAtributos.Count; i++)
+                    {
+                        if(ent.listaAtributos[j].esLlaveDeBusqueda == true)
+                        {
+
+                        }
+                    }
                 }
             }
             else

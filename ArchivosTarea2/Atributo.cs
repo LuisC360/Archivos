@@ -6,15 +6,39 @@ using System.Threading.Tasks;
 
 namespace ArchivosTarea2
 {
+    /// <summary>
+    /// La clase que representa el atributo de una entidad.
+    /// </summary>
     public class Atributo
     {
+        /// <summary>
+        /// El nombre del atributo.
+        /// </summary>
         public char[] nombre = { '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0',  
                                     '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0' ,'\0' ,'\n'};
+        /// <summary>
+        /// Tipo de dato del atributo.
+        /// </summary>
         public char tipo;
+        /// <summary>
+        /// Tamaño en bytes del atributo.
+        /// </summary>
         public long bytes;
+        /// <summary>
+        /// La posicion del atributo en el archivo.
+        /// </summary>
         public long posAtributo;
+        /// <summary>
+        /// Booleano que representa el si el atributo sera llave primaria o no.
+        /// </summary>
         public Boolean esLlavePrimaria;
+        /// <summary>
+        /// Apuntador al siguiente atributo.
+        /// </summary>
         public long apSigAtributo = -1;
+        /// <summary>
+        /// Booleano que representa el si el atriburo sera llave de busqueda o no.
+        /// </summary>
         public Boolean esLlaveDeBusqueda;
 
         /// <summary>

@@ -11,45 +11,90 @@ using System.IO;
 
 namespace ArchivosTarea2
 {
+    /// <summary>
+    /// La clase que representara la ventana principal del proyecto.
+    /// </summary>
     public partial class Form1 : Form
     {
-        // La lista de entidades (por modificar)
+        /// <summary>
+        /// La lista de datos totales. 
+        /// </summary>
         List<object> data = new List<object>();
-        // Para lectura
+        /// <summary>
+        /// La lista de entidades.
+        /// </summary>
         List<Entidad> entidades = new List<Entidad>();
-        // Lista que contendra los tipos de dato disponibles
+        /// <summary>
+        /// Lista que contendra los tipos de dato disponibles.
+        /// </summary>
         List<char> tiposDato = new List<char>();
-        // Lista para entidades leidas
+        /// <summary>
+        /// Lista para entidades leidas.
+        /// </summary>
         List<Entidad> entidadesLeidas = new List<Entidad>();
-        // Tamaño de una entidad
+        /// <summary>
+        /// Tamaño de una entidad.
+        /// </summary>
         readonly int tamEntidad = 62;
-        // Tamaño de un atributo
+        /// <summary>
+        /// Tamaño de un atributo.
+        /// </summary>
         readonly int tamAtributo = 56;
-        // Tamaño de un dato
+        /// <summary>
+        /// Tamaño de un dato, en un principio.
+        /// </summary>
         int tamDato = 8;
-        // Tamaño de un cajon
+        /// <summary>
+        /// Tamaño de un cajon.
+        /// </summary>
         readonly int tamCajon = 8;
-        // Tamaño de una cubeta
+        /// <summary>
+        /// Tamaño de una cubeta.
+        /// </summary>
         readonly int tamCubeta = 8;
-        // Valores que posee una entidad (para lectura de archivo)
+        /// <summary>
+        /// Valores que posee una entidad (para lectura de archivo).
+        /// </summary>
         char[] nombre = { '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0',  
                                     '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0' ,'\0' ,'\n'};
         char[] nombreAT = { '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0',  
                                     '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0' ,'\0' ,'\n'};
-        // Booleano para verificar que se abrio un archivo
+        /// <summary>
+        /// Booleano para verificar que se abrio un archivo.
+        /// </summary>
         Boolean seAbrio;
-        // Numero que nos ayudara a saber en que posicion en memoria nos encontramos
+        /// <summary>
+        /// Numero que nos ayudara a saber en que posicion en memoria nos encontramos.
+        /// </summary>
         long posicionMemoria = 8;
+        /// <summary>
+        /// Entidad actual que se ha eliminado del archivo.
+        /// </summary>
         Entidad entidadEliminada;
+        /// <summary>
+        /// Atributo actual que se ha eliminado del archivo.
+        /// </summary>
         Atributo atributoEliminado;
-        // El rango para los archivos secuuenciales indexados
+        /// <summary>
+        /// El rango para los archivos secuenciales indexados.
+        /// </summary>
         long rango;
-        // El numero de cajones y de registros por cajon para los archivos de hash estatica
+        /// <summary>
+        /// El numero de cajones para los archivos de hash estatica.
+        /// </summary>
         long numCajones;
+        /// <summary>
+        /// El numero de cubetas por cajon para los archivos de hash estatica.
+        /// </summary>
         long regPorCajon;
-        // El tipo de ordenamiento del archivo (0- Secuencial ordenado, 1- Secuencial indezado, 3- Hash estatica, 4- Multilistas)
+        /// <summary>
+        /// El tipo de ordenamiento del archivo (0- Secuencial ordenado, 1- Secuencial indezado, 3- Hash estatica, 4- Multilistas).
+        /// </summary>
         int tipo;
 
+        /// <summary>
+        /// Constructor para la ventana principal.
+        /// </summary>
         public Form1()
         {
             this.Location = new Point(100, 100);
@@ -1846,6 +1891,7 @@ namespace ArchivosTarea2
 
                     Cabecera cab = new Cabecera(apDatos);
 
+                    posicionMemoria += 8;
                     ent.listaCabeceras.Add(cab);
                 }
                 else

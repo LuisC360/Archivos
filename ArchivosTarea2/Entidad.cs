@@ -5,35 +5,64 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ArchivosTarea2
-{
+{ 
+    /// <summary>
+    /// La clase que representa una entidad.
+    /// </summary>
     public class Entidad
     {
-        // El nombre de la entidad.
+        /// <summary>
+        /// El nombre de la entidad.
+        /// </summary>
         public char[] nombre = { '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0',  
                                     '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0' ,'\0' ,'\n'};
-        // Apuntador a atributos.
+        /// <summary>
+        /// Apuntador a atributos.
+        /// </summary>
         public long apAtributos = -1;
-        // Apuntador a datos.
+        /// <summary>
+        /// Apuntador a datos.
+        /// </summary>
         public long apDatos = -1;
-        // Posicion de la entidad.
+        /// <summary>
+        /// Posicion de la entidad.
+        /// </summary>
         public long posEntidad = 0;
-        // Apuntador a la siguiente entidad.
+        /// <summary>
+        /// Apuntador a la siguiente entidad.
+        /// </summary>
         public long apSigEntidad = -1;
-        // Apuntador a indices.
+        /// <summary>
+        /// Apuntador a indices.
+        /// </summary>
         public long apIndices = -1;
-        // Apuntador a cajones.
+        /// <summary>
+        /// Apuntador a cajones.
+        /// </summary>
         public long apCajones = -1;
-        // Apuntador a cabeceras.
+        /// <summary>
+        /// Apuntador a cabeceras.
+        /// </summary>
         public long apCabeceras = -1;
-        // Lista de atributos.
+        /// <summary>
+        /// Lista de atributos.
+        /// </summary>
         public List<Atributo> listaAtributos = new List<Atributo>();
-        // Lista de datos.
+        /// <summary>
+        /// Lista de datos.
+        /// </summary>
         public List<Dato> listaDatos = new List<Dato>();
-        // Lista de indices.
+        /// <summary>
+        /// Lista de indices.
+        /// </summary>
         public List<Indice> listaIndices = new List<Indice>();
-        // Lista de cajones.
+        /// <summary>
+        /// Lista de cajones.
+        /// </summary>
         public List<Cajon> listaCajones = new List<Cajon>();
-        // Lista de cabeceras.
+        /// <summary>
+        /// Lista de cabeceras.
+        /// </summary>
         public List<Cabecera> listaCabeceras = new List<Cabecera>();
 
         /// <summary>

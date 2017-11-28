@@ -10,43 +10,119 @@ using System.Windows.Forms;
 
 namespace ArchivosTarea2
 {
+    /// <summary>
+    /// Clase que representara el cuadro de dialogo para insercion de datos en secuencial ordenada.
+    /// </summary>
     public partial class CuadroDeDatos : Form
     {
+        /// <summary>
+        /// La entidad en la que se insertaran los datos.
+        /// </summary>
         public Entidad ent;
+        /// <summary>
+        /// El numero de atributos actuales (sin contar a los eliminados).
+        /// </summary>
         readonly int numAtributos;
+        /// <summary>
+        /// El atributo que sera la llave primaria.
+        /// </summary>
         Atributo atrLlave;
+        /// <summary>
+        /// La lista con los atributos vigentes (los que no se hayan eliminado).
+        /// </summary>
         readonly List<Atributo> atributosVigentes = new List<Atributo>();
+        /// <summary>
+        /// La posicion actual en memoria.
+        /// </summary>
         public long posMemoria;
+        /// <summary>
+        /// El tamaño en bytes del dato.
+        /// </summary>
         long tamDato;
+        /// <summary>
+        /// El apuntador a datos de la entidad.
+        /// </summary>
         public long apDatos;
+        /// <summary>
+        /// Bandera que nos dira si hubo una modificacion en los datos (insercion, modificacion y eliminacion) para saber si se
+        /// debera actualizar el archivo.
+        /// </summary>
         public bool bandChanged;
+        /// <summary>
+        /// La lista con los datos que no se hayan eliminado.
+        /// </summary>
         readonly List<Dato> datosVigentes = new List<Dato>();
-        /** NOTA: Intentarlo con una lista tipo dynamic **/
 
-        //
+        /// <summary>
+        /// El valor mas bajo de llave primaria para los enteros.
+        /// </summary>
         int valorMasBajoInt;
-        List<int> valoresInt = new List<int>(); 
+        /// <summary>
+        /// La lista de llaves primarias de tipo entero.
+        /// </summary>
+        List<int> valoresInt = new List<int>();
 
+        /// <summary>
+        /// El valor mas bajo de llave primaria para los flotantes.
+        /// </summary>
         float valorMasBajoFloat;
+        /// <summary>
+        /// La lista de llaves primarias de tipo flotante.
+        /// </summary>
         List<float> valoresFloat = new List<float>();
 
+        /// <summary>
+        /// El valor mas bajo de llave primaria para los dobles flotantes.
+        /// </summary>
         double valorMasBajoDouble;
+        /// <summary>
+        /// La lista de llaves primarias de tipo doble flotante.
+        /// </summary>
         List<double> valoresDouble = new List<double>();
 
+        /// <summary>
+        /// El valor mas bajo de llave primaria para los longs.
+        /// </summary>
         long valorMasBajoLong;
+        /// <summary>
+        /// La lista de llaves primarias de tipo long.
+        /// </summary>
         List<long> valoresLong = new List<long>();
 
+        /// <summary>
+        /// El valor mas bajo de llave primaria para los caracteres.
+        /// </summary>
         char valorMasBajoChar = ' ';
+        /// <summary>
+        /// La lista de llaves primarias de tipo caracter.
+        /// </summary>
         List<char> valoresChar = new List<char>();
 
+        /// <summary>
+        /// El valor mas bajo de llave primaria para los strings.
+        /// </summary>
         string valorMasBajoString = "";
+        /// <summary>
+        /// La lista de llaves primarias de tipo string.
+        /// </summary>
         readonly List<string> valoresString = new List<string>();
-        //
-
+        
+        /// <summary>
+        /// El dato que posee el valor mas bajo de llave primaria.
+        /// </summary>
         Dato datoValorMasBajo = new Dato();
+        /// <summary>
+        /// La posicion del dato con el valor mas bajo.
+        /// </summary>
         int posDatoValorMasBajo;
 
+        /// <summary>
+        /// Una nueva instancia de la clase atributo.
+        /// </summary>
         Atributo attr = new Atributo();
+        /// <summary>
+        /// El indice del atributo que es llave primaria en la lista de atributos del dato.
+        /// </summary>
         public int indiceLlave;
 
         /// <summary>
@@ -92,7 +168,11 @@ namespace ArchivosTarea2
             }
         }
 
-        // Boton para añadir un dato
+        /// <summary>
+        /// Boton para añadir un dato.
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">EventArgs.</param>
         private void button1_Click(object sender, EventArgs e)
         {           
             int celdaSeleccionada = dataGridView1.CurrentRow.Index;
@@ -1716,7 +1796,11 @@ namespace ArchivosTarea2
             return lowestVal;      
         }
 
-        // Boton que actualiza el dataGridView 
+        /// <summary>
+        /// Boton que actualiza el dataGridView.
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">EventArgs.</param>
         private void button2_Click(object sender, EventArgs e)
         {
             ordena_datos();
@@ -1984,7 +2068,11 @@ namespace ArchivosTarea2
             return indexLlave;
         }
 
-        // Boton para eliminar un dato
+        /// <summary>
+        /// Boton para eliminar un dato.
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">EventArgs.</param>
         private void button5_Click(object sender, EventArgs e)
         {
             if(textBox1.Text.Length > 0)
@@ -2113,7 +2201,11 @@ namespace ArchivosTarea2
             }
         }
 
-        // Boton para modificar un dato
+        /// <summary>
+        /// Boton para modificar un dato.
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">EventArgs.</param>
         private void button3_Click(object sender, EventArgs e)
         {
             if(textBox1.Text.Length > 0)

@@ -10,6 +10,9 @@ using System.Windows.Forms;
 
 namespace ArchivosTarea2
 {
+    /// <summary>
+    /// Clase que representa el cuadro de dialogo donde se haran las operaciones con datos en Hash Estatica.
+    /// </summary>
     public partial class CuadroDeDatosHash : Form
     {
         public long numCajones { get; set; }
