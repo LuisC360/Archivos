@@ -48,9 +48,21 @@ namespace ArchivosTarea2
         /// El indice de la llave primaria en la lista de atributos de la entidad.
         /// </summary>
         readonly int indiceLlave;
+        /// <summary>
+        /// El tamaño en bytes del dato.
+        /// </summary>
         readonly long tamDato;
+        /// <summary>
+        /// El tamaño en bytes de la cabecera.
+        /// </summary>
         readonly long tamCabecera = 8;
+        /// <summary>
+        /// La lista de atributos vigentes de la entidad (los que no se hayan eliminado).
+        /// </summary>
         readonly List<Atributo> atributosVigentes = new List<Atributo>();
+        /// <summary>
+        /// La lista de atributos que seran llaves de busqueda.
+        /// </summary>
         readonly List<Atributo> atributosBusqueda = new List<Atributo>();
 
         /// <summary>
@@ -64,7 +76,7 @@ namespace ArchivosTarea2
         {
             ent = e;
             posMemoria = pMem;
-            tamDato = tD;
+            tamDato = tD - 8;
             apMultilistas = apM;
             int indLlave = 0;
 
@@ -90,6 +102,11 @@ namespace ArchivosTarea2
                         atributosBusqueda.Add(atr);
                     }
                 }
+            }
+
+            foreach(Atributo atr in atributosVigentes)
+            {
+                tamDato += tamCabecera;
             }
 
             if(apMultilistas != -1)
@@ -122,7 +139,7 @@ namespace ArchivosTarea2
             bool incompatible = false;
             List<object> datos = new List<object>();
 
-            for(int i = 0; i < dataGridView1.CurrentRow.Cells.Count - atributosBusqueda.Count - 2; i++)
+            for(int i = 0; i < dataGridView1.CurrentRow.Cells.Count - atributosVigentes.Count - 2; i++)
             {
                 if (dataGridView1.CurrentRow.Cells[i].ToString() != "")
                 {
@@ -279,14 +296,22 @@ namespace ArchivosTarea2
         {
 
         }
-        
-        // Boton para mostrar solo los datos de una llave de busqueda definida por la seleccion hecha en el comboBox.
+
+        /// <summary>
+        /// Boton para mostrar solo los datos de una llave de busqueda definida por la seleccion hecha en el comboBox.
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">EventArgs.</param>
         private void button3_Click(object sender, EventArgs e)
         {
 
         }
 
-        // Boton para cerrar el cuadro de manipulacion de datos.
+        /// <summary>
+        /// Boton para cerrar el cuadro de manipulacion de datos.
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">EventArgs.</param>
         private void button5_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.OK;
@@ -358,7 +383,7 @@ namespace ArchivosTarea2
         /// </summary>
         private void rellena_dataGrid_datos()
         {
-            dataGridView1.ColumnCount = atributosVigentes.Count + atributosBusqueda.Count + 2;
+            dataGridView1.ColumnCount = atributosVigentes.Count + atributosVigentes.Count + 2;
             dataGridView1.ColumnHeadersVisible = true;
             int columnCount = 0;
 
@@ -374,9 +399,9 @@ namespace ArchivosTarea2
             dataGridView1.Columns[columnCount].Name = "Ap. Sig. Dato";
             columnCount++;
 
-            for(int j = 0; j < atributosBusqueda.Count; j++)
+            for(int j = 0; j < atributosVigentes.Count; j++)
             {
-                String columnName1 = new string(atributosBusqueda[j].nombre);
+                String columnName1 = new string(atributosVigentes[j].nombre);
                 String columnName2 = "Ap_" + columnName1;
                 dataGridView1.Columns[columnCount].Name = columnName2;
                 columnCount++;
@@ -390,14 +415,16 @@ namespace ArchivosTarea2
         {
             dataGridView1.Rows.Clear();
 
-            dataGridView1.ColumnCount = atributosVigentes.Count + atributosBusqueda.Count + 2;
+            dataGridView1.ColumnCount = atributosVigentes.Count + atributosVigentes.Count + 2;
             dataGridView1.ColumnHeadersVisible = true;
 
-            string[] fila = new string[atributosVigentes.Count + atributosBusqueda.Count + 2];
+            string[] fila = new string[atributosVigentes.Count + atributosVigentes.Count + 2];
             List<String[]> filas = new List<string[]>();
             int count = 0;
 
-            foreach(Dato dat in ent.listaDatos)
+            List<Dato> datosOrdenados = ent.listaDatos.OrderBy(o => o.datos[indiceLlave]).ToList();
+
+            foreach (Dato dat in datosOrdenados)
             {
                 for (int i = 0; i < dat.datos.Count; i++)
                 {
@@ -415,8 +442,24 @@ namespace ArchivosTarea2
                 }
 
                 fila[count] = dat.posDato.ToString();
+                count++;
+                fila[count] = dat.apSigDato.ToString();
+                count++;
+
+                for(int j = 0; j < dat.apuntadoresLlaveBusq.Count; j++)
+                {
+                    fila[count] = dat.apuntadoresLlaveBusq[j].ToString();
+                    count++;
+                }
 
                 filas.Add(fila);
+                fila = new string[atributosVigentes.Count + atributosVigentes.Count + 2];
+                count = 0;
+            }
+
+            foreach (string[] arr in filas)
+            {
+                dataGridView1.Rows.Add(arr);
             }
         }
 
@@ -488,18 +531,127 @@ namespace ArchivosTarea2
         {
             if (ent.listaDatos.Count > 1)
             {
-                // Se debe recorrer la lista de datos de la entidad.
-                for(int i = 0; i < ent.listaDatos.Count; i++)
-                {
-                    // Despues, se tiene que recorrer la lista de atributos para averiguar cuales son llaves de busqueda.
-                    for(int j = 0; j < ent.listaAtributos.Count; i++)
-                    {
-                        if(ent.listaAtributos[j].esLlaveDeBusqueda == true)
-                        {
+                Dato datoComparar = new Dato();
+                Dato datoAnterior = new Dato();
+                bool encontrado = false;
 
-                        }
+                // Se tiene que recorrer la lista de atributos para averiguar cuales son llaves de busqueda.
+                for (int j = 0; j < ent.listaAtributos.Count; j++)
+                {
+                    if (ent.listaAtributos[j].esLlaveDeBusqueda == true)
+                    {
+                        // Se debe de recorrer la lista de cabeceras para saber en donde comenzaremos a recorrer la lista
+                        // de datos.
+                        long apCabecera = ent.listaCabeceras[j].return_apDatos();
+
+                        do
+                        {
+                            if (datoAnterior.posDato == 0)
+                            {
+                                foreach (Dato dat in ent.listaDatos)
+                                {
+                                    long posDato = dat.posDato;
+
+                                    // Se tiene que comenzar a recorrer a partir de ese dato
+                                    if (posDato == apCabecera)
+                                    {
+                                        datoComparar = dat;
+                                        break;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                bool enc = false;
+
+                                foreach(Dato dat in ent.listaDatos)
+                                {
+                                    long posDato = dat.posDato;
+
+                                    if(posDato == datoAnterior.apuntadoresLlaveBusq[j])
+                                    {
+                                        datoComparar = dat;
+                                        enc = true;
+                                        break;
+                                    }
+                                }
+
+                                if(enc == false)
+                                {
+                                    if (ent.listaAtributos[j].tipo == 'S')
+                                    {
+                                        ent.listaCabeceras[j].str_apDatos(dato.posDato);
+                                        dato.apuntadoresLlaveBusq[j] = datoAnterior.posDato;
+                                        encontrado = true;
+                                    }
+                                    else
+                                    {
+                                        ent.listaCabeceras[j].str_apDatos(datoAnterior.posDato);
+                                        datoAnterior.apuntadoresLlaveBusq[j] = dato.posDato;
+                                        encontrado = true;
+                                    }
+                                }
+                            }
+
+                            if (encontrado == false)
+                            {
+                                dynamic valorDato = datoComparar.datos[j];
+                                dynamic valorNuevoDato = dato.datos[j];
+
+                                if (ent.listaAtributos[j].tipo != 'S')
+                                {
+                                    if (valorDato > valorNuevoDato)
+                                    {
+                                        // Si ira entre dos datos
+                                        if (datoAnterior.posDato != 0)
+                                        {
+                                            dato.apuntadoresLlaveBusq[j] = datoComparar.posDato;
+                                            datoAnterior.apuntadoresLlaveBusq[j] = dato.posDato;
+                                        }
+                                        else
+                                        {
+                                            ent.listaCabeceras[j].str_apDatos(dato.posDato);
+                                            dato.apuntadoresLlaveBusq[j] = datoComparar.posDato;
+                                        }
+
+                                        encontrado = true;
+                                    }
+                                    else
+                                    {
+                                        datoAnterior = datoComparar;
+                                    }
+                                }
+                                else
+                                {
+                                    if (string.Compare(valorDato, valorNuevoDato) > 0)
+                                    {
+                                        // Si ira entre dos datos
+                                        if (datoAnterior.posDato != 0)
+                                        {
+                                            dato.apuntadoresLlaveBusq[j] = datoComparar.posDato;
+                                            datoAnterior.apuntadoresLlaveBusq[j] = dato.posDato;
+                                        }
+                                        else
+                                        {
+                                            ent.listaCabeceras[j].str_apDatos(dato.posDato);
+                                            dato.apuntadoresLlaveBusq[j] = datoComparar.posDato;
+                                        }
+
+                                        encontrado = true;
+                                    }
+                                    else
+                                    {
+                                        datoAnterior = datoComparar;
+                                    }
+                                }
+                            }
+                        } while (encontrado == false);
+
+                        datoComparar = new Dato();
+                        datoAnterior = new Dato();
+                        encontrado = false;
                     }
-                }
+                }               
             }
             else
             {
@@ -538,24 +690,27 @@ namespace ArchivosTarea2
         /// <param name="datoInsertar">El dato que se desea insertar.</param>
         private void insercion_dato(Dato datoInsertar)
         {
-            if(valida_dato(datoInsertar) == false)
+            if (valida_dato(datoInsertar) == false)
             {
                 if (ent.listaDatos.Count > 0)
                 {
+                    List<Dato> datosOrdenados = ent.listaDatos.OrderBy(o => o.datos[indiceLlave]).ToList();
+
                     Dato datoAnterior = new Dato();
 
-                    for (int i = 0; i < ent.listaDatos.Count; i++)
+                    for (int i = 0; i < datosOrdenados.Count; i++)
                     {
-                        dynamic datoLlavePrim = ent.listaDatos[i].datos[indiceLlave];
+                        dynamic datoLlavePrim = datosOrdenados[i].datos[indiceLlave];
                         dynamic datoInsertarLlavePrim = datoInsertar.datos[indiceLlave];
 
                         if (datoLlavePrim > datoInsertarLlavePrim)
                         {
-                            datoInsertar.apSigDato = ent.listaDatos[i].posDato;
+                            datoInsertar.apSigDato = datosOrdenados[i].posDato;
                             datoInsertar.posDato = posMemoria;
                             posMemoria += tamDato;
                             datoAnterior.apSigDato = datoInsertar.posDato;
                             ent.listaDatos.Add(datoInsertar);
+                            break;
                         }
                         else
                         {
@@ -570,7 +725,10 @@ namespace ArchivosTarea2
                     ent.listaDatos.Add(datoInsertar);
                 }
 
-                actualiza_cabeceras(datoInsertar);                
+                actualiza_cabeceras(datoInsertar);
+                inicia_dataGrid_cabeceras();
+                inicia_dataGrid_datos();
+                toolStripStatusLabel1.Text = "Dato insertado con exito.";
             }
             else
             {

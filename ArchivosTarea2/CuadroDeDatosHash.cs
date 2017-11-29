@@ -589,8 +589,8 @@ namespace ArchivosTarea2
                                 {
                                     if (reinsersion == false)
                                     {
-                                        posMemoria += tamDato;
                                         dat.posDato = posMemoria;
+                                        posMemoria += tamDato;                                      
                                     }
 
                                     cub.str_datoCubeta(dat);
@@ -600,7 +600,12 @@ namespace ArchivosTarea2
                                     libre = true;
                                     break;
                                 }
-                            }
+                            }                           
+                        }
+
+                        if (libre == true)
+                        {
+                            break;
                         }
                     }
 
@@ -721,14 +726,14 @@ namespace ArchivosTarea2
             cubetaEnlace.str_apSigCubeta(-1);
 
             listaCubetas.Add(cubetaEnlace);
-
-            posMemoria += tamCubeta;
+            
             listaCubetas[0].str_posCubeta(posMemoria);
+            posMemoria += tamCubeta;
 
             if (reinsercion == false)
             {
-                posMemoria += tamDato;
                 dat.posDato = posMemoria;
+                posMemoria += tamDato;              
             }
 
             listaCubetas[0].str_datoCubeta(dat);

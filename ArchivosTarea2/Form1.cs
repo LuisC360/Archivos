@@ -1388,7 +1388,7 @@ namespace ArchivosTarea2
 
             dataGridView1.Columns[0].Name = "Nombre";
             dataGridView1.Columns[1].Name = "Ap. Atributos";
-            dataGridView1.Columns[2].Name = "Ap. Datos";
+            dataGridView1.Columns[2].Name = "Ap. Cabeceras";
             dataGridView1.Columns[3].Name = "Pos. Inicial";
             dataGridView1.Columns[4].Name = "Ap. Sig. Entidad";
 
