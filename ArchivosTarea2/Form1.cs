@@ -501,11 +501,35 @@ namespace ArchivosTarea2
                             }
                         }
 
-                        actualiza_archivo_entidad(eN, nuevoNombreArr, eN.apAtributos, eN.apDatos, eN.posEntidad, eN.apSigEntidad);
+                        switch(tipo)
+                        {
+                            case 0: escribe_archivo(textBox1.Text);
 
-                        entidadesLeidas = new List<Entidad>();
+                                entidadesLeidas = new List<Entidad>();
 
-                        manejo_dataGrid(textBox1.Text);
+                                manejo_dataGrid(textBox1.Text);
+                                break;
+                            case 2: escribe_archivo_indexado(textBox1.Text);
+
+                                entidadesLeidas = new List<Entidad>();
+
+                                manejo_dataGrid_indexado(textBox1.Text);
+                                break;
+                            case 3: escribe_archivo_hash(textBox1.Text);
+
+                                entidadesLeidas = new List<Entidad>();
+
+                                manejo_dataGrid_hash(textBox1.Text);
+                                break;
+                            case 4: escribe_archivo_multilistas(textBox1.Text);
+
+                                entidadesLeidas = new List<Entidad>();
+
+                                manejo_dataGrid_multilistas(textBox1.Text);
+                                break;
+                        }
+
+                        //actualiza_archivo_entidad(eN, nuevoNombreArr, eN.apAtributos, eN.apDatos, eN.posEntidad, eN.apSigEntidad);
 
                         toolStripStatusLabel1.Text = "Entidad modificada con exito.";
                     }
@@ -1433,7 +1457,7 @@ namespace ArchivosTarea2
                         if (nEntidad.apCabeceras != -1)
                         {
                             lee_cabeceras_de_entidad(reader, nEntidad);
-                            lee_datos_de_entidad(streamR, reader, nEntidad);
+                            lee_datos_de_entidad_multilistas(streamR, reader, nEntidad);
                         }
                     }
                     else
@@ -2418,6 +2442,11 @@ namespace ArchivosTarea2
             posicionMemoria += tamDato;
 
             ent.listaDatos.Add(dataRead);
+
+            if (dataRead.apSigDato != -1 && dataRead.apSigDato != -4)
+            {
+                lee_datos_de_entidad_multilistas(f, r, ent);
+            }
         }
 
         /// <summary>
@@ -3080,6 +3109,8 @@ namespace ArchivosTarea2
                     }
                 }
 
+                entidades[j].listaDatos = entidades[j].listaDatos.OrderBy(o => o.datos[j]).ToList();
+
                 if (entidades[j].listaDatos.Count > 0)
                 {
                     for (int n = 0; n < entidades[j].listaDatos.Count; n++)
@@ -3159,14 +3190,14 @@ namespace ArchivosTarea2
         }
 
         /// <summary>
-        /// 
+        /// Metodo que actualiza el nombre de una entidad en secuencial ordenada.
         /// </summary>
-        /// <param name="e"></param>
-        /// <param name="nombre"></param>
-        /// <param name="apAt"></param>
-        /// <param name="apD"></param>
-        /// <param name="posE"></param>
-        /// <param name="apSE"></param>
+        /// <param name="e">La entidad actual.</param>
+        /// <param name="nombre">El nombre de la entidad.</param>
+        /// <param name="apAt">El apuntador a atributos.</param>
+        /// <param name="apD">El apuntador a datos.</param>
+        /// <param name="posE">La posicion de la entidad.</param>
+        /// <param name="apSE">El apuntador a la siguiente entidad.</param>
         public void actualiza_archivo_entidad(Entidad e, char[] nombre, long apAt, long apD, long posE, long apSE)
         {
             FileStream streamR = new FileStream(textBox1.Text, FileMode.OpenOrCreate, FileAccess.ReadWrite);

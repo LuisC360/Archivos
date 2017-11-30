@@ -109,13 +109,26 @@ namespace ArchivosTarea2
                 tamDato += tamCabecera;
             }
 
-            if(apMultilistas != -1)
+            if(apMultilistas == -1)
             {
-
+                inicia_cabeceras();
             }
             else
             {
-                inicia_cabeceras();
+                Dato anterior = new Dato();
+
+                for(int i = 0; i < ent.listaDatos.Count; i++)
+                {
+                    if(i != 0)
+                    {
+                        ent.listaDatos[i].posDato = anterior.apSigDato;
+                        anterior = ent.listaDatos[i];
+                    }
+                    else
+                    {
+                        anterior = ent.listaDatos[i];
+                    }
+                }
             }
 
             InitializeComponent();
@@ -126,8 +139,8 @@ namespace ArchivosTarea2
             rellenaLavesBusqueda();
             rellena_dataGrid_cabeceras();
             rellena_dataGrid_datos();
-
             inicia_dataGrid_cabeceras();
+            inicia_dataGrid_datos();
 
             toolStripStatusLabel1.Text = "Listo.";
         }
@@ -312,7 +325,31 @@ namespace ArchivosTarea2
 
                 if (datoEncontrado == true)
                 {
+                    using (ModificaDatoMultilistas modiMult = new ModificaDatoMultilistas(datoModificar, ent, indiceLlave))
+                    {
+                        var modifica = modiMult.ShowDialog();
 
+                        if(modifica == DialogResult.OK)
+                        {
+                            datoModificar = modiMult.regresa_dato_multilistas();
+
+                            if(modiMult.regresa_llave_primaria_cambiada() == true || modiMult.regresa_llave_busqueda_cambiada() == true)
+                            {
+                                actualiza_cabeceras(datoModificar);
+                                inicia_dataGrid_cabeceras();
+                                inicia_dataGrid_datos();
+                            }
+                            else
+                            {
+                                actualiza_cabeceras(datoModificar);
+                                inicia_dataGrid_cabeceras();
+                                inicia_dataGrid_datos();
+                            }
+
+                            toolStripStatusLabel1.Text = "Dato modificado con exito.";
+                            seCambio = true;
+                        }
+                    }
                 }
                 else
                 {
@@ -640,8 +677,16 @@ namespace ArchivosTarea2
                 string[] fila = new string[atributosVigentes.Count + atributosVigentes.Count + 2];
                 List<String[]> filas = new List<string[]>();
                 int count = 0;
+                List<Dato> datosOrdenados = new List<Dato>();
 
-                List<Dato> datosOrdenados = ent.listaDatos.OrderBy(o => o.datos[selectedIndex]).ToList();
+                if (ent.listaAtributos[selectedIndex].tipo == 'S')
+                {
+                    datosOrdenados = ent.listaDatos.OrderBy(a => new string((char[])a.datos[selectedIndex])).ToList();
+                }
+                else
+                {
+                    datosOrdenados = ent.listaDatos.OrderBy(o => o.datos[selectedIndex]).ToList();
+                }
 
                 foreach(Dato dat in datosOrdenados)
                 {
@@ -972,7 +1017,7 @@ namespace ArchivosTarea2
 
                                 foreach(Dato dat in datosOrdenados)
                                 {
-                                    if (dat.apSigDato != -2 && dat.apSigDato != -4)
+                                    if (dat.apSigDato != -2 && dat.apSigDato != -4 && dat != dato)
                                     {
                                         long posDato = dat.posDato;
 
@@ -1407,27 +1452,46 @@ namespace ArchivosTarea2
             return datoEnc;
         }
 
-        // Funciones de retorno de informacion.
+        /// <summary>
+        /// Funcion que regresa la bandera de que se cambiaron los datos (por insercion, modificacion y/o eliminacion).
+        /// </summary>
+        /// <returns>La bandera de que se cambiaron los datos</returns>
         public bool regresa_se_cambio()
         {
             return seCambio;
         }
 
+        /// <summary>
+        /// Funcion que regresa la posicion actual en memoria.
+        /// </summary>
+        /// <returns>La posicion actual en memoria.</returns>
         public long regresa_posicion_memoria()
         {
             return posMemoria;
         }
 
+        /// <summary>
+        /// Funcion que regresa la lista de cabeceras.
+        /// </summary>
+        /// <returns>La lista de cabeceras.</returns>
         public List<Cabecera> regresa_lista_cabeceras()
         {
             return ent.listaCabeceras;
         }
 
+        /// <summary>
+        /// Funcion que regresa el apuntador a las cabeceras.
+        /// </summary>
+        /// <returns>El apuntador a las cabeceras.</returns>
         public long regresa_ap_cabeceras()
         {
             return ent.listaCabeceras[0].return_posCabecera();
         }
 
+        /// <summary>
+        /// Funcion que regresa la lista de datos.
+        /// </summary>
+        /// <returns>La lista de datos.</returns>
         public List<Dato> regresa_lista_datos()
         {
             return ent.listaDatos;
