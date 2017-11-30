@@ -121,12 +121,74 @@ namespace ArchivosTarea2
                 {
                     if(i != 0)
                     {
-                        ent.listaDatos[i].posDato = anterior.apSigDato;
-                        anterior = ent.listaDatos[i];
+                        if (anterior.apSigDato != -2 && anterior.apSigDato != -4
+                            && ent.listaDatos[i].apSigDato != -2 && ent.listaDatos[i].apSigDato != -4)
+                        {
+                            ent.listaDatos[i].posDato = anterior.apSigDato;
+                            anterior = ent.listaDatos[i];
+                        }
                     }
                     else
                     {
                         anterior = ent.listaDatos[i];
+                    }
+                }
+
+                Dato primero = new Dato();
+                bool listo = false;
+                bool esEse = false;
+
+                for(int i = 0; i < ent.listaAtributos.Count; i++)
+                {
+                    if(ent.listaAtributos[i].esLlaveDeBusqueda == true)
+                    {
+                        foreach(Dato dt in ent.listaDatos)
+                        {
+                            if(dt.apSigDato != -2 && dt.apSigDato != -4)
+                            {
+                                primero = dt;
+                                break;
+                            }
+                        }
+
+                        if(primero.apSigDato != -1)
+                        {
+                            foreach(Dato dat in ent.listaDatos)
+                            {
+                                if (dat != primero)
+                                {
+                                    if (dat.apSigDato != -2 && dat.apSigDato != -4)
+                                    {
+                                        long pos = dat.apuntadoresLlaveBusq[i];
+
+                                        if (pos != -1)
+                                        {
+                                            foreach (Dato d in ent.listaDatos)
+                                            {
+                                                if (d.posDato == pos)
+                                                {
+                                                    break;
+                                                }
+
+                                                esEse = true;
+                                            }
+                                        }
+
+                                        if (esEse == true)
+                                        {
+                                            primero.posDato = pos;
+                                            listo = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        if(listo == true)
+                        {
+                            break;
+                        }
                     }
                 }
             }
@@ -140,7 +202,11 @@ namespace ArchivosTarea2
             rellena_dataGrid_cabeceras();
             rellena_dataGrid_datos();
             inicia_dataGrid_cabeceras();
-            inicia_dataGrid_datos();
+
+            if (ent.listaDatos.Count > 0)
+            {               
+                inicia_dataGrid_datos();
+            }
 
             toolStripStatusLabel1.Text = "Listo.";
         }
@@ -306,7 +372,24 @@ namespace ArchivosTarea2
                 dynamic llaveBuscar = convierte_dato_a_encontrar(textBox1.Text);
                 Dato datoModificar = new Dato();
                 bool datoEncontrado = false;
-                List<Dato> datosOrdenados = ent.listaDatos.OrderBy(o => o.datos[indiceLlave]).ToList();
+                List<Dato> datosOrdenados = new List<Dato>();
+                Dato muestra = ent.listaDatos[0];
+
+                if (ent.listaAtributos[indiceLlave].tipo == 'S')
+                {
+                    if (muestra.datos[indiceLlave] is string)
+                    {
+                        datosOrdenados = ent.listaDatos.OrderBy(o => o.datos[indiceLlave]).ToList();
+                    }
+                    else
+                    {
+                        datosOrdenados = ent.listaDatos.OrderBy(a => new string((char[])a.datos[indiceLlave])).ToList();
+                    }
+                }
+                else
+                {
+                    datosOrdenados = ent.listaDatos.OrderBy(o => o.datos[indiceLlave]).ToList();
+                }
 
                 foreach (Dato dat in datosOrdenados)
                 {
@@ -335,13 +418,13 @@ namespace ArchivosTarea2
 
                             if(modiMult.regresa_llave_primaria_cambiada() == true || modiMult.regresa_llave_busqueda_cambiada() == true)
                             {
-                                actualiza_cabeceras(datoModificar);
+                                actualiza_todo();
                                 inicia_dataGrid_cabeceras();
                                 inicia_dataGrid_datos();
                             }
                             else
                             {
-                                actualiza_cabeceras(datoModificar);
+                                actualiza_todo();
                                 inicia_dataGrid_cabeceras();
                                 inicia_dataGrid_datos();
                             }
@@ -376,9 +459,27 @@ namespace ArchivosTarea2
                 Dato datoAnterior = new Dato();
                 bool datoEncontrado = false;
                 int contadorDatos = 0;
-                List<Dato> datosOrdenados = ent.listaDatos.OrderBy(o => o.datos[indiceLlave]).ToList();
 
-                foreach(Dato dat in datosOrdenados)
+                List<Dato> datosOrdenados = new List<Dato>();
+                Dato muestra = ent.listaDatos[0];
+
+                if (ent.listaAtributos[indiceLlave].tipo == 'S')
+                {
+                    if (muestra.datos[indiceLlave] is string)
+                    {
+                        datosOrdenados = ent.listaDatos.OrderBy(o => o.datos[indiceLlave]).ToList();
+                    }
+                    else
+                    {
+                        datosOrdenados = ent.listaDatos.OrderBy(a => new string((char[])a.datos[indiceLlave])).ToList();
+                    }
+                }
+                else
+                {
+                    datosOrdenados = ent.listaDatos.OrderBy(o => o.datos[indiceLlave]).ToList();
+                }
+
+                foreach (Dato dat in datosOrdenados)
                 {
                     if (dat.apSigDato != -2 && dat.apSigDato != -4)
                     {
@@ -436,9 +537,11 @@ namespace ArchivosTarea2
                     }
 
                     // Actualizar las llaves de busqueda
-                    actualizacion_cabeceras_eliminacion();
+                    // actualizacion_cabeceras_eliminacion();
+                    actualiza_todo();
                     inicia_dataGrid_cabeceras();
                     inicia_dataGrid_datos();
+                    
                     toolStripStatusLabel1.Text = "Dato eliminado con exito.";
                     seCambio = true;
                 }
@@ -470,7 +573,26 @@ namespace ArchivosTarea2
                     {
                         dynamic llaveBuscar = convierte_dato_a_encontrar(textBox2.Text);
                         Dato dat = new Dato();
-                        List<Dato> datosOrdenados = ent.listaDatos.OrderBy(o => o.datos[indiceLlave]).ToList();
+
+                        List<Dato> datosOrdenados = new List<Dato>();
+                        Dato muestra = ent.listaDatos[0];
+
+                        if (ent.listaAtributos[indiceLlave].tipo == 'S')
+                        {
+                            if (muestra.datos[indiceLlave] is string)
+                            {
+                                datosOrdenados = ent.listaDatos.OrderBy(o => o.datos[indiceLlave]).ToList();
+                            }
+                            else
+                            {
+                                datosOrdenados = ent.listaDatos.OrderBy(a => new string((char[])a.datos[indiceLlave])).ToList();
+                            }
+                        }
+                        else
+                        {
+                            datosOrdenados = ent.listaDatos.OrderBy(o => o.datos[indiceLlave]).ToList();
+                        }
+
                         bool encontrado = false;
 
                         foreach (Dato dato in datosOrdenados)
@@ -478,6 +600,11 @@ namespace ArchivosTarea2
                             if (dato.apSigDato != -2 && dato.apSigDato != -4)
                             {
                                 dynamic llaveComparar = dato.datos[indiceLlave];
+
+                                if(llaveComparar is char[])
+                                {
+                                    llaveComparar = new string(llaveComparar).Replace("\0", "");
+                                }
 
                                 if (llaveComparar == llaveBuscar)
                                 {
@@ -551,7 +678,26 @@ namespace ArchivosTarea2
                     else if(ent.listaAtributos[selectedIndex].esLlaveDeBusqueda == true)
                     {
                         dynamic llaveBuscar = convierte_dato_busqueda(textBox2.Text, ent.listaAtributos[selectedIndex]);
-                        List<Dato> datosOrdenados = ent.listaDatos.OrderBy(o => o.datos[indiceLlave]).ToList();
+
+                        List<Dato> datosOrdenados = new List<Dato>();
+                        Dato muestra = ent.listaDatos[0];
+
+                        if (ent.listaAtributos[indiceLlave].tipo == 'S')
+                        {
+                            if (muestra.datos[indiceLlave] is string)
+                            {
+                                datosOrdenados = ent.listaDatos.OrderBy(o => o.datos[indiceLlave]).ToList();
+                            }
+                            else
+                            {
+                                datosOrdenados = ent.listaDatos.OrderBy(a => new string((char[])a.datos[indiceLlave])).ToList();
+                            }
+                        }
+                        else
+                        {
+                            datosOrdenados = ent.listaDatos.OrderBy(o => o.datos[indiceLlave]).ToList();
+                        }
+
                         List<Dato> datosEncontrados = new List<Dato>();
 
                         foreach (Dato dato in datosOrdenados)
@@ -559,6 +705,11 @@ namespace ArchivosTarea2
                             if (dato.apSigDato != -2 && dato.apSigDato != -4)
                             {
                                 dynamic llaveComparar = dato.datos[selectedIndex];
+
+                                if (llaveComparar is char[])
+                                {
+                                    llaveComparar = new string(llaveComparar).Replace("\0", "");
+                                }
 
                                 if (llaveComparar == llaveBuscar)
                                 {
@@ -678,10 +829,18 @@ namespace ArchivosTarea2
                 List<String[]> filas = new List<string[]>();
                 int count = 0;
                 List<Dato> datosOrdenados = new List<Dato>();
+                Dato muestra = ent.listaDatos[0];
 
                 if (ent.listaAtributos[selectedIndex].tipo == 'S')
                 {
-                    datosOrdenados = ent.listaDatos.OrderBy(a => new string((char[])a.datos[selectedIndex])).ToList();
+                    if (muestra.datos[selectedIndex] is string)
+                    {
+                        datosOrdenados = ent.listaDatos.OrderBy(o => o.datos[selectedIndex]).ToList();
+                    }
+                    else
+                    {
+                        datosOrdenados = ent.listaDatos.OrderBy(a => new string((char[])a.datos[selectedIndex])).ToList();
+                    }
                 }
                 else
                 {
@@ -852,8 +1011,24 @@ namespace ArchivosTarea2
             string[] fila = new string[atributosVigentes.Count + atributosVigentes.Count + 2];
             List<String[]> filas = new List<string[]>();
             int count = 0;
+            List<Dato> datosOrdenados = new List<Dato>();
+            Dato muestra = ent.listaDatos[0];
 
-            List<Dato> datosOrdenados = ent.listaDatos.OrderBy(o => o.datos[indiceLlave]).ToList();
+            if (ent.listaAtributos[indiceLlave].tipo == 'S')
+            {
+                if (muestra.datos[indiceLlave] is string)
+                {
+                    datosOrdenados = ent.listaDatos.OrderBy(o => o.datos[indiceLlave]).ToList();
+                }
+                else
+                {
+                    datosOrdenados = ent.listaDatos.OrderBy(a => new string((char[])a.datos[indiceLlave])).ToList();
+                }
+            }
+            else
+            {
+                datosOrdenados = ent.listaDatos.OrderBy(o => o.datos[indiceLlave]).ToList();
+            }
 
             foreach (Dato dat in datosOrdenados)
             {
@@ -986,7 +1161,24 @@ namespace ArchivosTarea2
                 {
                     if (ent.listaAtributos[j].esLlaveDeBusqueda == true)
                     {
-                        List<Dato> datosOrdenados = ent.listaDatos.OrderBy(o => o.datos[j]).ToList();
+                        List<Dato> datosOrdenados = new List<Dato>();
+                        Dato muestra = ent.listaDatos[0];
+
+                        if (ent.listaAtributos[j].tipo == 'S')
+                        {
+                            if (muestra.datos[j] is string)
+                            {
+                                datosOrdenados = ent.listaDatos.OrderBy(o => o.datos[j]).ToList();
+                            }
+                            else
+                            {
+                                datosOrdenados = ent.listaDatos.OrderBy(a => new string((char[])a.datos[j])).ToList();
+                            }
+                        }
+                        else
+                        {
+                            datosOrdenados = ent.listaDatos.OrderBy(o => o.datos[j]).ToList();
+                        }
 
                         // Se debe de recorrer la lista de cabeceras para saber en donde comenzaremos a recorrer la lista
                         // de datos.
@@ -994,6 +1186,7 @@ namespace ArchivosTarea2
 
                         do
                         {
+                            // La primera vez que se recorrera la cabecera.
                             if (datoAnterior.posDato == 0)
                             {
                                 foreach (Dato dat in datosOrdenados)
@@ -1017,7 +1210,7 @@ namespace ArchivosTarea2
 
                                 foreach(Dato dat in datosOrdenados)
                                 {
-                                    if (dat.apSigDato != -2 && dat.apSigDato != -4 && dat != dato)
+                                    if (dat.apSigDato != -2 && dat.apSigDato != -4)
                                     {
                                         long posDato = dat.posDato;
 
@@ -1046,7 +1239,7 @@ namespace ArchivosTarea2
                                 }
                             }
 
-                            if (encontrado == false)
+                            if (encontrado == false && datoComparar != dato)
                             {
                                 dynamic valorDato = datoComparar.datos[j];
                                 dynamic valorNuevoDato = dato.datos[j];
@@ -1065,6 +1258,7 @@ namespace ArchivosTarea2
                                         {
                                             ent.listaCabeceras[j].str_apDatos(dato.posDato);
                                             dato.apuntadoresLlaveBusq[j] = datoComparar.posDato;
+                                            //datoComparar.apuntadoresLlaveBusq[j] = -1;
                                         }
 
                                         encontrado = true;
@@ -1082,7 +1276,15 @@ namespace ArchivosTarea2
                                         if (datoAnterior.posDato != 0)
                                         {
                                             dato.apuntadoresLlaveBusq[j] = datoComparar.posDato;
-                                            datoAnterior.apuntadoresLlaveBusq[j] = dato.posDato;
+
+                                            if (datoAnterior != dato)
+                                            {
+                                                datoAnterior.apuntadoresLlaveBusq[j] = dato.posDato;
+                                            }
+                                            else
+                                            {
+                                                datoAnterior.apuntadoresLlaveBusq[j] = datoComparar.posDato;
+                                            }
                                         }
                                         else
                                         {
@@ -1097,7 +1299,7 @@ namespace ArchivosTarea2
                                         datoAnterior = datoComparar;
                                     }
                                 }
-                            }
+                            }                          
                         } while (encontrado == false);
 
                         datoComparar = new Dato();
@@ -1126,7 +1328,24 @@ namespace ArchivosTarea2
         {
             for (int j = 0; j < atributosVigentes.Count; j++)
             {
-                List<Dato> datosOrdenados = ent.listaDatos.OrderBy(o => o.datos[j]).ToList();
+                List<Dato> datosOrdenados = new List<Dato>();
+                Dato muestra = ent.listaDatos[0];
+
+                if (ent.listaAtributos[j].tipo == 'S')
+                {
+                    if (muestra.datos[j] is string)
+                    {
+                        datosOrdenados = ent.listaDatos.OrderBy(o => o.datos[j]).ToList();
+                    }
+                    else
+                    {
+                        datosOrdenados = ent.listaDatos.OrderBy(a => new string((char[])a.datos[j])).ToList();
+                    }
+                }
+                else
+                {
+                    datosOrdenados = ent.listaDatos.OrderBy(o => o.datos[j]).ToList();
+                }
 
                 // Si el atributo no es llave de busqueda pero es llave primaria.
                 if (atributosVigentes[j].esLlaveDeBusqueda == false && atributosVigentes[j].esLlavePrimaria == true)
@@ -1222,15 +1441,6 @@ namespace ArchivosTarea2
         }
 
         /// <summary>
-        /// Metodo con el cual se actualizaran los apuntadores de los datos y las cabeceras despues de haber hecho una 
-        /// modificacion de un dato.
-        /// </summary>
-        private void actualizacion_cabeceras_modificacion()
-        {
-
-        }
-
-        /// <summary>
         /// Metodo con el cual se iniciaran las cabeceras para las multilistas.
         /// </summary>
         private void inicia_cabeceras()
@@ -1259,7 +1469,25 @@ namespace ArchivosTarea2
             {
                 if (ent.listaDatos.Count > 0)
                 {
-                    List<Dato> datosOrdenados = ent.listaDatos.OrderBy(o => o.datos[indiceLlave]).ToList();
+                    List<Dato> datosOrdenados = new List<Dato>();
+                    Dato muestra = ent.listaDatos[0];
+
+                    if (ent.listaAtributos[indiceLlave].tipo == 'S')
+                    {
+                        if (muestra.datos[indiceLlave] is string)
+                        {
+                            datosOrdenados = ent.listaDatos.OrderBy(o => o.datos[indiceLlave]).ToList();
+                        }
+                        else
+                        {
+                            datosOrdenados = ent.listaDatos.OrderBy(a => new string((char[])a.datos[indiceLlave])).ToList();
+                        }
+                    }
+                    else
+                    {
+                        datosOrdenados = ent.listaDatos.OrderBy(o => o.datos[indiceLlave]).ToList();
+                    }
+
                     bool encontrado = false;
                     Dato datoAnterior = new Dato();
 
@@ -1450,6 +1678,136 @@ namespace ArchivosTarea2
             }
 
             return datoEnc;
+        }
+
+        /// <summary>
+        /// Funcion con la que se actualizaran todos los apuntadores despues de una modificacion de un dato.
+        /// </summary>
+        private void actualiza_todo()
+        {
+            for(int i = 0; i < ent.listaAtributos.Count; i++)
+            {
+                if(ent.listaAtributos[i].esLlaveDeBusqueda == true)
+                {
+                    List<Dato> datosOrdenados = new List<Dato>();
+                    Dato muestra = ent.listaDatos[0];
+
+                    if (ent.listaAtributos[i].tipo == 'S')
+                    {
+                        if (muestra.datos[i] is string)
+                        {
+                            datosOrdenados = ent.listaDatos.OrderBy(o => o.datos[i]).ToList();
+                        }
+                        else
+                        {
+                            datosOrdenados = ent.listaDatos.OrderBy(a => new string((char[])a.datos[i])).ToList();
+                        }
+                    }
+                    else
+                    {
+                        datosOrdenados = ent.listaDatos.OrderBy(o => o.datos[i]).ToList();
+                    }
+
+                    List<Dato> datosRespaldo = new List<Dato>();
+
+                    foreach(Dato dt in datosOrdenados)
+                    {
+                        if(dt.apSigDato != -2 && dt.apSigDato != -4)
+                        {
+                            datosRespaldo.Add(dt);
+                        }
+                    }
+
+                    datosOrdenados.Clear();
+                    datosOrdenados = datosRespaldo;
+
+                    for(int j = 0; j < datosOrdenados.Count; j++)
+                    {                      
+                        if(datosOrdenados[j].apSigDato != -2 && datosOrdenados[j].apSigDato != -4)
+                        {
+                            if(j == 0)
+                            {
+                                ent.listaCabeceras[i].str_apDatos(datosOrdenados[j].posDato);
+                            }
+
+                            if((j+1) < datosOrdenados.Count)
+                            {
+                                bool encontrado = false;
+
+                                for(int k = j+1; k < datosOrdenados.Count; k++)
+                                {
+                                    if(datosOrdenados[k].apSigDato != -2 && datosOrdenados[k].apSigDato != -4)
+                                    {
+                                        datosOrdenados[j].apuntadoresLlaveBusq[i] = datosOrdenados[k].posDato;
+                                        encontrado = true;
+                                        break;
+                                    }
+                                }
+
+                                if(encontrado == false)
+                                {
+                                    datosOrdenados[j].apuntadoresLlaveBusq[i] = -1;
+                                }
+                            }
+                            else
+                            {
+                                datosOrdenados[j].apuntadoresLlaveBusq[i] = -1;
+                            }
+                        }
+                    }
+                }
+                else if(ent.listaAtributos[i].esLlavePrimaria == true)
+                {
+                    List<Dato> datosOrdenados = new List<Dato>();
+                    Dato muestra = ent.listaDatos[0];
+
+                    if (ent.listaAtributos[i].tipo == 'S')
+                    {
+                        if (muestra.datos[i] is string)
+                        {
+                            datosOrdenados = ent.listaDatos.OrderBy(o => o.datos[i]).ToList();
+                        }
+                        else
+                        {
+                            datosOrdenados = ent.listaDatos.OrderBy(a => new string((char[])a.datos[i])).ToList();
+                        }
+                    }
+                    else
+                    {
+                        datosOrdenados = ent.listaDatos.OrderBy(o => o.datos[i]).ToList();
+                    }
+
+                    for (int j = 0; j < datosOrdenados.Count; j++)
+                    {
+                        if (datosOrdenados[j].apSigDato != -2 && datosOrdenados[j].apSigDato != -4)
+                        {
+                            if ((j + 1) < datosOrdenados.Count)
+                            {
+                                bool encontrado = false;
+
+                                for (int k = j + 1; k < datosOrdenados.Count; k++)
+                                {
+                                    if (datosOrdenados[k].apSigDato != -2 && datosOrdenados[k].apSigDato != -4)
+                                    {
+                                        datosOrdenados[j].apSigDato = datosOrdenados[k].posDato;
+                                        encontrado = true;
+                                        break;
+                                    }
+                                }
+
+                                if (encontrado == false)
+                                {
+                                    datosOrdenados[j].apSigDato = -1;
+                                }
+                            }
+                            else
+                            {
+                                datosOrdenados[j].apSigDato = -1;
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>
