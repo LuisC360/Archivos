@@ -79,8 +79,8 @@ namespace ArchivosTarea2
             tamDato = tD;
             apMultilistas = apM;
             int indLlave = 0;
-
-            foreach(Atributo atr in ent.listaAtributos)
+       
+            foreach (Atributo atr in ent.listaAtributos)
             {
                 if (atr.apSigAtributo != -2 && atr.apSigAtributo != -4)
                 {
@@ -120,12 +120,15 @@ namespace ArchivosTarea2
 
             InitializeComponent();
 
+            comboBox1.DropDownStyle = ComboBoxStyle.DropDownList;
             dataGridView2.ReadOnly = true;
             rellenaLavesBusqueda();
             rellena_dataGrid_cabeceras();
             rellena_dataGrid_datos();
 
             inicia_dataGrid_cabeceras();
+
+            toolStripStatusLabel1.Text = "Listo.";
         }
 
         /// <summary>
@@ -419,7 +422,201 @@ namespace ArchivosTarea2
         /// <param name="e">EventArgs.</param>
         private void button3_Click(object sender, EventArgs e)
         {
+            if(textBox2.Text.Length > 0)
+            {
+                int selectedIndex = comboBox1.SelectedIndex;
 
+                if(selectedIndex != -1)
+                {
+                    if(ent.listaAtributos[selectedIndex].esLlaveDeBusqueda == false && ent.listaAtributos[selectedIndex].esLlavePrimaria == true)
+                    {
+                        dynamic llaveBuscar = convierte_dato_a_encontrar(textBox2.Text);
+                        Dato dat = new Dato();
+                        List<Dato> datosOrdenados = ent.listaDatos.OrderBy(o => o.datos[indiceLlave]).ToList();
+                        bool encontrado = false;
+
+                        foreach (Dato dato in datosOrdenados)
+                        {
+                            if (dato.apSigDato != -2 && dato.apSigDato != -4)
+                            {
+                                dynamic llaveComparar = dato.datos[indiceLlave];
+
+                                if (llaveComparar == llaveBuscar)
+                                {
+                                    encontrado = true;
+                                    dat = dato;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if(encontrado == true)
+                        {
+                            dataGridView1.Rows.Clear();
+
+                            dataGridView1.ColumnCount = atributosVigentes.Count + atributosVigentes.Count + 2;
+                            dataGridView1.ColumnHeadersVisible = true;
+
+                            string[] fila = new string[atributosVigentes.Count + atributosVigentes.Count + 2];
+                            List<String[]> filas = new List<string[]>();
+                            int count = 0;
+
+                            for (int i = 0; i < dat.datos.Count; i++)
+                            {
+                                if (dat.datos[i] is char[])
+                                {
+                                    char[] arr = (char[])dat.datos[i];
+                                    String objeto = new string(arr);
+                                    fila[i] = objeto;
+                                }
+                                else
+                                {
+                                    fila[i] = dat.datos[i].ToString();
+                                }
+                                count++;
+                            }
+
+                            fila[count] = dat.posDato.ToString();
+                            count++;
+
+                            if (dat.apSigDato == -3)
+                            {
+                                String menos = "-1";
+                                fila[count] = menos;
+                            }
+                            else
+                            {
+                                fila[count] = dat.apSigDato.ToString();
+                            }
+                            count++;
+
+                            for (int j = 0; j < dat.apuntadoresLlaveBusq.Count; j++)
+                            {
+                                fila[count] = dat.apuntadoresLlaveBusq[j].ToString();
+                                count++;
+                            }
+
+                            filas.Add(fila);
+
+                            foreach (string[] arr in filas)
+                            {
+                                dataGridView1.Rows.Add(arr);
+                            }
+
+                            toolStripStatusLabel1.Text = "Listo.";
+                        }
+                        else
+                        {
+                            toolStripStatusLabel1.Text = "Error, llave primaria no encontrada.";
+                        }
+                    }
+                    else if(ent.listaAtributos[selectedIndex].esLlaveDeBusqueda == true)
+                    {
+                        dynamic llaveBuscar = convierte_dato_busqueda(textBox2.Text, ent.listaAtributos[selectedIndex]);
+                        List<Dato> datosOrdenados = ent.listaDatos.OrderBy(o => o.datos[indiceLlave]).ToList();
+                        List<Dato> datosEncontrados = new List<Dato>();
+
+                        foreach (Dato dato in datosOrdenados)
+                        {
+                            if (dato.apSigDato != -2 && dato.apSigDato != -4)
+                            {
+                                dynamic llaveComparar = dato.datos[selectedIndex];
+
+                                if (llaveComparar == llaveBuscar)
+                                {
+                                    datosEncontrados.Add(dato);
+                                }
+                            }
+                        }
+
+                        if(datosEncontrados.Count > 0)
+                        {
+                            dataGridView1.Rows.Clear();
+
+                            dataGridView1.ColumnCount = atributosVigentes.Count + atributosVigentes.Count + 2;
+                            dataGridView1.ColumnHeadersVisible = true;
+
+                            string[] fila = new string[atributosVigentes.Count + atributosVigentes.Count + 2];
+                            List<String[]> filas = new List<string[]>();
+                            int count = 0;
+
+                            foreach(Dato dat in datosEncontrados)
+                            {
+                                if (dat.apSigDato != -2 && dat.apSigDato != -4)
+                                {
+                                    for (int i = 0; i < dat.datos.Count; i++)
+                                    {
+                                        if (dat.datos[i] is char[])
+                                        {
+                                            char[] arr = (char[])dat.datos[i];
+                                            String objeto = new string(arr);
+                                            fila[i] = objeto;
+                                        }
+                                        else
+                                        {
+                                            fila[i] = dat.datos[i].ToString();
+                                        }
+                                        count++;
+                                    }
+
+                                    fila[count] = dat.posDato.ToString();
+                                    count++;
+
+                                    if (dat.apSigDato == -3)
+                                    {
+                                        String menos = "-1";
+                                        fila[count] = menos;
+                                    }
+                                    else
+                                    {
+                                        fila[count] = dat.apSigDato.ToString();
+                                    }
+                                    count++;
+
+                                    for (int j = 0; j < dat.apuntadoresLlaveBusq.Count; j++)
+                                    {
+                                        fila[count] = dat.apuntadoresLlaveBusq[j].ToString();
+                                        count++;
+                                    }
+
+                                    filas.Add(fila);
+                                    fila = new string[atributosVigentes.Count + atributosVigentes.Count + 2];
+                                    count = 0;
+                                }
+                            }
+
+                            foreach (string[] arr in filas)
+                            {
+                                dataGridView1.Rows.Add(arr);
+                            }
+
+                            toolStripStatusLabel1.Text = "Listo.";
+                        }
+                        else
+                        {
+                            toolStripStatusLabel1.Text = "Error, no hay ningun dato con este valor de llave de busqueda.";
+                        }
+                    }
+                }
+                else
+                {
+                    toolStripStatusLabel1.Text = "Error, selecciona una llave primaria o llave de busqueda.";
+                }
+            }
+            else
+            {
+                toolStripStatusLabel1.Text = "Error, introduce una llave primaria o llave de busqueda.";
+            }
+        }
+
+        /// <summary>
+        /// Boton con el cual se mostraran todos los datos en el dataGridView correspondiente.
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">EventArgs.</param>
+        private void button6_Click(object sender, EventArgs e)
+        {
+            inicia_dataGrid_datos();
         }
 
         /// <summary>
@@ -847,7 +1044,7 @@ namespace ArchivosTarea2
                         }
                     }
                 }
-                else
+                else if(atributosVigentes[j].esLlaveDeBusqueda == true)
                 {
                     for (int k = 0; k < datosOrdenados.Count; k++)
                     {
@@ -1055,7 +1252,7 @@ namespace ArchivosTarea2
                         toolStripStatusLabel1.Text = "Error en la conversion.";
                     }
                     break;
-                default: // Default vacio
+                default: datoEnc = dato;
                     break;
             }
 
@@ -1063,14 +1260,74 @@ namespace ArchivosTarea2
         }
 
         /// <summary>
-        /// 
+        /// Metodo con el que se convierte una cadena a un valor de llave de busqueda seleccionado en el comboBox de seleccion
+        /// de llave de busqueda.
         /// </summary>
-        /// <returns></returns>
-        private bool busca_llave_busqueda()
+        /// <param name="dato">La cadena que se desea convertir.</param>
+        /// <param name="atr">El atributo que es llave de busqueda y cuyo tipo influira en la conversion de la cadena.</param>
+        /// <returns>La cadena ya convertida en el valor correspondiente a una llave primaria junto con el tipo de dato de
+        /// esa llave.</returns>
+        private dynamic convierte_dato_busqueda(String dato, Atributo atr)
         {
-            bool encontrada = false;
+            dynamic datoEnc = 0;
 
-            return encontrada;
+            switch (atr.tipo)
+            {
+                case 'I':
+                    try
+                    {
+                        datoEnc = Convert.ToInt32(dato);
+                    }
+                    catch
+                    {
+                        toolStripStatusLabel1.Text = "Error en la conversion.";
+                    }
+                    break;
+                case 'L':
+                    try
+                    {
+                        datoEnc = Convert.ToInt64(dato);
+                    }
+                    catch
+                    {
+                        toolStripStatusLabel1.Text = "Error en la conversion.";
+                    }
+                    break;
+                case 'F':
+                    try
+                    {
+                        datoEnc = Convert.ToSingle(dato);
+                    }
+                    catch
+                    {
+                        toolStripStatusLabel1.Text = "Error en la conversion.";
+                    }
+                    break;
+                case 'D':
+                    try
+                    {
+                        datoEnc = Convert.ToDouble(dato);
+                    }
+                    catch
+                    {
+                        toolStripStatusLabel1.Text = "Error en la conversion.";
+                    }
+                    break;
+                case 'C':
+                    try
+                    {
+                        datoEnc = Convert.ToChar(dato);
+                    }
+                    catch
+                    {
+                        toolStripStatusLabel1.Text = "Error en la conversion.";
+                    }
+                    break;
+                default: datoEnc = dato;
+                    break;
+            }
+
+            return datoEnc;
         }
 
         // Funciones de retorno de informacion.
@@ -1097,6 +1354,6 @@ namespace ArchivosTarea2
         public List<Dato> regresa_lista_datos()
         {
             return ent.listaDatos;
-        }
+        }       
     }
 }
