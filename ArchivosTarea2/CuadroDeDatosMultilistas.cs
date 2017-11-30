@@ -121,6 +121,7 @@ namespace ArchivosTarea2
             InitializeComponent();
 
             comboBox1.DropDownStyle = ComboBoxStyle.DropDownList;
+            comboBox2.DropDownStyle = ComboBoxStyle.DropDownList;
             dataGridView2.ReadOnly = true;
             rellenaLavesBusqueda();
             rellena_dataGrid_cabeceras();
@@ -620,6 +621,81 @@ namespace ArchivosTarea2
         }
 
         /// <summary>
+        /// Boton con el cual se mostraran los datos del dataGridView correspondiente en base a un orden especificado por el
+        /// comboBox correspondiente.
+        /// </summary>
+        /// <param name="sender">Sender.</param>
+        /// <param name="e">EventArgs.</param>
+        private void button7_Click(object sender, EventArgs e)
+        {
+            int selectedIndex = comboBox2.SelectedIndex;
+
+            if(selectedIndex > -1)
+            {
+                dataGridView1.Rows.Clear();
+
+                dataGridView1.ColumnCount = atributosVigentes.Count + atributosVigentes.Count + 2;
+                dataGridView1.ColumnHeadersVisible = true;
+
+                string[] fila = new string[atributosVigentes.Count + atributosVigentes.Count + 2];
+                List<String[]> filas = new List<string[]>();
+                int count = 0;
+
+                List<Dato> datosOrdenados = ent.listaDatos.OrderBy(o => o.datos[selectedIndex]).ToList();
+
+                foreach(Dato dat in datosOrdenados)
+                {
+                    if (dat.apSigDato != -2 && dat.apSigDato != -4)
+                    {
+                        for (int i = 0; i < dat.datos.Count; i++)
+                        {
+                            if (dat.datos[i] is char[])
+                            {
+                                char[] arr = (char[])dat.datos[i];
+                                String objeto = new string(arr);
+                                fila[i] = objeto;
+                            }
+                            else
+                            {
+                                fila[i] = dat.datos[i].ToString();
+                            }
+                            count++;
+                        }
+
+                        fila[count] = dat.posDato.ToString();
+                        count++;
+
+                        if (dat.apSigDato == -3)
+                        {
+                            String menos = "-1";
+                            fila[count] = menos;
+                        }
+                        else
+                        {
+                            fila[count] = dat.apSigDato.ToString();
+                        }
+                        count++;
+
+                        for (int j = 0; j < dat.apuntadoresLlaveBusq.Count; j++)
+                        {
+                            fila[count] = dat.apuntadoresLlaveBusq[j].ToString();
+                            count++;
+                        }
+
+                        filas.Add(fila);
+                        fila = new string[atributosVigentes.Count + atributosVigentes.Count + 2];
+                        count = 0;
+                    }
+                }
+
+                foreach (string[] arr in filas)
+                {
+                    dataGridView1.Rows.Add(arr);
+                }
+            }
+        }
+
+        /// <summary>
         /// Boton para cerrar el cuadro de manipulacion de datos.
         /// </summary>
         /// <param name="sender">Sender.</param>
@@ -640,6 +716,7 @@ namespace ArchivosTarea2
                 String ll = new string(atr.nombre);
 
                 comboBox1.Items.Add(ll);
+                comboBox2.Items.Add(ll);
             }
         }
 

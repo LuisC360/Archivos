@@ -1260,7 +1260,7 @@ namespace ArchivosTarea2
                         toolStripStatusLabel1.Text = "Error en la conversion.";
                     }
                     break;
-                default: // Default vacio
+                default: datoEnc = dato;
                     break;
             }
 
