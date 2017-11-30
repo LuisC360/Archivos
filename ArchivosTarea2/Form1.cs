@@ -1914,6 +1914,7 @@ namespace ArchivosTarea2
                     Cabecera cab = new Cabecera(apDatos);
 
                     posicionMemoria += 8;
+                    tamDato += 8;
                     ent.listaCabeceras.Add(cab);
                 }
                 else
@@ -2096,14 +2097,6 @@ namespace ArchivosTarea2
                 {
                     tamDato += Convert.ToInt32(nAtributo.bytes);
                 }
-
-                if(tipo == 3)
-                {
-                    if(isSearch == true)
-                    {
-                        tamDato += 8;
-                    }
-                }
             }
 
             nombreAT = new char[30];
@@ -2247,6 +2240,19 @@ namespace ArchivosTarea2
             long apSigD = r.ReadInt64();
 
             dataRead.apSigDato = apSigD;
+
+            if(tipo == 3)
+            {
+                foreach(Atributo atr in ent.listaAtributos)
+                {
+                    if(atr.apSigAtributo != -2 && atr.apSigAtributo != -4)
+                    {
+                        long apLlaveB = r.ReadInt64();
+
+                        dataRead.apuntadoresLlaveBusq.Add(apLlaveB);
+                    }
+                }
+            }
 
             posicionMemoria += tamDato;
 
@@ -4307,9 +4313,10 @@ namespace ArchivosTarea2
 
                         if(cuadroMultilistas == DialogResult.OK)
                         {
-                            ent.apCabeceras = datosMultilistas.regresa_apuntador_cabeceras();
                             posicionMemoria = datosMultilistas.regresa_posicion_memoria();
                             ent.listaCabeceras = datosMultilistas.regresa_lista_cabeceras();
+                            ent.apCabeceras = datosMultilistas.regresa_ap_cabeceras();
+                            ent.listaDatos = datosMultilistas.regresa_lista_datos();
 
                             if(datosMultilistas.regresa_se_cambio())
                             {

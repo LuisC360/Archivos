@@ -76,7 +76,7 @@ namespace ArchivosTarea2
         {
             ent = e;
             posMemoria = pMem;
-            tamDato = tD - 8;
+            tamDato = tD;
             apMultilistas = apM;
             int indLlave = 0;
 
@@ -284,7 +284,41 @@ namespace ArchivosTarea2
         /// <param name="e">EventArgs.</param>
         private void button1_Click(object sender, EventArgs e)
         {
+            if (textBox1.Text.Length > 0)
+            {
+                dynamic llaveBuscar = convierte_dato_a_encontrar(textBox1.Text);
+                Dato datoModificar = new Dato();
+                bool datoEncontrado = false;
+                List<Dato> datosOrdenados = ent.listaDatos.OrderBy(o => o.datos[indiceLlave]).ToList();
 
+                foreach (Dato dat in datosOrdenados)
+                {
+                    if (dat.apSigDato != -2 && dat.apSigDato != -4)
+                    {
+                        dynamic llaveComparar = dat.datos[indiceLlave];
+
+                        if (llaveComparar == llaveBuscar)
+                        {
+                            datoModificar = dat;
+                            datoEncontrado = true;
+                            break;
+                        }
+                    }                  
+                }
+
+                if (datoEncontrado == true)
+                {
+
+                }
+                else
+                {
+                    toolStripStatusLabel1.Text = "Error, llave primaria no encontrada.";
+                }
+            }
+            else
+            {
+                toolStripStatusLabel1.Text = "Error, escribe una llave primaria.";
+            }
         }
 
         /// <summary>
@@ -294,7 +328,88 @@ namespace ArchivosTarea2
         /// <param name="e">EventArgs.</param>
         private void button2_Click(object sender, EventArgs e)
         {
+            if(textBox1.Text.Length > 0)
+            {
+                dynamic llaveBuscar = convierte_dato_a_encontrar(textBox1.Text);
+                Dato datoEliminar = new Dato();
+                Dato datoAnterior = new Dato();
+                bool datoEncontrado = false;
+                int contadorDatos = 0;
+                List<Dato> datosOrdenados = ent.listaDatos.OrderBy(o => o.datos[indiceLlave]).ToList();
 
+                foreach(Dato dat in datosOrdenados)
+                {
+                    if (dat.apSigDato != -2 && dat.apSigDato != -4)
+                    {
+                        dynamic llaveComparar = dat.datos[indiceLlave];
+
+                        if (llaveComparar == llaveBuscar)
+                        {
+                            datoEliminar = dat;
+                            datoEncontrado = true;
+                            break;
+                        }
+                        else
+                        {
+                            datoAnterior = dat;
+                            contadorDatos++;
+                        }
+                    }
+                }
+
+                if(datoEncontrado == true)
+                {
+                    // Si era el ultimo dato
+                    if(contadorDatos == datosOrdenados.Count - 1)
+                    {
+                        datoEliminar.apSigDato = -4;
+                        datoAnterior.apSigDato = -3;                       
+                    }
+                    // Si era el primer dato
+                    else if(contadorDatos == 0 && datoAnterior.posDato == 0)
+                    {
+                        datoEliminar.apSigDato = -2;
+                    }
+                    // Si estaba entre 2 datos
+                    else if(datoAnterior.posDato != 0)
+                    {
+                        datoEliminar.apSigDato = -2;
+
+                        int indiceAnterior = datosOrdenados.IndexOf(datoAnterior);
+                        bool dEncontrado = false;
+
+                        for(int i = indiceAnterior + 2; i < datosOrdenados.Count; i++)
+                        {
+                            if(datosOrdenados[i].apSigDato != -2 && datosOrdenados[i].apSigDato != -4)
+                            {
+                                datoAnterior.apSigDato = datosOrdenados[i].posDato;
+                                dEncontrado = true;
+                                break;
+                            }
+                        }
+
+                        if(dEncontrado == false)
+                        {
+                            datoAnterior.apSigDato = -3;
+                        }
+                    }
+
+                    // Actualizar las llaves de busqueda
+                    actualizacion_cabeceras_eliminacion();
+                    inicia_dataGrid_cabeceras();
+                    inicia_dataGrid_datos();
+                    toolStripStatusLabel1.Text = "Dato eliminado con exito.";
+                    seCambio = true;
+                }
+                else
+                {
+                    toolStripStatusLabel1.Text = "Error, llave primaria no encontrada."; 
+                }
+            }
+            else
+            {
+                toolStripStatusLabel1.Text = "Error, escribe una llave primaria.";
+            }
         }
 
         /// <summary>
@@ -325,12 +440,9 @@ namespace ArchivosTarea2
         {
             foreach(Atributo atr in atributosVigentes)
             {
-                if(atr.esLlaveDeBusqueda == true)
-                {
-                    String ll = new string(atr.nombre);
+                String ll = new string(atr.nombre);
 
-                    comboBox1.Items.Add(ll);
-                }
+                comboBox1.Items.Add(ll);
             }
         }
 
@@ -378,7 +490,7 @@ namespace ArchivosTarea2
         }
 
         /// <summary>
-        /// Metodo que pondra el nombre de los atributos vigentes como los nombres de cada columna en el dataGridView correspondiente
+        /// Metodo que pondra los nombres de los atributos vigentes como los nombres de cada columna en el dataGridView correspondiente
         /// a los datos, ademas de poner las columnas correspondientes a los atributos que sean llave de busqueda.
         /// </summary>
         private void rellena_dataGrid_datos()
@@ -426,35 +538,47 @@ namespace ArchivosTarea2
 
             foreach (Dato dat in datosOrdenados)
             {
-                for (int i = 0; i < dat.datos.Count; i++)
+                if (dat.apSigDato != -2 && dat.apSigDato != -4)
                 {
-                    if (dat.datos[i] is char[])
+                    for (int i = 0; i < dat.datos.Count; i++)
                     {
-                        char[] arr = (char[])dat.datos[i];
-                        String objeto = new string(arr);
-                        fila[i] = objeto;
+                        if (dat.datos[i] is char[])
+                        {
+                            char[] arr = (char[])dat.datos[i];
+                            String objeto = new string(arr);
+                            fila[i] = objeto;
+                        }
+                        else
+                        {
+                            fila[i] = dat.datos[i].ToString();
+                        }
+                        count++;
+                    }
+
+                    fila[count] = dat.posDato.ToString();
+                    count++;
+
+                    if (dat.apSigDato == -3)
+                    {
+                        String menos = "-1";
+                        fila[count] = menos;
                     }
                     else
                     {
-                        fila[i] = dat.datos[i].ToString();
+                        fila[count] = dat.apSigDato.ToString();
                     }
                     count++;
+
+                    for (int j = 0; j < dat.apuntadoresLlaveBusq.Count; j++)
+                    {
+                        fila[count] = dat.apuntadoresLlaveBusq[j].ToString();
+                        count++;
+                    }
+
+                    filas.Add(fila);
+                    fila = new string[atributosVigentes.Count + atributosVigentes.Count + 2];
+                    count = 0;
                 }
-
-                fila[count] = dat.posDato.ToString();
-                count++;
-                fila[count] = dat.apSigDato.ToString();
-                count++;
-
-                for(int j = 0; j < dat.apuntadoresLlaveBusq.Count; j++)
-                {
-                    fila[count] = dat.apuntadoresLlaveBusq[j].ToString();
-                    count++;
-                }
-
-                filas.Add(fila);
-                fila = new string[atributosVigentes.Count + atributosVigentes.Count + 2];
-                count = 0;
             }
 
             foreach (string[] arr in filas)
@@ -508,14 +632,17 @@ namespace ArchivosTarea2
 
             foreach(Dato data in ent.listaDatos)
             {
-                if(data.posDato != -1)
+                if (data.apSigDato != -2 && data.apSigDato != -4)
                 {
-                    if(data != dat)
+                    if (data.posDato != -1)
                     {
-                        if(data.datos[indiceLlave].ToString() == dat.datos[indiceLlave].ToString())
+                        if (data != dat)
                         {
-                            repetido = true;
-                            break;
+                            if (data.datos[indiceLlave].ToString() == dat.datos[indiceLlave].ToString())
+                            {
+                                repetido = true;
+                                break;
+                            }
                         }
                     }
                 }
@@ -540,6 +667,8 @@ namespace ArchivosTarea2
                 {
                     if (ent.listaAtributos[j].esLlaveDeBusqueda == true)
                     {
+                        List<Dato> datosOrdenados = ent.listaDatos.OrderBy(o => o.datos[j]).ToList();
+
                         // Se debe de recorrer la lista de cabeceras para saber en donde comenzaremos a recorrer la lista
                         // de datos.
                         long apCabecera = ent.listaCabeceras[j].return_apDatos();
@@ -548,15 +677,18 @@ namespace ArchivosTarea2
                         {
                             if (datoAnterior.posDato == 0)
                             {
-                                foreach (Dato dat in ent.listaDatos)
+                                foreach (Dato dat in datosOrdenados)
                                 {
-                                    long posDato = dat.posDato;
-
-                                    // Se tiene que comenzar a recorrer a partir de ese dato
-                                    if (posDato == apCabecera)
+                                    if (dat.apSigDato != -2 && dat.apSigDato != -4)
                                     {
-                                        datoComparar = dat;
-                                        break;
+                                        long posDato = dat.posDato;
+
+                                        // Se tiene que comenzar a recorrer a partir de ese dato
+                                        if (posDato == apCabecera)
+                                        {
+                                            datoComparar = dat;
+                                            break;
+                                        }
                                     }
                                 }
                             }
@@ -564,29 +696,31 @@ namespace ArchivosTarea2
                             {
                                 bool enc = false;
 
-                                foreach(Dato dat in ent.listaDatos)
+                                foreach(Dato dat in datosOrdenados)
                                 {
-                                    long posDato = dat.posDato;
-
-                                    if(posDato == datoAnterior.apuntadoresLlaveBusq[j])
+                                    if (dat.apSigDato != -2 && dat.apSigDato != -4)
                                     {
-                                        datoComparar = dat;
-                                        enc = true;
-                                        break;
+                                        long posDato = dat.posDato;
+
+                                        if (posDato == datoAnterior.apuntadoresLlaveBusq[j])
+                                        {
+                                            datoComparar = dat;
+                                            enc = true;
+                                            break;
+                                        }
                                     }
                                 }
 
                                 if(enc == false)
                                 {
+                                    // Si sera el ultimo dato
                                     if (ent.listaAtributos[j].tipo == 'S')
                                     {
-                                        ent.listaCabeceras[j].str_apDatos(dato.posDato);
-                                        dato.apuntadoresLlaveBusq[j] = datoAnterior.posDato;
+                                        datoAnterior.apuntadoresLlaveBusq[j] = dato.posDato;
                                         encontrado = true;
                                     }
                                     else
                                     {
-                                        ent.listaCabeceras[j].str_apDatos(datoAnterior.posDato);
                                         datoAnterior.apuntadoresLlaveBusq[j] = dato.posDato;
                                         encontrado = true;
                                     }
@@ -666,6 +800,118 @@ namespace ArchivosTarea2
         }
 
         /// <summary>
+        /// Metodo con el cual se actualizaran los apuntadores de los datos y las cabeceras despues de haber hecho una 
+        /// eliminacion de un dato.
+        /// </summary>
+        private void actualizacion_cabeceras_eliminacion()
+        {
+            for (int j = 0; j < atributosVigentes.Count; j++)
+            {
+                List<Dato> datosOrdenados = ent.listaDatos.OrderBy(o => o.datos[j]).ToList();
+
+                // Si el atributo no es llave de busqueda pero es llave primaria.
+                if (atributosVigentes[j].esLlaveDeBusqueda == false && atributosVigentes[j].esLlavePrimaria == true)
+                {
+                    for (int k = 0; k < datosOrdenados.Count; k++)
+                    {
+                        if (datosOrdenados[k].apSigDato != -2 && datosOrdenados[k].apSigDato != -4)
+                        {
+                            // Si el dato que le sigue al actual es el eliminado y hay un dato despues
+                            if ((k + 1) < datosOrdenados.Count && (datosOrdenados[k + 1].apSigDato == -2 || datosOrdenados[k + 1].apSigDato == -4)
+                                && (k + 2) < datosOrdenados.Count)
+                            {
+                                // Se tiene que buscar un dato que ahora estara enlazado al dato actual en cuando a esa llave de busqueda
+                                bool encontrado = false;
+
+                                for (int l = k + 2; l < datosOrdenados.Count; l++)
+                                {
+                                    if (datosOrdenados[l].apSigDato != -2 && datosOrdenados[l].apSigDato != -4)
+                                    {
+                                        datosOrdenados[k].apSigDato = datosOrdenados[l].posDato;
+                                        encontrado = true;
+                                        break;
+                                    }
+                                }
+
+                                if (encontrado == false)
+                                {
+                                    datosOrdenados[k].apSigDato = -3;
+                                }
+                            }
+                            // Si el dato que le sigue al actual es el eliminado y no hay un dato despues
+                            else if((k + 1) < datosOrdenados.Count && (datosOrdenados[k + 1].apSigDato == -2 || datosOrdenados[k + 1].apSigDato == -4)
+                                && (k + 2) == datosOrdenados.Count)
+                            {
+                                datosOrdenados[k].apSigDato = -3;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    for (int k = 0; k < datosOrdenados.Count; k++)
+                    {
+                        // Si se habia borrado el dato de la cabecera
+                        if(k == 0 && (datosOrdenados[k].apSigDato == -2 || datosOrdenados[k].apSigDato == -4))
+                        {
+                            bool encontrado = false;
+
+                            // Se debe de buscar un dato que sera ahora la nueva cabecera
+                            for(int l = k + 1; l < datosOrdenados.Count; l++)
+                            {
+                                if(datosOrdenados[l].apSigDato != -2 && datosOrdenados[l].apSigDato != -4)
+                                {
+                                    ent.listaCabeceras[j].str_apDatos(datosOrdenados[l].posDato);
+                                    encontrado = true;
+                                    break;
+                                }
+                            }
+
+                            if(encontrado == false)
+                            {
+                                ent.listaCabeceras[j].str_apDatos(-1);
+                            }
+                        }
+                        else if((k+1) < datosOrdenados.Count && (datosOrdenados[k+1].apSigDato == -2 || datosOrdenados[k+1].apSigDato == -4) 
+                            && (k+2) < datosOrdenados.Count)
+                        {
+                            bool encontrado = false;
+
+                            for(int l = k + 2; l < datosOrdenados.Count; l++)
+                            {
+                                if(datosOrdenados[l].apSigDato != -2 && datosOrdenados[l].apSigDato != -4)
+                                {
+                                    datosOrdenados[k].apuntadoresLlaveBusq[j] = datosOrdenados[l].posDato;
+                                    encontrado = true;
+                                    break;
+                                }
+                            }
+
+                            if(encontrado == false)
+                            {
+                                datosOrdenados[k].apuntadoresLlaveBusq[j] = -1;
+                            }
+                        }
+                        else if((k + 1) < datosOrdenados.Count && (datosOrdenados[k + 1].apSigDato == -2 || datosOrdenados[k + 1].apSigDato == -4)
+                            && (k + 2) == datosOrdenados.Count)
+                        {
+                            datosOrdenados[k].apuntadoresLlaveBusq[j] = -1;
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Metodo con el cual se actualizaran los apuntadores de los datos y las cabeceras despues de haber hecho una 
+        /// modificacion de un dato.
+        /// </summary>
+        private void actualizacion_cabeceras_modificacion()
+        {
+
+        }
+
+        /// <summary>
         /// Metodo con el cual se iniciaran las cabeceras para las multilistas.
         /// </summary>
         private void inicia_cabeceras()
@@ -695,7 +941,7 @@ namespace ArchivosTarea2
                 if (ent.listaDatos.Count > 0)
                 {
                     List<Dato> datosOrdenados = ent.listaDatos.OrderBy(o => o.datos[indiceLlave]).ToList();
-
+                    bool encontrado = false;
                     Dato datoAnterior = new Dato();
 
                     for (int i = 0; i < datosOrdenados.Count; i++)
@@ -710,12 +956,21 @@ namespace ArchivosTarea2
                             posMemoria += tamDato;
                             datoAnterior.apSigDato = datoInsertar.posDato;
                             ent.listaDatos.Add(datoInsertar);
+                            encontrado = true;
                             break;
                         }
                         else
                         {
-                            datoAnterior = ent.listaDatos[i];
+                            datoAnterior = datosOrdenados[i];
                         }
+                    }
+
+                    if(encontrado == false)
+                    {
+                        datoInsertar.posDato = posMemoria;
+                        posMemoria += tamDato;
+                        datoAnterior.apSigDato = datoInsertar.posDato;
+                        ent.listaDatos.Add(datoInsertar);
                     }
                 }
                 else
@@ -728,12 +983,83 @@ namespace ArchivosTarea2
                 actualiza_cabeceras(datoInsertar);
                 inicia_dataGrid_cabeceras();
                 inicia_dataGrid_datos();
+                seCambio = true;
                 toolStripStatusLabel1.Text = "Dato insertado con exito.";
             }
             else
             {
                 toolStripStatusLabel1.Text = "Error, llave primaria duplicada.";
             }
+        }
+
+        /// <summary>
+        /// Metodo que convierte el string en el textBox al valor de llave primaria que se busca eliminar o modificar.
+        /// </summary>
+        /// <param name="dato">La cadena a convertir a un valor de llave primaria. Si es una cadena, no se tendra que hacer
+        /// conversion.</param>
+        /// <returns>La cadena ya convertida en el valor correspondiente a una llave primaria junto con el tipo de dato de
+        /// esa llave.</returns>
+        private dynamic convierte_dato_a_encontrar(String dato)
+        {
+            dynamic datoEnc = 0;
+
+            switch (atrLlave.tipo)
+            {
+                case 'I':
+                    try
+                    {
+                        datoEnc = Convert.ToInt32(dato);
+                    }
+                    catch
+                    {
+                        toolStripStatusLabel1.Text = "Error en la conversion.";
+                    }
+                    break;
+                case 'L':
+                    try
+                    {
+                        datoEnc = Convert.ToInt64(dato);
+                    }
+                    catch
+                    {
+                        toolStripStatusLabel1.Text = "Error en la conversion.";
+                    }
+                    break;
+                case 'F':
+                    try
+                    {
+                        datoEnc = Convert.ToSingle(dato);
+                    }
+                    catch
+                    {
+                        toolStripStatusLabel1.Text = "Error en la conversion.";
+                    }
+                    break;
+                case 'D':
+                    try
+                    {
+                        datoEnc = Convert.ToDouble(dato);
+                    }
+                    catch
+                    {
+                        toolStripStatusLabel1.Text = "Error en la conversion.";
+                    }
+                    break;
+                case 'C':
+                    try
+                    {
+                        datoEnc = Convert.ToChar(dato);
+                    }
+                    catch
+                    {
+                        toolStripStatusLabel1.Text = "Error en la conversion.";
+                    }
+                    break;
+                default: // Default vacio
+                    break;
+            }
+
+            return datoEnc;
         }
 
         /// <summary>
@@ -748,11 +1074,6 @@ namespace ArchivosTarea2
         }
 
         // Funciones de retorno de informacion.
-        public long regresa_apuntador_cabeceras()
-        {
-            return ent.apCabeceras;
-        }
-
         public bool regresa_se_cambio()
         {
             return seCambio;
@@ -766,6 +1087,16 @@ namespace ArchivosTarea2
         public List<Cabecera> regresa_lista_cabeceras()
         {
             return ent.listaCabeceras;
+        }
+
+        public long regresa_ap_cabeceras()
+        {
+            return ent.listaCabeceras[0].return_posCabecera();
+        }
+
+        public List<Dato> regresa_lista_datos()
+        {
+            return ent.listaDatos;
         }
     }
 }
