@@ -73,16 +73,21 @@ namespace ArchivosTarea2
             int celdaSeleccionada = dataGridView1.CurrentRow.Index;
             bool incompatible = false;
 
-            for (int i = 0; i < dataGridView1.CurrentRow.Cells.Count - listaAtributosVigentes.Count - 2; i++)
+            for (int i = 0; i < dataGridView1.CurrentRow.Cells.Count - listaAtributosVigentes.Count - 1; i++)
             {
                 if (dataGridView1.CurrentRow.Cells[i].ToString() != "")
                 {
                     Atributo at = listaAtributosVigentes[i];
                     bool casillaLlavePrimaria = false;
+                    bool casillaLaveBusqueda = false;
 
                     if (at.esLlavePrimaria == true)
                     {
                         casillaLlavePrimaria = true;
+                    }
+                    else if(at.esLlaveDeBusqueda == true)
+                    {
+                        casillaLaveBusqueda = true;
                     }
 
                     char tipoAtr = at.tipo;
@@ -114,6 +119,10 @@ namespace ArchivosTarea2
 
                                     llavePrimariaCambiada = true;
                                 }
+                            }
+                            else if(casillaLaveBusqueda == true)
+                            {
+                                llaveBusquedaCambiada = true;
                             }
                         }
                         catch
@@ -152,6 +161,10 @@ namespace ArchivosTarea2
 
                                     llavePrimariaCambiada = true;
                                 }
+                            }
+                            else if (casillaLaveBusqueda == true)
+                            {
+                                llaveBusquedaCambiada = true;
                             }
                         }
                         catch
@@ -194,6 +207,10 @@ namespace ArchivosTarea2
                                     llavePrimariaCambiada = true;
                                 }
                             }
+                            else if (casillaLaveBusqueda == true)
+                            {
+                                llaveBusquedaCambiada = true;
+                            }
                         }
                         catch
                         {
@@ -224,6 +241,10 @@ namespace ArchivosTarea2
 
                                     llavePrimariaCambiada = true;
                                 }
+                            }
+                            else if (casillaLaveBusqueda == true)
+                            {
+                                llaveBusquedaCambiada = true;
                             }
                         }
                         catch
@@ -256,6 +277,10 @@ namespace ArchivosTarea2
                                     llavePrimariaCambiada = true;
                                 }
                             }
+                            else if (casillaLaveBusqueda == true)
+                            {
+                                llaveBusquedaCambiada = true;
+                            }
                         }
                         catch
                         {
@@ -286,6 +311,10 @@ namespace ArchivosTarea2
 
                                     llavePrimariaCambiada = true;
                                 }
+                            }
+                            else if (casillaLaveBusqueda == true)
+                            {
+                                llaveBusquedaCambiada = true;
                             }
                         }
                         catch
@@ -325,7 +354,7 @@ namespace ArchivosTarea2
                 }
             }
 
-            dataGridView1.ColumnCount = listaAtributosVigentes.Count + listaAtributosVigentes.Count + 2;
+            dataGridView1.ColumnCount = listaAtributosVigentes.Count + listaAtributosVigentes.Count + 1;
             dataGridView1.ColumnHeadersVisible = true;
             int columnCount = 0;
 
@@ -338,8 +367,6 @@ namespace ArchivosTarea2
 
             dataGridView1.Columns[columnCount].Name = "Pos. Dato";
             columnCount++;
-            dataGridView1.Columns[columnCount].Name = "Ap. Sig. Dato";
-            columnCount++;
 
             for (int j = 0; j < listaAtributosVigentes.Count; j++)
             {
@@ -349,7 +376,7 @@ namespace ArchivosTarea2
                 columnCount++;
             }
 
-            string[] fila = new string[listaAtributosVigentes.Count + listaAtributosVigentes.Count + 2];
+            string[] fila = new string[listaAtributosVigentes.Count + listaAtributosVigentes.Count + 1];
             int count = 0;
 
             for (int i = 0; i < dato.datos.Count; i++)
@@ -368,17 +395,6 @@ namespace ArchivosTarea2
             }
 
             fila[count] = dato.posDato.ToString();
-            count++;
-
-            if (dato.apSigDato == -3)
-            {
-                String menos = "-1";
-                fila[count] = menos;
-            }
-            else
-            {
-                fila[count] = dato.apSigDato.ToString();
-            }
             count++;
 
             for (int j = 0; j < dato.apuntadoresLlaveBusq.Count; j++)
@@ -415,7 +431,7 @@ namespace ArchivosTarea2
 
             foreach(Dato dat in datosOrdenados)
             {
-                if(dat.apSigDato != -2 && dat.apSigDato != -4 && dat != datoModificado)
+                if(dat.apuntadoresLlaveBusq[indiceLlavePrimaria] != -2 && dat.apuntadoresLlaveBusq[indiceLlavePrimaria] != -4 && dat != datoModificado)
                 {
                     dynamic llaveComparar = dat.datos[indiceLlavePrimaria];
 

@@ -116,81 +116,29 @@ namespace ArchivosTarea2
             else
             {
                 Dato anterior = new Dato();
+                bool encPrim = false;
 
                 for(int i = 0; i < ent.listaDatos.Count; i++)
                 {
-                    if(i != 0)
+                    if(encPrim == true)
                     {
-                        if (anterior.apSigDato != -2 && anterior.apSigDato != -4
-                            && ent.listaDatos[i].apSigDato != -2 && ent.listaDatos[i].apSigDato != -4)
+                        if (anterior.apuntadoresLlaveBusq[indiceLlave] != -2 && anterior.apuntadoresLlaveBusq[indiceLlave] != -4
+                            && ent.listaDatos[i].apuntadoresLlaveBusq[indiceLlave] != -2 && ent.listaDatos[i].apuntadoresLlaveBusq[indiceLlave] != -4)
                         {
-                            ent.listaDatos[i].posDato = anterior.apSigDato;
+                            ent.listaDatos[i].posDato = anterior.apuntadoresLlaveBusq[indiceLlave];
                             anterior = ent.listaDatos[i];
                         }
                     }
                     else
                     {
-                        anterior = ent.listaDatos[i];
-                    }
-                }
-
-                Dato primero = new Dato();
-                bool listo = false;
-                bool esEse = false;
-
-                for(int i = 0; i < ent.listaAtributos.Count; i++)
-                {
-                    if(ent.listaAtributos[i].esLlaveDeBusqueda == true)
-                    {
-                        foreach(Dato dt in ent.listaDatos)
+                        if (ent.listaDatos[i].apuntadoresLlaveBusq[indiceLlave] != -2 && ent.listaDatos[i].apuntadoresLlaveBusq[indiceLlave] != -4)
                         {
-                            if(dt.apSigDato != -2 && dt.apSigDato != -4)
-                            {
-                                primero = dt;
-                                break;
-                            }
-                        }
-
-                        if(primero.apSigDato != -1)
-                        {
-                            foreach(Dato dat in ent.listaDatos)
-                            {
-                                if (dat != primero)
-                                {
-                                    if (dat.apSigDato != -2 && dat.apSigDato != -4)
-                                    {
-                                        long pos = dat.apuntadoresLlaveBusq[i];
-
-                                        if (pos != -1)
-                                        {
-                                            foreach (Dato d in ent.listaDatos)
-                                            {
-                                                if (d.posDato == pos)
-                                                {
-                                                    break;
-                                                }
-
-                                                esEse = true;
-                                            }
-                                        }
-
-                                        if (esEse == true)
-                                        {
-                                            primero.posDato = pos;
-                                            listo = true;
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        if(listo == true)
-                        {
-                            break;
+                            ent.listaDatos[i].posDato = ent.listaCabeceras[indiceLlave].return_apDatos();
+                            anterior = ent.listaDatos[i];
+                            encPrim = true;
                         }
                     }
-                }
+                }              
             }
 
             InitializeComponent();
@@ -222,7 +170,7 @@ namespace ArchivosTarea2
             bool incompatible = false;
             List<object> datos = new List<object>();
 
-            for(int i = 0; i < dataGridView1.CurrentRow.Cells.Count - atributosVigentes.Count - 2; i++)
+            for(int i = 0; i < dataGridView1.CurrentRow.Cells.Count - atributosVigentes.Count - 1; i++)
             {
                 if (dataGridView1.CurrentRow.Cells[i].ToString() != "")
                 {
@@ -393,7 +341,7 @@ namespace ArchivosTarea2
 
                 foreach (Dato dat in datosOrdenados)
                 {
-                    if (dat.apSigDato != -2 && dat.apSigDato != -4)
+                    if (dat.apuntadoresLlaveBusq[indiceLlave] != -2 && dat.apuntadoresLlaveBusq[indiceLlave] != -4)
                     {
                         dynamic llaveComparar = dat.datos[indiceLlave];
 
@@ -417,12 +365,6 @@ namespace ArchivosTarea2
                             datoModificar = modiMult.regresa_dato_multilistas();
 
                             if(modiMult.regresa_llave_primaria_cambiada() == true || modiMult.regresa_llave_busqueda_cambiada() == true)
-                            {
-                                actualiza_todo();
-                                inicia_dataGrid_cabeceras();
-                                inicia_dataGrid_datos();
-                            }
-                            else
                             {
                                 actualiza_todo();
                                 inicia_dataGrid_cabeceras();
@@ -481,7 +423,7 @@ namespace ArchivosTarea2
 
                 foreach (Dato dat in datosOrdenados)
                 {
-                    if (dat.apSigDato != -2 && dat.apSigDato != -4)
+                    if (dat.apuntadoresLlaveBusq[indiceLlave] != -2 && dat.apuntadoresLlaveBusq[indiceLlave] != -4)
                     {
                         dynamic llaveComparar = dat.datos[indiceLlave];
 
@@ -504,27 +446,27 @@ namespace ArchivosTarea2
                     // Si era el ultimo dato
                     if(contadorDatos == datosOrdenados.Count - 1)
                     {
-                        datoEliminar.apSigDato = -4;
-                        datoAnterior.apSigDato = -3;                       
+                        datoEliminar.apuntadoresLlaveBusq[indiceLlave] = -4;
+                        datoAnterior.apuntadoresLlaveBusq[indiceLlave] = -3;                       
                     }
                     // Si era el primer dato
                     else if(contadorDatos == 0 && datoAnterior.posDato == 0)
                     {
-                        datoEliminar.apSigDato = -2;
+                        datoEliminar.apuntadoresLlaveBusq[indiceLlave] = -2;
                     }
                     // Si estaba entre 2 datos
                     else if(datoAnterior.posDato != 0)
                     {
-                        datoEliminar.apSigDato = -2;
+                        datoEliminar.apuntadoresLlaveBusq[indiceLlave] = -2;
 
                         int indiceAnterior = datosOrdenados.IndexOf(datoAnterior);
                         bool dEncontrado = false;
 
                         for(int i = indiceAnterior + 2; i < datosOrdenados.Count; i++)
                         {
-                            if(datosOrdenados[i].apSigDato != -2 && datosOrdenados[i].apSigDato != -4)
+                            if(datosOrdenados[i].apuntadoresLlaveBusq[indiceLlave] != -2 && datosOrdenados[i].apuntadoresLlaveBusq[indiceLlave] != -4)
                             {
-                                datoAnterior.apSigDato = datosOrdenados[i].posDato;
+                                datoAnterior.apuntadoresLlaveBusq[indiceLlave] = datosOrdenados[i].posDato;
                                 dEncontrado = true;
                                 break;
                             }
@@ -532,7 +474,7 @@ namespace ArchivosTarea2
 
                         if(dEncontrado == false)
                         {
-                            datoAnterior.apSigDato = -3;
+                            datoAnterior.apuntadoresLlaveBusq[indiceLlave] = -3;
                         }
                     }
 
@@ -597,7 +539,7 @@ namespace ArchivosTarea2
 
                         foreach (Dato dato in datosOrdenados)
                         {
-                            if (dato.apSigDato != -2 && dato.apSigDato != -4)
+                            if (dato.apuntadoresLlaveBusq[indiceLlave] != -2 && dato.apuntadoresLlaveBusq[indiceLlave] != -4)
                             {
                                 dynamic llaveComparar = dato.datos[indiceLlave];
 
@@ -619,10 +561,10 @@ namespace ArchivosTarea2
                         {
                             dataGridView1.Rows.Clear();
 
-                            dataGridView1.ColumnCount = atributosVigentes.Count + atributosVigentes.Count + 2;
+                            dataGridView1.ColumnCount = atributosVigentes.Count + atributosVigentes.Count + 1;
                             dataGridView1.ColumnHeadersVisible = true;
 
-                            string[] fila = new string[atributosVigentes.Count + atributosVigentes.Count + 2];
+                            string[] fila = new string[atributosVigentes.Count + atributosVigentes.Count + 1];
                             List<String[]> filas = new List<string[]>();
                             int count = 0;
 
@@ -644,20 +586,23 @@ namespace ArchivosTarea2
                             fila[count] = dat.posDato.ToString();
                             count++;
 
-                            if (dat.apSigDato == -3)
-                            {
-                                String menos = "-1";
-                                fila[count] = menos;
-                            }
-                            else
-                            {
-                                fila[count] = dat.apSigDato.ToString();
-                            }
-                            count++;
-
                             for (int j = 0; j < dat.apuntadoresLlaveBusq.Count; j++)
                             {
                                 fila[count] = dat.apuntadoresLlaveBusq[j].ToString();
+
+                                if (j == indiceLlave)
+                                {
+                                    if (dat.apuntadoresLlaveBusq[indiceLlave] == -3)
+                                    {
+                                        String menos = "-1";
+                                        fila[count] = menos;
+                                    }
+                                    else
+                                    {
+                                        fila[count] = dat.apuntadoresLlaveBusq[indiceLlave].ToString();
+                                    }
+                                }
+
                                 count++;
                             }
 
@@ -702,7 +647,7 @@ namespace ArchivosTarea2
 
                         foreach (Dato dato in datosOrdenados)
                         {
-                            if (dato.apSigDato != -2 && dato.apSigDato != -4)
+                            if (dato.apuntadoresLlaveBusq[indiceLlave] != -2 && dato.apuntadoresLlaveBusq[indiceLlave] != -4)
                             {
                                 dynamic llaveComparar = dato.datos[selectedIndex];
 
@@ -722,16 +667,16 @@ namespace ArchivosTarea2
                         {
                             dataGridView1.Rows.Clear();
 
-                            dataGridView1.ColumnCount = atributosVigentes.Count + atributosVigentes.Count + 2;
+                            dataGridView1.ColumnCount = atributosVigentes.Count + atributosVigentes.Count + 1;
                             dataGridView1.ColumnHeadersVisible = true;
 
-                            string[] fila = new string[atributosVigentes.Count + atributosVigentes.Count + 2];
+                            string[] fila = new string[atributosVigentes.Count + atributosVigentes.Count + 1];
                             List<String[]> filas = new List<string[]>();
                             int count = 0;
 
                             foreach(Dato dat in datosEncontrados)
                             {
-                                if (dat.apSigDato != -2 && dat.apSigDato != -4)
+                                if (dat.apuntadoresLlaveBusq[indiceLlave] != -2 && dat.apuntadoresLlaveBusq[indiceLlave] != -4)
                                 {
                                     for (int i = 0; i < dat.datos.Count; i++)
                                     {
@@ -751,25 +696,28 @@ namespace ArchivosTarea2
                                     fila[count] = dat.posDato.ToString();
                                     count++;
 
-                                    if (dat.apSigDato == -3)
-                                    {
-                                        String menos = "-1";
-                                        fila[count] = menos;
-                                    }
-                                    else
-                                    {
-                                        fila[count] = dat.apSigDato.ToString();
-                                    }
-                                    count++;
-
                                     for (int j = 0; j < dat.apuntadoresLlaveBusq.Count; j++)
                                     {
                                         fila[count] = dat.apuntadoresLlaveBusq[j].ToString();
+
+                                        if (j == indiceLlave)
+                                        {
+                                            if (dat.apuntadoresLlaveBusq[indiceLlave] == -3)
+                                            {
+                                                String menos = "-1";
+                                                fila[count] = menos;
+                                            }
+                                            else
+                                            {
+                                                fila[count] = dat.apuntadoresLlaveBusq[indiceLlave].ToString();
+                                            }
+                                        }
+
                                         count++;
                                     }
 
                                     filas.Add(fila);
-                                    fila = new string[atributosVigentes.Count + atributosVigentes.Count + 2];
+                                    fila = new string[atributosVigentes.Count + atributosVigentes.Count + 1];
                                     count = 0;
                                 }
                             }
@@ -822,10 +770,10 @@ namespace ArchivosTarea2
             {
                 dataGridView1.Rows.Clear();
 
-                dataGridView1.ColumnCount = atributosVigentes.Count + atributosVigentes.Count + 2;
+                dataGridView1.ColumnCount = atributosVigentes.Count + atributosVigentes.Count + 1;
                 dataGridView1.ColumnHeadersVisible = true;
 
-                string[] fila = new string[atributosVigentes.Count + atributosVigentes.Count + 2];
+                string[] fila = new string[atributosVigentes.Count + atributosVigentes.Count + 1];
                 List<String[]> filas = new List<string[]>();
                 int count = 0;
                 List<Dato> datosOrdenados = new List<Dato>();
@@ -849,7 +797,7 @@ namespace ArchivosTarea2
 
                 foreach(Dato dat in datosOrdenados)
                 {
-                    if (dat.apSigDato != -2 && dat.apSigDato != -4)
+                    if (dat.apuntadoresLlaveBusq[indiceLlave] != -2 && dat.apuntadoresLlaveBusq[indiceLlave] != -4)
                     {
                         for (int i = 0; i < dat.datos.Count; i++)
                         {
@@ -869,25 +817,28 @@ namespace ArchivosTarea2
                         fila[count] = dat.posDato.ToString();
                         count++;
 
-                        if (dat.apSigDato == -3)
-                        {
-                            String menos = "-1";
-                            fila[count] = menos;
-                        }
-                        else
-                        {
-                            fila[count] = dat.apSigDato.ToString();
-                        }
-                        count++;
-
                         for (int j = 0; j < dat.apuntadoresLlaveBusq.Count; j++)
                         {
                             fila[count] = dat.apuntadoresLlaveBusq[j].ToString();
+
+                            if (j == indiceLlave)
+                            {
+                                if (dat.apuntadoresLlaveBusq[indiceLlave] == -3)
+                                {
+                                    String menos = "-1";
+                                    fila[count] = menos;
+                                }
+                                else
+                                {
+                                    fila[count] = dat.apuntadoresLlaveBusq[indiceLlave].ToString();
+                                }
+                            }
+
                             count++;
                         }
 
                         filas.Add(fila);
-                        fila = new string[atributosVigentes.Count + atributosVigentes.Count + 2];
+                        fila = new string[atributosVigentes.Count + atributosVigentes.Count + 1];
                         count = 0;
                     }
                 }
@@ -919,8 +870,11 @@ namespace ArchivosTarea2
             {
                 String ll = new string(atr.nombre);
 
-                comboBox1.Items.Add(ll);
-                comboBox2.Items.Add(ll);
+                if (atr.esLlavePrimaria == true || atr.esLlaveDeBusqueda == true)
+                {
+                    comboBox1.Items.Add(ll);
+                    comboBox2.Items.Add(ll);
+                }
             }
         }
 
@@ -973,7 +927,7 @@ namespace ArchivosTarea2
         /// </summary>
         private void rellena_dataGrid_datos()
         {
-            dataGridView1.ColumnCount = atributosVigentes.Count + atributosVigentes.Count + 2;
+            dataGridView1.ColumnCount = atributosVigentes.Count + atributosVigentes.Count + 1;
             dataGridView1.ColumnHeadersVisible = true;
             int columnCount = 0;
 
@@ -985,8 +939,6 @@ namespace ArchivosTarea2
             }
 
             dataGridView1.Columns[columnCount].Name = "Pos. Dato";
-            columnCount++;
-            dataGridView1.Columns[columnCount].Name = "Ap. Sig. Dato";
             columnCount++;
 
             for(int j = 0; j < atributosVigentes.Count; j++)
@@ -1005,10 +957,10 @@ namespace ArchivosTarea2
         {
             dataGridView1.Rows.Clear();
 
-            dataGridView1.ColumnCount = atributosVigentes.Count + atributosVigentes.Count + 2;
+            dataGridView1.ColumnCount = atributosVigentes.Count + atributosVigentes.Count + 1;
             dataGridView1.ColumnHeadersVisible = true;
 
-            string[] fila = new string[atributosVigentes.Count + atributosVigentes.Count + 2];
+            string[] fila = new string[atributosVigentes.Count + atributosVigentes.Count + 1];
             List<String[]> filas = new List<string[]>();
             int count = 0;
             List<Dato> datosOrdenados = new List<Dato>();
@@ -1032,7 +984,7 @@ namespace ArchivosTarea2
 
             foreach (Dato dat in datosOrdenados)
             {
-                if (dat.apSigDato != -2 && dat.apSigDato != -4)
+                if (dat.apuntadoresLlaveBusq[indiceLlave] != -2 && dat.apuntadoresLlaveBusq[indiceLlave] != -4)
                 {
                     for (int i = 0; i < dat.datos.Count; i++)
                     {
@@ -1052,25 +1004,28 @@ namespace ArchivosTarea2
                     fila[count] = dat.posDato.ToString();
                     count++;
 
-                    if (dat.apSigDato == -3)
-                    {
-                        String menos = "-1";
-                        fila[count] = menos;
-                    }
-                    else
-                    {
-                        fila[count] = dat.apSigDato.ToString();
-                    }
-                    count++;
-
                     for (int j = 0; j < dat.apuntadoresLlaveBusq.Count; j++)
                     {
                         fila[count] = dat.apuntadoresLlaveBusq[j].ToString();
+                        
+                        if(j == indiceLlave)
+                        {
+                            if (dat.apuntadoresLlaveBusq[indiceLlave] == -3)
+                            {
+                                String menos = "-1";
+                                fila[count] = menos;
+                            }
+                            else
+                            {
+                                fila[count] = dat.apuntadoresLlaveBusq[indiceLlave].ToString();
+                            }
+                        }
+
                         count++;
                     }
-
+                   
                     filas.Add(fila);
-                    fila = new string[atributosVigentes.Count + atributosVigentes.Count + 2];
+                    fila = new string[atributosVigentes.Count + atributosVigentes.Count + 1];
                     count = 0;
                 }
             }
@@ -1126,7 +1081,7 @@ namespace ArchivosTarea2
 
             foreach(Dato data in ent.listaDatos)
             {
-                if (data.apSigDato != -2 && data.apSigDato != -4)
+                if (data.apuntadoresLlaveBusq[indiceLlave] != -2 && data.apuntadoresLlaveBusq[indiceLlave] != -4)
                 {
                     if (data.posDato != -1)
                     {
@@ -1159,7 +1114,7 @@ namespace ArchivosTarea2
                 // Se tiene que recorrer la lista de atributos para averiguar cuales son llaves de busqueda.
                 for (int j = 0; j < ent.listaAtributos.Count; j++)
                 {
-                    if (ent.listaAtributos[j].esLlaveDeBusqueda == true)
+                    if (ent.listaAtributos[j].esLlaveDeBusqueda == true || ent.listaAtributos[j].esLlavePrimaria == true)
                     {
                         List<Dato> datosOrdenados = new List<Dato>();
                         Dato muestra = ent.listaDatos[0];
@@ -1191,7 +1146,7 @@ namespace ArchivosTarea2
                             {
                                 foreach (Dato dat in datosOrdenados)
                                 {
-                                    if (dat.apSigDato != -2 && dat.apSigDato != -4)
+                                    if (dat.apuntadoresLlaveBusq[indiceLlave] != -2 && dat.apuntadoresLlaveBusq[indiceLlave] != -4)
                                     {
                                         long posDato = dat.posDato;
 
@@ -1210,7 +1165,7 @@ namespace ArchivosTarea2
 
                                 foreach(Dato dat in datosOrdenados)
                                 {
-                                    if (dat.apSigDato != -2 && dat.apSigDato != -4)
+                                    if (dat.apuntadoresLlaveBusq[indiceLlave] != -2 && dat.apuntadoresLlaveBusq[indiceLlave] != -4)
                                     {
                                         long posDato = dat.posDato;
 
@@ -1312,7 +1267,7 @@ namespace ArchivosTarea2
             {
                 for (int i = 0; i < atributosVigentes.Count; i++)
                 {
-                    if (atributosVigentes[i].esLlaveDeBusqueda == true)
+                    if (atributosVigentes[i].esLlaveDeBusqueda == true || atributosVigentes[i].esLlavePrimaria == true)
                     {
                         ent.listaCabeceras[i].str_apDatos(dato.posDato);
                     }
@@ -1352,10 +1307,10 @@ namespace ArchivosTarea2
                 {
                     for (int k = 0; k < datosOrdenados.Count; k++)
                     {
-                        if (datosOrdenados[k].apSigDato != -2 && datosOrdenados[k].apSigDato != -4)
+                        if (datosOrdenados[k].apuntadoresLlaveBusq[indiceLlave] != -2 && datosOrdenados[k].apuntadoresLlaveBusq[indiceLlave] != -4)
                         {
                             // Si el dato que le sigue al actual es el eliminado y hay un dato despues
-                            if ((k + 1) < datosOrdenados.Count && (datosOrdenados[k + 1].apSigDato == -2 || datosOrdenados[k + 1].apSigDato == -4)
+                            if ((k + 1) < datosOrdenados.Count && (datosOrdenados[k + 1].apuntadoresLlaveBusq[indiceLlave] == -2 || datosOrdenados[k + 1].apuntadoresLlaveBusq[indiceLlave] == -4)
                                 && (k + 2) < datosOrdenados.Count)
                             {
                                 // Se tiene que buscar un dato que ahora estara enlazado al dato actual en cuando a esa llave de busqueda
@@ -1363,9 +1318,9 @@ namespace ArchivosTarea2
 
                                 for (int l = k + 2; l < datosOrdenados.Count; l++)
                                 {
-                                    if (datosOrdenados[l].apSigDato != -2 && datosOrdenados[l].apSigDato != -4)
+                                    if (datosOrdenados[l].apuntadoresLlaveBusq[indiceLlave] != -2 && datosOrdenados[l].apuntadoresLlaveBusq[indiceLlave] != -4)
                                     {
-                                        datosOrdenados[k].apSigDato = datosOrdenados[l].posDato;
+                                        datosOrdenados[k].apuntadoresLlaveBusq[indiceLlave] = datosOrdenados[l].posDato;
                                         encontrado = true;
                                         break;
                                     }
@@ -1373,14 +1328,14 @@ namespace ArchivosTarea2
 
                                 if (encontrado == false)
                                 {
-                                    datosOrdenados[k].apSigDato = -3;
+                                    datosOrdenados[k].apuntadoresLlaveBusq[indiceLlave] = -3;
                                 }
                             }
                             // Si el dato que le sigue al actual es el eliminado y no hay un dato despues
-                            else if((k + 1) < datosOrdenados.Count && (datosOrdenados[k + 1].apSigDato == -2 || datosOrdenados[k + 1].apSigDato == -4)
+                            else if((k + 1) < datosOrdenados.Count && (datosOrdenados[k + 1].apuntadoresLlaveBusq[indiceLlave] == -2 || datosOrdenados[k + 1].apuntadoresLlaveBusq[indiceLlave] == -4)
                                 && (k + 2) == datosOrdenados.Count)
                             {
-                                datosOrdenados[k].apSigDato = -3;
+                                datosOrdenados[k].apuntadoresLlaveBusq[indiceLlave] = -3;
                             }
                         }
                     }
@@ -1390,14 +1345,14 @@ namespace ArchivosTarea2
                     for (int k = 0; k < datosOrdenados.Count; k++)
                     {
                         // Si se habia borrado el dato de la cabecera
-                        if(k == 0 && (datosOrdenados[k].apSigDato == -2 || datosOrdenados[k].apSigDato == -4))
+                        if(k == 0 && (datosOrdenados[k].apuntadoresLlaveBusq[indiceLlave] == -2 || datosOrdenados[k].apuntadoresLlaveBusq[indiceLlave] == -4))
                         {
                             bool encontrado = false;
 
                             // Se debe de buscar un dato que sera ahora la nueva cabecera
                             for(int l = k + 1; l < datosOrdenados.Count; l++)
                             {
-                                if(datosOrdenados[l].apSigDato != -2 && datosOrdenados[l].apSigDato != -4)
+                                if(datosOrdenados[l].apuntadoresLlaveBusq[indiceLlave] != -2 && datosOrdenados[l].apuntadoresLlaveBusq[indiceLlave] != -4)
                                 {
                                     ent.listaCabeceras[j].str_apDatos(datosOrdenados[l].posDato);
                                     encontrado = true;
@@ -1410,14 +1365,14 @@ namespace ArchivosTarea2
                                 ent.listaCabeceras[j].str_apDatos(-1);
                             }
                         }
-                        else if((k+1) < datosOrdenados.Count && (datosOrdenados[k+1].apSigDato == -2 || datosOrdenados[k+1].apSigDato == -4) 
+                        else if((k+1) < datosOrdenados.Count && (datosOrdenados[k+1].apuntadoresLlaveBusq[indiceLlave] == -2 || datosOrdenados[k+1].apuntadoresLlaveBusq[indiceLlave] == -4) 
                             && (k+2) < datosOrdenados.Count)
                         {
                             bool encontrado = false;
 
                             for(int l = k + 2; l < datosOrdenados.Count; l++)
                             {
-                                if(datosOrdenados[l].apSigDato != -2 && datosOrdenados[l].apSigDato != -4)
+                                if(datosOrdenados[l].apuntadoresLlaveBusq[indiceLlave] != -2 && datosOrdenados[l].apuntadoresLlaveBusq[indiceLlave] != -4)
                                 {
                                     datosOrdenados[k].apuntadoresLlaveBusq[j] = datosOrdenados[l].posDato;
                                     encontrado = true;
@@ -1430,7 +1385,7 @@ namespace ArchivosTarea2
                                 datosOrdenados[k].apuntadoresLlaveBusq[j] = -1;
                             }
                         }
-                        else if((k + 1) < datosOrdenados.Count && (datosOrdenados[k + 1].apSigDato == -2 || datosOrdenados[k + 1].apSigDato == -4)
+                        else if((k + 1) < datosOrdenados.Count && (datosOrdenados[k + 1].apuntadoresLlaveBusq[indiceLlave] == -2 || datosOrdenados[k + 1].apuntadoresLlaveBusq[indiceLlave] == -4)
                             && (k + 2) == datosOrdenados.Count)
                         {
                             datosOrdenados[k].apuntadoresLlaveBusq[j] = -1;
@@ -1489,7 +1444,15 @@ namespace ArchivosTarea2
                     }
 
                     bool encontrado = false;
+
                     Dato datoAnterior = new Dato();
+
+                    foreach(Atributo atr in atributosVigentes)
+                    {
+                        datoAnterior.listaAtributosDato.Add(atr);
+                    }
+
+                    datoAnterior.inicia_apuntadores_busqueda();
 
                     for (int i = 0; i < datosOrdenados.Count; i++)
                     {
@@ -1498,10 +1461,10 @@ namespace ArchivosTarea2
 
                         if (datoLlavePrim > datoInsertarLlavePrim)
                         {
-                            datoInsertar.apSigDato = datosOrdenados[i].posDato;
+                            datoInsertar.apuntadoresLlaveBusq[indiceLlave] = datosOrdenados[i].posDato;
                             datoInsertar.posDato = posMemoria;
                             posMemoria += tamDato;
-                            datoAnterior.apSigDato = datoInsertar.posDato;
+                            datoAnterior.apuntadoresLlaveBusq[indiceLlave] = datoInsertar.posDato;
                             ent.listaDatos.Add(datoInsertar);
                             encontrado = true;
                             break;
@@ -1516,7 +1479,7 @@ namespace ArchivosTarea2
                     {
                         datoInsertar.posDato = posMemoria;
                         posMemoria += tamDato;
-                        datoAnterior.apSigDato = datoInsertar.posDato;
+                        datoAnterior.apuntadoresLlaveBusq[indiceLlave] = datoInsertar.posDato;
                         ent.listaDatos.Add(datoInsertar);
                     }
                 }
@@ -1527,7 +1490,8 @@ namespace ArchivosTarea2
                     ent.listaDatos.Add(datoInsertar);
                 }
 
-                actualiza_cabeceras(datoInsertar);
+                // actualiza_cabeceras(datoInsertar);
+                actualiza_todo();
                 inicia_dataGrid_cabeceras();
                 inicia_dataGrid_datos();
                 seCambio = true;
@@ -1687,7 +1651,7 @@ namespace ArchivosTarea2
         {
             for(int i = 0; i < ent.listaAtributos.Count; i++)
             {
-                if(ent.listaAtributos[i].esLlaveDeBusqueda == true)
+                if(ent.listaAtributos[i].esLlaveDeBusqueda == true || ent.listaAtributos[i].esLlavePrimaria == true)
                 {
                     List<Dato> datosOrdenados = new List<Dato>();
                     Dato muestra = ent.listaDatos[0];
@@ -1712,7 +1676,7 @@ namespace ArchivosTarea2
 
                     foreach(Dato dt in datosOrdenados)
                     {
-                        if(dt.apSigDato != -2 && dt.apSigDato != -4)
+                        if(dt.apuntadoresLlaveBusq[indiceLlave] != -2 && dt.apuntadoresLlaveBusq[indiceLlave] != -4)
                         {
                             datosRespaldo.Add(dt);
                         }
@@ -1723,7 +1687,7 @@ namespace ArchivosTarea2
 
                     for(int j = 0; j < datosOrdenados.Count; j++)
                     {                      
-                        if(datosOrdenados[j].apSigDato != -2 && datosOrdenados[j].apSigDato != -4)
+                        if(datosOrdenados[j].apuntadoresLlaveBusq[indiceLlave] != -2 && datosOrdenados[j].apuntadoresLlaveBusq[indiceLlave] != -4)
                         {
                             if(j == 0)
                             {
@@ -1736,7 +1700,7 @@ namespace ArchivosTarea2
 
                                 for(int k = j+1; k < datosOrdenados.Count; k++)
                                 {
-                                    if(datosOrdenados[k].apSigDato != -2 && datosOrdenados[k].apSigDato != -4)
+                                    if(datosOrdenados[k].apuntadoresLlaveBusq[indiceLlave] != -2 && datosOrdenados[k].apuntadoresLlaveBusq[indiceLlave] != -4)
                                     {
                                         datosOrdenados[j].apuntadoresLlaveBusq[i] = datosOrdenados[k].posDato;
                                         encontrado = true;
@@ -1756,57 +1720,7 @@ namespace ArchivosTarea2
                         }
                     }
                 }
-                else if(ent.listaAtributos[i].esLlavePrimaria == true)
-                {
-                    List<Dato> datosOrdenados = new List<Dato>();
-                    Dato muestra = ent.listaDatos[0];
-
-                    if (ent.listaAtributos[i].tipo == 'S')
-                    {
-                        if (muestra.datos[i] is string)
-                        {
-                            datosOrdenados = ent.listaDatos.OrderBy(o => o.datos[i]).ToList();
-                        }
-                        else
-                        {
-                            datosOrdenados = ent.listaDatos.OrderBy(a => new string((char[])a.datos[i])).ToList();
-                        }
-                    }
-                    else
-                    {
-                        datosOrdenados = ent.listaDatos.OrderBy(o => o.datos[i]).ToList();
-                    }
-
-                    for (int j = 0; j < datosOrdenados.Count; j++)
-                    {
-                        if (datosOrdenados[j].apSigDato != -2 && datosOrdenados[j].apSigDato != -4)
-                        {
-                            if ((j + 1) < datosOrdenados.Count)
-                            {
-                                bool encontrado = false;
-
-                                for (int k = j + 1; k < datosOrdenados.Count; k++)
-                                {
-                                    if (datosOrdenados[k].apSigDato != -2 && datosOrdenados[k].apSigDato != -4)
-                                    {
-                                        datosOrdenados[j].apSigDato = datosOrdenados[k].posDato;
-                                        encontrado = true;
-                                        break;
-                                    }
-                                }
-
-                                if (encontrado == false)
-                                {
-                                    datosOrdenados[j].apSigDato = -1;
-                                }
-                            }
-                            else
-                            {
-                                datosOrdenados[j].apSigDato = -1;
-                            }
-                        }
-                    }
-                }
+                
             }
         }
 
@@ -1852,7 +1766,26 @@ namespace ArchivosTarea2
         /// <returns>La lista de datos.</returns>
         public List<Dato> regresa_lista_datos()
         {
-            return ent.listaDatos;
+            List<Dato> datosOrdenados = new List<Dato>();
+            Dato muestra = ent.listaDatos[0];
+
+            if (ent.listaAtributos[indiceLlave].tipo == 'S')
+            {
+                if (muestra.datos[indiceLlave] is string)
+                {
+                    datosOrdenados = ent.listaDatos.OrderBy(o => o.datos[indiceLlave]).ToList();
+                }
+                else
+                {
+                    datosOrdenados = ent.listaDatos.OrderBy(a => new string((char[])a.datos[indiceLlave])).ToList();
+                }
+            }
+            else
+            {
+                datosOrdenados = ent.listaDatos.OrderBy(o => o.datos[indiceLlave]).ToList();
+            }
+
+            return datosOrdenados;
         }       
     }
 }

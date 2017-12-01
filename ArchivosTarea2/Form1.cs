@@ -1396,7 +1396,7 @@ namespace ArchivosTarea2
         public void manejo_dataGrid_multilistas(String archivo)
         {
             posicionMemoria = 8;
-            tamDato = 8;
+            tamDato = 0;
 
             data.Clear();
             entidades.Clear();
@@ -2421,9 +2421,7 @@ namespace ArchivosTarea2
                 }
             }
 
-            long apSigD = r.ReadInt64();
-
-            dataRead.apSigDato = apSigD;
+            int indiceLlave = 0;
 
             foreach(Atributo atr in ent.listaAtributos)
             {
@@ -2432,6 +2430,11 @@ namespace ArchivosTarea2
                     long apCab = r.ReadInt64();
 
                     dataRead.apuntadoresLlaveBusq.Add(apCab);
+
+                    if(atr.esLlavePrimaria == true)
+                    {
+                        indiceLlave = ent.listaAtributos.IndexOf(atr);
+                    }
                 }
                 else
                 {
@@ -2443,7 +2446,7 @@ namespace ArchivosTarea2
 
             ent.listaDatos.Add(dataRead);
 
-            if (dataRead.apSigDato != -1 && dataRead.apSigDato != -4)
+            if (dataRead.apuntadoresLlaveBusq[indiceLlave] != -1 && dataRead.apuntadoresLlaveBusq[indiceLlave] != -4)
             {
                 lee_datos_de_entidad_multilistas(f, r, ent);
             }
@@ -3175,8 +3178,6 @@ namespace ArchivosTarea2
                             }
                         }
 
-                        writer.Write(entidades[j].listaDatos[n].apSigDato);
-
                         for(int o = 0; o < entidades[j].listaDatos[n].apuntadoresLlaveBusq.Count; o++)
                         {
                             writer.Write(entidades[j].listaDatos[n].apuntadoresLlaveBusq[o]);
@@ -3694,6 +3695,12 @@ namespace ArchivosTarea2
                                         {
                                             at.esLlavePrimaria = esLlave;
                                         }
+
+                                        if(tipo == 3)
+                                        {
+                                            at.esLlaveDeBusqueda = esBusqueda;
+                                        }
+
                                         break;
                                     }
                                 }
@@ -3792,6 +3799,11 @@ namespace ArchivosTarea2
                                         else if (at.esLlavePrimaria == true && esLlave == false)
                                         {
                                             at.esLlavePrimaria = esLlave;
+                                        }
+
+                                        if (tipo == 3)
+                                        {
+                                            at.esLlaveDeBusqueda = esBusqueda;
                                         }
 
                                         break;
@@ -4299,7 +4311,7 @@ namespace ArchivosTarea2
                     {
                         var cuadroHash = datosHash.ShowDialog();
 
-                        if(cuadroHash == DialogResult.OK)
+                        if(cuadroHash == DialogResult.OK || cuadroHash == DialogResult.Cancel)
                         {
                             ent.apCajones = datosHash.regresa_apuntador_cajones();
                             posicionMemoria = datosHash.regresa_posMemoria();
@@ -4342,7 +4354,7 @@ namespace ArchivosTarea2
                     {
                         var cuadroMultilistas = datosMultilistas.ShowDialog();
 
-                        if(cuadroMultilistas == DialogResult.OK)
+                        if(cuadroMultilistas == DialogResult.OK || cuadroMultilistas == DialogResult.Cancel)
                         {
                             posicionMemoria = datosMultilistas.regresa_posicion_memoria();
                             ent.listaCabeceras = datosMultilistas.regresa_lista_cabeceras();
