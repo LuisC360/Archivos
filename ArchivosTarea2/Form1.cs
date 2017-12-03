@@ -773,7 +773,7 @@ namespace ArchivosTarea2
         /// <summary>
         /// En esta funcion se validara si una entidad ya ha sido insertado en nuestra lista de entidades
         /// </summary>
-        /// <param name="nombreAtributo">El nombre de la entidad que se desea insertar</param>
+        /// <param name="nombreEntidad">El nombre de la entidad que se desea insertar</param>
         /// <returns>Un booleano que indica si la entidad ya existe o no</returns>
         public bool validacion(String nombreEntidad)
         {

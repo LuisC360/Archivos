@@ -74,7 +74,7 @@ namespace ArchivosTarea2
         /// </summary>
         /// <param name="e">La entidad en la que se insertaran los cajones.</param>
         /// <param name="pMem">La posicion actual de memoria.</param>
-        /// <param name="tamDato">El tamaño del dato a insertar.</param>
+        /// <param name="tD">El tamaño del dato a insertar.</param>
         /// <param name="numC">El numero de cajones.</param>
         /// <param name="regCub">El numero de registros por cubeta.</param>
         public CuadroDeDatosHash(Entidad e, long pMem, long tD, long numC, long regCub)
