@@ -3133,18 +3133,23 @@ namespace ArchivosTarea2
                 }
 
                 int indiceLlave = 0;
+                bool encontrada = false;
 
                 if(entidades[j].apCabeceras != -1)
                 {
                     for(int n = 0; n < entidades[j].listaCabeceras.Count; n++)
                     {
-                        if(entidades[j].listaAtributos[n].esLlavePrimaria == true)
+                        if (encontrada == false)
                         {
-                            indiceLlave = n;
-                        }
-                        else
-                        {
-                            indiceLlave++;
+                            if (entidades[j].listaAtributos[n].esLlavePrimaria == true)
+                            {
+                                indiceLlave = n;
+                                encontrada = true;
+                            }
+                            else
+                            {
+                                indiceLlave++;
+                            }
                         }
 
                         writer.Write(Convert.ToInt64(entidades[j].listaCabeceras[n].return_apDatos()));
@@ -3153,18 +3158,37 @@ namespace ArchivosTarea2
 
                 if (entidades[j].listaDatos.Count > 0)
                 {
-                    if (entidades[j].listaAtributos[indiceLlave].tipo == 'S')
-                    {
-                        entidades[j].listaDatos = regresa_lista_string(entidades[j], indiceLlave).OrderBy(a => (a.datos[indiceLlave])).ToList();
-                    }
-                    else
-                    {
-                        entidades[j].listaDatos = entidades[j].listaDatos.OrderBy(o => o.datos[indiceLlave]).ToList();
-                    }
-                }
+                    List<Dato> datosRespaldo = new List<Dato>();
+                    entidades[j].listaDatos = entidades[j].listaDatos.OrderBy(o => o.apuntadoresLlaveBusq[indiceLlave]).ToList();
+                    entidades[j].listaDatos.Reverse();
 
-                if (entidades[j].listaDatos.Count > 0)
-                {
+                    foreach(Dato datO in entidades[j].listaDatos)
+                    {
+                        if(datO.apuntadoresLlaveBusq[indiceLlave] > -1)
+                        {
+                            datosRespaldo.Add(datO);
+                        }
+                    }
+
+                    foreach (Dato datO in entidades[j].listaDatos)
+                    {
+                        if (datO.apuntadoresLlaveBusq[indiceLlave] == -2 || datO.apuntadoresLlaveBusq[indiceLlave] == -3)
+                        {
+                            datosRespaldo.Add(datO);
+                        }
+                    }
+
+                    foreach (Dato datO in entidades[j].listaDatos)
+                    {
+                        if (datO.apuntadoresLlaveBusq[indiceLlave] == -1 || datO.apuntadoresLlaveBusq[indiceLlave] == -4)
+                        {
+                            datosRespaldo.Add(datO);
+                        }
+                    }
+
+                    entidades[j].listaDatos.Clear();
+                    entidades[j].listaDatos = datosRespaldo;
+
                     for (int n = 0; n < entidades[j].listaDatos.Count; n++)
                     {
                         for (int m = 0; m < entidades[j].listaDatos[n].datos.Count; m++)

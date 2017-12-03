@@ -115,6 +115,15 @@ namespace ArchivosTarea2
             }
             else
             {
+                if (atrLlave.tipo == 'S')
+                {
+                    ent.listaDatos = regresa_lista_string().OrderBy(a => new string((char[])a.datos[indiceLlave])).ToList();
+                }
+                else
+                {
+                    ent.listaDatos = ent.listaDatos.OrderBy(o => o.datos[indiceLlave]).ToList();
+                }
+
                 Dato anterior = new Dato();
                 bool encPrim = false;
 
@@ -1722,10 +1731,10 @@ namespace ArchivosTarea2
         }
 
         /// <summary>
-        /// 
+        /// Metodo que transforma el dato de la llave primaria de todos los datos a arreglos de caracteres
         /// </summary>
-        /// <param name="indice"></param>
-        /// <returns></returns>
+        /// <param name="indice">El indice especifico del atributo llave de busqueda.</param>
+        /// <returns>La lista de datos con algunos datos cambiados en su tipo de strings a cadenas de caracteres.</returns>
         private List<Dato> lista_string_c(int indice)
         {
             List<Dato> ordenadaPor = new List<Dato>();
