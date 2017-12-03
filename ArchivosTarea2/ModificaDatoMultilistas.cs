@@ -427,7 +427,17 @@ namespace ArchivosTarea2
         {
             bool duplicada = false;
 
-            List<Dato> datosOrdenados = ent.listaDatos.OrderBy(o => o.datos[indiceLlavePrimaria]).ToList();
+            List<Dato> datosOrdenados = new List<Dato>();
+            Dato muestra = ent.listaDatos[0];
+
+            if (ent.listaAtributos[indiceLlavePrimaria].tipo == 'S')
+            {
+                datosOrdenados = regresa_lista_string().OrderBy(a => new string((char[])a.datos[indiceLlavePrimaria])).ToList();
+            }
+            else
+            {
+                datosOrdenados = ent.listaDatos.OrderBy(o => o.datos[indiceLlavePrimaria]).ToList();
+            }
 
             foreach(Dato dat in datosOrdenados)
             {
@@ -435,7 +445,12 @@ namespace ArchivosTarea2
                 {
                     dynamic llaveComparar = dat.datos[indiceLlavePrimaria];
 
-                    if(llaveComparar == llave)
+                    if (llaveComparar is char[])
+                    {
+                        llaveComparar = new string(llaveComparar).Replace("\0", "");
+                    }
+
+                    if (llaveComparar == llave)
                     {
                         duplicada = true;
                         break;
@@ -444,6 +459,27 @@ namespace ArchivosTarea2
             }
 
             return duplicada;
+        }
+
+        /// <summary>
+        /// Metodo que transforma el dato de la llave primaria de todos los datos a arreglos de caracteres.
+        /// </summary>
+        /// <returns>La lista de datos con algunos datos cambiados en su tipo de strings a cadenas de caracteres.</returns>
+        private List<Dato> regresa_lista_string()
+        {
+            // No se puede convertir de string a arreglo de caracteres
+            for (int i = 0; i < ent.listaAtributos.Count; i++)
+            {
+                foreach (Dato dat in ent.listaDatos)
+                {
+                    if (dat.datos[i] is string)
+                    {
+                        dat.datos[i] = dat.datos[i].ToString().ToCharArray();
+                    }
+                }
+            }
+
+            return ent.listaDatos;
         }
 
         /// <summary>

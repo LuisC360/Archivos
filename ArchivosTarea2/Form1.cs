@@ -497,6 +497,7 @@ namespace ArchivosTarea2
                             if (ent.nombre.SequenceEqual(viejoNombreArr) == true)
                             {
                                 eN = ent;
+                                eN.nombre = nuevoNombreArr;
                                 break;
                             }
                         }
@@ -3104,15 +3105,36 @@ namespace ArchivosTarea2
                     }
                 }
 
+                int indiceLlave = 0;
+
                 if(entidades[j].apCabeceras != -1)
                 {
                     for(int n = 0; n < entidades[j].listaCabeceras.Count; n++)
                     {
+                        if(entidades[j].listaAtributos[n].esLlavePrimaria == true)
+                        {
+                            indiceLlave = n;
+                        }
+                        else
+                        {
+                            indiceLlave++;
+                        }
+
                         writer.Write(Convert.ToInt64(entidades[j].listaCabeceras[n].return_apDatos()));
                     }
                 }
 
-                entidades[j].listaDatos = entidades[j].listaDatos.OrderBy(o => o.datos[j]).ToList();
+                if (entidades[j].listaDatos.Count > 0)
+                {
+                    if (entidades[j].listaAtributos[indiceLlave].tipo == 'S')
+                    {
+                        entidades[j].listaDatos = regresa_lista_string(entidades[j], indiceLlave).OrderBy(a => (a.datos[indiceLlave])).ToList();
+                    }
+                    else
+                    {
+                        entidades[j].listaDatos = entidades[j].listaDatos.OrderBy(o => o.datos[indiceLlave]).ToList();
+                    }
+                }
 
                 if (entidades[j].listaDatos.Count > 0)
                 {
@@ -3328,6 +3350,25 @@ namespace ArchivosTarea2
             }
 
             return yaTieneLlave;
+        }
+
+        /// <summary>
+        /// Metodo que transforma el dato de la llave primaria de todos los datos a arreglos de caracteres.
+        /// </summary>
+        /// <param name="ent">La entidad con la lista de datos.</param>
+        /// <returns>La lista de datos con algunos datos cambiados en su tipo de cadenas de caracteres a strings.</returns>
+        private List<Dato> regresa_lista_string(Entidad ent, int indiceLlave)
+        {
+            // No se puede convertir de string a arreglo de caracteres
+            foreach (Dato dat in ent.listaDatos)
+            {
+                if (dat.datos[indiceLlave] is char[])
+                {
+                    dat.datos[indiceLlave] = new string((char[])dat.datos[indiceLlave]);
+                }
+            }
+
+            return ent.listaDatos;
         }
 
         /// <summary>
@@ -4358,7 +4399,12 @@ namespace ArchivosTarea2
                         {
                             posicionMemoria = datosMultilistas.regresa_posicion_memoria();
                             ent.listaCabeceras = datosMultilistas.regresa_lista_cabeceras();
-                            ent.apCabeceras = datosMultilistas.regresa_ap_cabeceras();
+
+                            if (ent.apCabeceras == -1)
+                            {
+                                ent.apCabeceras = datosMultilistas.regresa_ap_cabeceras();
+                            }
+
                             ent.listaDatos = datosMultilistas.regresa_lista_datos();
 
                             if(datosMultilistas.regresa_se_cambio())
