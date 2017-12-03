@@ -582,11 +582,38 @@ namespace ArchivosTarea2
                         if (ent.nombre.SequenceEqual(nombreEntidadA) == true)
                         {
                             entidadEliminar = ent;
-                            if (entidadEliminar.apDatos > -1)
+                            switch(tipo)
                             {
-                                toolStripStatusLabel1.Text = "Error, la entidad tiene datos y no se puede eliminar.";
-                                return;
+                                case 0:
+                                    if(entidadEliminar.apDatos > -1)
+                                    {
+                                        toolStripStatusLabel1.Text = "Error, la entidad tiene datos y no se puede eliminar.";
+                                        return;
+                                    }
+                                    break;
+                                case 1:
+                                    if (entidadEliminar.apIndices > -1)
+                                    {
+                                        toolStripStatusLabel1.Text = "Error, la entidad tiene datos y no se puede eliminar.";
+                                        return;
+                                    }
+                                    break;
+                                case 2:
+                                    if (entidadEliminar.apCajones > -1)
+                                    {
+                                        toolStripStatusLabel1.Text = "Error, la entidad tiene datos y no se puede eliminar.";
+                                        return;
+                                    }
+                                    break;
+                                case 3:
+                                    if (entidadEliminar.apCabeceras > -1)
+                                    {
+                                        toolStripStatusLabel1.Text = "Error, la entidad tiene datos y no se puede eliminar.";
+                                        return;
+                                    }
+                                    break;
                             }
+
                             entidadEliminada = entidadEliminar;
                             entidadEliminada.apSigEntidad = -2;
                             entidadEliminar.apSigEntidad = -2;
@@ -3935,11 +3962,38 @@ namespace ArchivosTarea2
                         // Despues se hace la validacion para ver si ese atributo esta en los atributos de la entidad
                         if (valida_atributo(textBox3.Text, entidadEncontrada) == true)
                         {
-                            if (entidadEncontrada.apDatos > -1)
+                            switch(tipo)
                             {
-                                toolStripStatusLabel1.Text = "Error, la entidad correspondiente tiene datos.";
-                                return;
+                                case 0:
+                                    if (entidadEncontrada.apDatos > -1)
+                                    {
+                                        toolStripStatusLabel1.Text = "Error, la entidad correspondiente tiene datos.";
+                                        return;
+                                    }
+                                    break;
+                                case 1:
+                                    if (entidadEncontrada.apIndices > -1)
+                                    {
+                                        toolStripStatusLabel1.Text = "Error, la entidad correspondiente tiene datos.";
+                                        return;
+                                    }
+                                    break;
+                                case 2:
+                                    if (entidadEncontrada.apCajones > -1)
+                                    {
+                                        toolStripStatusLabel1.Text = "Error, la entidad correspondiente tiene datos.";
+                                        return;
+                                    }
+                                    break;
+                                case 3:
+                                    if (entidadEncontrada.apCabeceras > -1)
+                                    {
+                                        toolStripStatusLabel1.Text = "Error, la entidad correspondiente tiene datos.";
+                                        return;
+                                    }
+                                    break;
                             }
+                            
 
                             char[] nombreAtributoA = new char[30];
                             nombreAtributoA[29] = '\n';
