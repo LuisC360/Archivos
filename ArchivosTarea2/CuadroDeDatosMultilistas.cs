@@ -635,6 +635,7 @@ namespace ArchivosTarea2
                         }
                         else
                         {
+                            dataGridView1.Rows.Clear();
                             toolStripStatusLabel1.Text = "Error, llave primaria no encontrada.";
                         }
                     }
@@ -741,6 +742,7 @@ namespace ArchivosTarea2
                         }
                         else
                         {
+                            dataGridView1.Rows.Clear();
                             toolStripStatusLabel1.Text = "Error, no hay ningun dato con este valor de llave de busqueda.";
                         }
                     }
