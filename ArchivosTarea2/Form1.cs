@@ -461,6 +461,32 @@ namespace ArchivosTarea2
             {
                 if (validacion(textBox2.Text) == true)
                 {
+                    Entidad enti = busca_entidad(textBox2.Text);
+
+                    if(enti.posEntidad > 0)
+                    {
+                        if (tipo == 0 && enti.apDatos > -1)
+                        {
+                            toolStripStatusLabel1.Text = "La entidad ya tiene datos y no se puede modificar.";
+                            return;
+                        }
+                        else if (tipo == 1 && enti.apIndices > -1)
+                        {
+                            toolStripStatusLabel1.Text = "La entidad ya tiene datos y no se puede modificar.";
+                            return;
+                        }
+                        else if (tipo == 2 && enti.apCajones > -1)
+                        {
+                            toolStripStatusLabel1.Text = "La entidad ya tiene datos y no se puede modificar.";
+                            return;
+                        }
+                        else if (tipo == 3 && revisa_datos_entidad_vacia(enti) == false)
+                        {
+                            toolStripStatusLabel1.Text = "La entidad ya tiene datos y no se puede modificar.";
+                            return;
+                        }
+                    }
+
                     String nuevoNombreEntidad = "";
 
                     using(BusquedaModifica buscaM = new BusquedaModifica())
@@ -510,19 +536,19 @@ namespace ArchivosTarea2
 
                                 manejo_dataGrid(textBox1.Text);
                                 break;
-                            case 2: escribe_archivo_indexado(textBox1.Text);
+                            case 1: escribe_archivo_indexado(textBox1.Text);
 
                                 entidadesLeidas = new List<Entidad>();
 
                                 manejo_dataGrid_indexado(textBox1.Text);
                                 break;
-                            case 3: escribe_archivo_hash(textBox1.Text);
+                            case 2: escribe_archivo_hash(textBox1.Text);
 
                                 entidadesLeidas = new List<Entidad>();
 
                                 manejo_dataGrid_hash(textBox1.Text);
                                 break;
-                            case 4: escribe_archivo_multilistas(textBox1.Text);
+                            case 3: escribe_archivo_multilistas(textBox1.Text);
 
                                 entidadesLeidas = new List<Entidad>();
 
@@ -606,7 +632,7 @@ namespace ArchivosTarea2
                                     }
                                     break;
                                 case 3:
-                                    if (entidadEliminar.apCabeceras > -1)
+                                    if (revisa_datos_entidad_vacia(entidadEliminar) == false)
                                     {
                                         toolStripStatusLabel1.Text = "Error, la entidad tiene datos y no se puede eliminar.";
                                         return;
@@ -2472,7 +2498,10 @@ namespace ArchivosTarea2
 
             posicionMemoria += tamDato;
 
-            ent.listaDatos.Add(dataRead);
+            if (dataRead.apuntadoresLlaveBusq[indiceLlave] != -2 && dataRead.apuntadoresLlaveBusq[indiceLlave] != -4)
+            {
+                ent.listaDatos.Add(dataRead);
+            }
 
             if (dataRead.apuntadoresLlaveBusq[indiceLlave] != -1 && dataRead.apuntadoresLlaveBusq[indiceLlave] != -4)
             {
@@ -3439,36 +3468,169 @@ namespace ArchivosTarea2
 
                     if(entidadEncontrada.posEntidad > 0)
                     {
-                        // Despues se hace la validacion para ver si ese atributo no esta ya en los atributos de la entidad
-                        if(valida_atributo(textBox3.Text, entidadEncontrada) == false)
+                        if (tipo == 0)
                         {
-                            if (tipo != 3)
+                            if (entidadEncontrada.apDatos == -1)
                             {
-                                if (comboBox1.SelectedIndex > -1 && comboBox2.SelectedIndex > -1)
+                                // Despues se hace la validacion para ver si ese atributo no esta ya en los atributos de la entidad
+                                if (valida_atributo(textBox3.Text, entidadEncontrada) == false)
                                 {
-                                    insercion_atributo(entidadEncontrada);
+                                    if (tipo != 3)
+                                    {
+                                        if (comboBox1.SelectedIndex > -1 && comboBox2.SelectedIndex > -1)
+                                        {
+                                            insercion_atributo(entidadEncontrada);
+                                        }
+                                        else
+                                        {
+                                            toolStripStatusLabel1.Text = "Error, selecciona el tipo de dato y si es llave primaria.";
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (comboBox1.SelectedIndex > -1 && comboBox2.SelectedIndex > -1 && comboBox3.SelectedIndex > -1)
+                                        {
+                                            insercion_atributo(entidadEncontrada);
+                                        }
+                                        else
+                                        {
+                                            toolStripStatusLabel1.Text = "Error, selecciona el tipo de dato, si es llave primaria y si es" +
+                                                " llave de busqueda.";
+                                        }
+                                    }
                                 }
                                 else
                                 {
-                                    toolStripStatusLabel1.Text = "Error, selecciona el tipo de dato y si es llave primaria.";
+                                    toolStripStatusLabel1.Text = "Error, el atributo ya existe en esta entidad.";
                                 }
                             }
                             else
                             {
-                                if(comboBox1.SelectedIndex > -1 && comboBox2.SelectedIndex > -1 && comboBox3.SelectedIndex > -1)
+                                toolStripStatusLabel1.Text = "Error, no se pueden agregar atributos a una entidad que tiene datos.";
+                            }
+                        }    
+                        else if(tipo == 1)
+                        {
+                            if (entidadEncontrada.apIndices == -1)
+                            {
+                                // Despues se hace la validacion para ver si ese atributo no esta ya en los atributos de la entidad
+                                if (valida_atributo(textBox3.Text, entidadEncontrada) == false)
                                 {
-                                    insercion_atributo(entidadEncontrada);
+                                    if (tipo != 3)
+                                    {
+                                        if (comboBox1.SelectedIndex > -1 && comboBox2.SelectedIndex > -1)
+                                        {
+                                            insercion_atributo(entidadEncontrada);
+                                        }
+                                        else
+                                        {
+                                            toolStripStatusLabel1.Text = "Error, selecciona el tipo de dato y si es llave primaria.";
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (comboBox1.SelectedIndex > -1 && comboBox2.SelectedIndex > -1 && comboBox3.SelectedIndex > -1)
+                                        {
+                                            insercion_atributo(entidadEncontrada);
+                                        }
+                                        else
+                                        {
+                                            toolStripStatusLabel1.Text = "Error, selecciona el tipo de dato, si es llave primaria y si es" +
+                                                " llave de busqueda.";
+                                        }
+                                    }
                                 }
                                 else
                                 {
-                                    toolStripStatusLabel1.Text = "Error, selecciona el tipo de dato, si es llave primaria y si es" +
-                                        " llave de busqueda.";
+                                    toolStripStatusLabel1.Text = "Error, el atributo ya existe en esta entidad.";
                                 }
-                            }                           
+                            }
+                            else
+                            {
+                                toolStripStatusLabel1.Text = "Error, no se pueden agregar atributos a una entidad que tiene datos.";
+                            }
                         }
-                        else
+                        else if(tipo == 2)
                         {
-                            toolStripStatusLabel1.Text = "Error, el atributo ya existe en esta entidad.";
+                            if (entidadEncontrada.apCajones == -1)
+                            {
+                                // Despues se hace la validacion para ver si ese atributo no esta ya en los atributos de la entidad
+                                if (valida_atributo(textBox3.Text, entidadEncontrada) == false)
+                                {
+                                    if (tipo != 3)
+                                    {
+                                        if (comboBox1.SelectedIndex > -1 && comboBox2.SelectedIndex > -1)
+                                        {
+                                            insercion_atributo(entidadEncontrada);
+                                        }
+                                        else
+                                        {
+                                            toolStripStatusLabel1.Text = "Error, selecciona el tipo de dato y si es llave primaria.";
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (comboBox1.SelectedIndex > -1 && comboBox2.SelectedIndex > -1 && comboBox3.SelectedIndex > -1)
+                                        {
+                                            insercion_atributo(entidadEncontrada);
+                                        }
+                                        else
+                                        {
+                                            toolStripStatusLabel1.Text = "Error, selecciona el tipo de dato, si es llave primaria y si es" +
+                                                " llave de busqueda.";
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    toolStripStatusLabel1.Text = "Error, el atributo ya existe en esta entidad.";
+                                }
+                            }
+                            else
+                            {
+                                toolStripStatusLabel1.Text = "Error, no se pueden agregar atributos a una entidad que tiene datos.";
+                            }
+                        }
+                        else if(tipo == 3)
+                        {
+                            if (revisa_datos_entidad_vacia(entidadEncontrada) == false)
+                            {
+                                // Despues se hace la validacion para ver si ese atributo no esta ya en los atributos de la entidad
+                                if (valida_atributo(textBox3.Text, entidadEncontrada) == false)
+                                {
+                                    if (tipo != 3)
+                                    {
+                                        if (comboBox1.SelectedIndex > -1 && comboBox2.SelectedIndex > -1)
+                                        {
+                                            insercion_atributo(entidadEncontrada);
+                                        }
+                                        else
+                                        {
+                                            toolStripStatusLabel1.Text = "Error, selecciona el tipo de dato y si es llave primaria.";
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (comboBox1.SelectedIndex > -1 && comboBox2.SelectedIndex > -1 && comboBox3.SelectedIndex > -1)
+                                        {
+                                            insercion_atributo(entidadEncontrada);
+                                        }
+                                        else
+                                        {
+                                            toolStripStatusLabel1.Text = "Error, selecciona el tipo de dato, si es llave primaria y si es" +
+                                                " llave de busqueda.";
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    toolStripStatusLabel1.Text = "Error, el atributo ya existe en esta entidad.";
+                                }
+                            }
+                            else
+                            {
+                                toolStripStatusLabel1.Text = "Error, no se pueden agregar atributos a una entidad que tiene datos.";
+                            }
                         }
                     }
                     else
@@ -3691,262 +3853,1045 @@ namespace ArchivosTarea2
                         // Si el atributo que se quiere modificar existe
                         if(valida_atributo(textBox3.Text, entidadEncontrada) == true)
                         {
-                            if(entidadEncontrada.apDatos > -1)
+                            if (tipo == 0)
                             {
-                                toolStripStatusLabel1.Text = "Error, la entidad correspondiente tiene datos.";
-                                return;
-                            }
-
-                            String nuevoNombreAtributo = "";
-                            char nuevoTipoAtributo = ' ';
-                            long nuevosBytesAtributo = 0;
-                            bool esLlave = false;
-                            int busq = 0;
-                            bool esBusqueda = false;
-
-                            using (ModificadorAtributo modificaAt = new ModificadorAtributo(tipo))
-                            {
-                                var nuevoAtributo = modificaAt.ShowDialog();
-
-                                if (nuevoAtributo == DialogResult.OK)
+                                if (entidadEncontrada.apDatos > -1)
                                 {
-                                    nuevoNombreAtributo = modificaAt.newNombre;
-                                    nuevoTipoAtributo = modificaAt.newTipo;
-                                    nuevosBytesAtributo = modificaAt.newBytes;
-                                    if(tipo == 3)
-                                    {
-                                        busq = modificaAt.esBusqueda;
-                                    }
-
-                                    if(modificaAt.esLlave == 0)
-                                    {
-                                        esLlave = true;
-
-                                        if(tipo == 3 && busq == 0)
-                                        {
-                                            toolStripStatusLabel1.Text = "Error, una llave primaria no puede ser llave de busqueda.";
-                                            return;
-                                        }
-                                        else if(tipo == 3)
-                                        {
-                                            esBusqueda = false;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        esLlave = false;
-
-                                        if(tipo == 3 && busq == 0)
-                                        {
-                                            esBusqueda = true;
-                                        }
-                                        else if(tipo == 3 && busq == 1)
-                                        {
-                                            esBusqueda = false;
-                                        }
-                                    }
-                                }
-                            }
-
-                            Atributo atrTemp = regresa_atributo(textBox3.Text, entidadEncontrada);
-
-                            // Si es el mismo atributo que se va a cambiar
-                            if(es_mismo_atributo(nuevoNombreAtributo,entidadEncontrada, atrTemp) == true)
-                            {
-                                foreach (Atributo at in entidadEncontrada.listaAtributos)
-                                {
-                                    if (at.posAtributo == atrTemp.posAtributo)
-                                    {
-                                        at.tipo = nuevoTipoAtributo;
-                                        at.bytes = nuevosBytesAtributo;
-
-                                        // Si ese atributo ya es la unica llave primaria que se tiene
-                                        if (at.esLlavePrimaria == true && verifica_llave_primaria(entidadEncontrada) == true && esLlave == true)
-                                        {
-                                            at.esLlavePrimaria = esLlave;
-                                        }
-                                        // Si el atributo sera la llave primaria y no hay ya una llave primaria.
-                                        else if (at.esLlavePrimaria == false && verifica_llave_primaria(entidadEncontrada) == false && 
-                                            esLlave == true)
-                                        {
-                                            at.esLlavePrimaria = esLlave;
-                                        }
-                                        // Si el atributo quiere ser la llave primaria pero ya hay una llave primaria
-                                        else if (at.esLlavePrimaria == false && verifica_llave_primaria(entidadEncontrada) == true &&
-                                            esLlave == true)
-                                        {
-                                            at.esLlavePrimaria = false;
-                                        }
-                                        // Si no sera la llave primaria
-                                        else if(at.esLlavePrimaria == false && esLlave == false)
-                                        {
-                                            at.esLlavePrimaria = esLlave;
-                                        }
-                                        // Si era la llave primaria pero ya no lo sera
-                                        else if(at.esLlavePrimaria == true && esLlave == false)
-                                        {
-                                            at.esLlavePrimaria = esLlave;
-                                        }
-
-                                        if(tipo == 3)
-                                        {
-                                            at.esLlaveDeBusqueda = esBusqueda;
-                                        }
-
-                                        break;
-                                    }
+                                    toolStripStatusLabel1.Text = "Error, la entidad correspondiente tiene datos.";
+                                    return;
                                 }
 
-                                switch(tipo)
+                                String nuevoNombreAtributo = "";
+                                char nuevoTipoAtributo = ' ';
+                                long nuevosBytesAtributo = 0;
+                                bool esLlave = false;
+                                int busq = 0;
+                                bool esBusqueda = false;
+
+                                using (ModificadorAtributo modificaAt = new ModificadorAtributo(tipo))
                                 {
-                                    case 0:
-                                        escribe_archivo(textBox1.Text);
+                                    var nuevoAtributo = modificaAt.ShowDialog();
 
-                                        entidadesLeidas = new List<Entidad>();
-
-                                        manejo_dataGrid(textBox1.Text);
-
-                                        manejo_dataGrid_atributos(entidadEncontrada);
-                                        break;
-                                    case 1:
-                                        escribe_archivo_indexado(textBox1.Text);
-
-                                        entidadesLeidas = new List<Entidad>();
-
-                                        manejo_dataGrid_indexado(textBox1.Text);
-
-                                        manejo_dataGrid_atributos(entidadEncontrada);
-                                        break;
-                                    case 2:
-                                        escribe_archivo_hash(textBox1.Text);
-
-                                        entidadesLeidas = new List<Entidad>();
-
-                                        manejo_dataGrid_hash(textBox1.Text);
-
-                                        manejo_dataGrid_atributos(entidadEncontrada);
-                                        break;
-                                    case 3:
-                                        escribe_archivo_multilistas(textBox1.Text);
-
-                                        entidadesLeidas = new List<Entidad>();
-
-                                        manejo_dataGrid_multilistas(textBox1.Text);
-
-                                        manejo_dataGrid_atributos(entidadEncontrada);
-                                        break;
-                                }
-                                
-                                toolStripStatusLabel1.Text = "Atributo modificado con exito.";
-                            }
-                            // Si no es el mismo atributo
-                            else if(valida_atributo(nuevoNombreAtributo, entidadEncontrada) == false)
-                            {
-                                char[] nuevoNombreArr = new char[30];
-                                nuevoNombreArr[29] = '\n';
-                                char[] viejoNombreArr = new char[30];
-                                viejoNombreArr[29] = '\n';
-
-                                for (int i = 0; i < nuevoNombreAtributo.Length; i++)
-                                {
-                                    nuevoNombreArr[i] = nuevoNombreAtributo[i];
-                                }
-
-                                for (int i = 0; i < textBox3.Text.Length; i++)
-                                {
-                                    viejoNombreArr[i] = textBox3.Text[i];
-                                }
-
-                                foreach (Atributo at in entidadEncontrada.listaAtributos)
-                                {
-                                    if (at.nombre.SequenceEqual(viejoNombreArr) == true)
+                                    if (nuevoAtributo == DialogResult.OK)
                                     {
-                                        at.nombre = nuevoNombreArr;
-                                        at.tipo = nuevoTipoAtributo;
-                                        at.bytes = nuevosBytesAtributo;
-
-                                        // Si ese atributo ya es la unica llave primaria que se tiene
-                                        if (at.esLlavePrimaria == true && verifica_llave_primaria(entidadEncontrada) == true && esLlave == true)
-                                        {
-                                            at.esLlavePrimaria = esLlave;
-                                        }
-                                        // Si el atributo sera la llave primaria y no hay ya una llave primaria.
-                                        else if (at.esLlavePrimaria == false && verifica_llave_primaria(entidadEncontrada) == false &&
-                                            esLlave == true)
-                                        {
-                                            at.esLlavePrimaria = esLlave;
-                                        }
-                                        // Si el atributo quiere ser la llave primaria pero ya hay una llave primaria
-                                        else if (at.esLlavePrimaria == false && verifica_llave_primaria(entidadEncontrada) == true &&
-                                            esLlave == true)
-                                        {
-                                            at.esLlavePrimaria = false;
-                                        }
-                                        // Si no sera la llave primaria
-                                        else if (at.esLlavePrimaria == false && esLlave == false)
-                                        {
-                                            at.esLlavePrimaria = esLlave;
-                                        }
-                                        // Si era la llave primaria pero ya no lo sera
-                                        else if (at.esLlavePrimaria == true && esLlave == false)
-                                        {
-                                            at.esLlavePrimaria = esLlave;
-                                        }
-
+                                        nuevoNombreAtributo = modificaAt.newNombre;
+                                        nuevoTipoAtributo = modificaAt.newTipo;
+                                        nuevosBytesAtributo = modificaAt.newBytes;
                                         if (tipo == 3)
                                         {
-                                            at.esLlaveDeBusqueda = esBusqueda;
+                                            busq = modificaAt.esBusqueda;
                                         }
 
-                                        break;
+                                        if (modificaAt.esLlave == 0)
+                                        {
+                                            esLlave = true;
+
+                                            if (tipo == 3 && busq == 0)
+                                            {
+                                                toolStripStatusLabel1.Text = "Error, una llave primaria no puede ser llave de busqueda.";
+                                                return;
+                                            }
+                                            else if (tipo == 3)
+                                            {
+                                                esBusqueda = false;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            esLlave = false;
+
+                                            if (tipo == 3 && busq == 0)
+                                            {
+                                                esBusqueda = true;
+                                            }
+                                            else if (tipo == 3 && busq == 1)
+                                            {
+                                                esBusqueda = false;
+                                            }
+                                        }
                                     }
                                 }
 
-                                switch (tipo)
+                                Atributo atrTemp = regresa_atributo(textBox3.Text, entidadEncontrada);
+
+                                // Si es el mismo atributo que se va a cambiar
+                                if (es_mismo_atributo(nuevoNombreAtributo, entidadEncontrada, atrTemp) == true)
                                 {
-                                    case 0:
-                                        escribe_archivo(textBox1.Text);
+                                    foreach (Atributo at in entidadEncontrada.listaAtributos)
+                                    {
+                                        if (at.posAtributo == atrTemp.posAtributo)
+                                        {
+                                            at.tipo = nuevoTipoAtributo;
+                                            at.bytes = nuevosBytesAtributo;
 
-                                        entidadesLeidas = new List<Entidad>();
+                                            // Si ese atributo ya es la unica llave primaria que se tiene
+                                            if (at.esLlavePrimaria == true && verifica_llave_primaria(entidadEncontrada) == true && esLlave == true)
+                                            {
+                                                at.esLlavePrimaria = esLlave;
+                                            }
+                                            // Si el atributo sera la llave primaria y no hay ya una llave primaria.
+                                            else if (at.esLlavePrimaria == false && verifica_llave_primaria(entidadEncontrada) == false &&
+                                                esLlave == true)
+                                            {
+                                                at.esLlavePrimaria = esLlave;
+                                            }
+                                            // Si el atributo quiere ser la llave primaria pero ya hay una llave primaria
+                                            else if (at.esLlavePrimaria == false && verifica_llave_primaria(entidadEncontrada) == true &&
+                                                esLlave == true)
+                                            {
+                                                at.esLlavePrimaria = false;
+                                            }
+                                            // Si no sera la llave primaria
+                                            else if (at.esLlavePrimaria == false && esLlave == false)
+                                            {
+                                                at.esLlavePrimaria = esLlave;
+                                            }
+                                            // Si era la llave primaria pero ya no lo sera
+                                            else if (at.esLlavePrimaria == true && esLlave == false)
+                                            {
+                                                at.esLlavePrimaria = esLlave;
+                                            }
 
-                                        manejo_dataGrid(textBox1.Text);
+                                            if (tipo == 3)
+                                            {
+                                                at.esLlaveDeBusqueda = esBusqueda;
+                                            }
 
-                                        manejo_dataGrid_atributos(entidadEncontrada);
-                                        break;
-                                    case 1:
-                                        escribe_archivo_indexado(textBox1.Text);
+                                            break;
+                                        }
+                                    }
 
-                                        entidadesLeidas = new List<Entidad>();
+                                    switch (tipo)
+                                    {
+                                        case 0:
+                                            escribe_archivo(textBox1.Text);
 
-                                        manejo_dataGrid_indexado(textBox1.Text);
+                                            entidadesLeidas = new List<Entidad>();
 
-                                        manejo_dataGrid_atributos(entidadEncontrada);
-                                        break;
-                                    case 2:
-                                        escribe_archivo_hash(textBox1.Text);
+                                            manejo_dataGrid(textBox1.Text);
 
-                                        entidadesLeidas = new List<Entidad>();
+                                            manejo_dataGrid_atributos(entidadEncontrada);
+                                            break;
+                                        case 1:
+                                            escribe_archivo_indexado(textBox1.Text);
 
-                                        manejo_dataGrid_hash(textBox1.Text);
+                                            entidadesLeidas = new List<Entidad>();
 
-                                        manejo_dataGrid_atributos(entidadEncontrada);
-                                        break;
-                                    case 3:
-                                        escribe_archivo_multilistas(textBox1.Text);
+                                            manejo_dataGrid_indexado(textBox1.Text);
 
-                                        entidadesLeidas = new List<Entidad>();
+                                            manejo_dataGrid_atributos(entidadEncontrada);
+                                            break;
+                                        case 2:
+                                            escribe_archivo_hash(textBox1.Text);
 
-                                        manejo_dataGrid_hash(textBox1.Text);
+                                            entidadesLeidas = new List<Entidad>();
 
-                                        manejo_dataGrid_atributos(entidadEncontrada);
-                                        break;
+                                            manejo_dataGrid_hash(textBox1.Text);
+
+                                            manejo_dataGrid_atributos(entidadEncontrada);
+                                            break;
+                                        case 3:
+                                            escribe_archivo_multilistas(textBox1.Text);
+
+                                            entidadesLeidas = new List<Entidad>();
+
+                                            manejo_dataGrid_multilistas(textBox1.Text);
+
+                                            manejo_dataGrid_atributos(entidadEncontrada);
+                                            break;
+                                    }
+
+                                    toolStripStatusLabel1.Text = "Atributo modificado con exito.";
+                                }
+                                // Si no es el mismo atributo
+                                else if (valida_atributo(nuevoNombreAtributo, entidadEncontrada) == false)
+                                {
+                                    char[] nuevoNombreArr = new char[30];
+                                    nuevoNombreArr[29] = '\n';
+                                    char[] viejoNombreArr = new char[30];
+                                    viejoNombreArr[29] = '\n';
+
+                                    for (int i = 0; i < nuevoNombreAtributo.Length; i++)
+                                    {
+                                        nuevoNombreArr[i] = nuevoNombreAtributo[i];
+                                    }
+
+                                    for (int i = 0; i < textBox3.Text.Length; i++)
+                                    {
+                                        viejoNombreArr[i] = textBox3.Text[i];
+                                    }
+
+                                    foreach (Atributo at in entidadEncontrada.listaAtributos)
+                                    {
+                                        if (at.nombre.SequenceEqual(viejoNombreArr) == true)
+                                        {
+                                            at.nombre = nuevoNombreArr;
+                                            at.tipo = nuevoTipoAtributo;
+                                            at.bytes = nuevosBytesAtributo;
+
+                                            // Si ese atributo ya es la unica llave primaria que se tiene
+                                            if (at.esLlavePrimaria == true && verifica_llave_primaria(entidadEncontrada) == true && esLlave == true)
+                                            {
+                                                at.esLlavePrimaria = esLlave;
+                                            }
+                                            // Si el atributo sera la llave primaria y no hay ya una llave primaria.
+                                            else if (at.esLlavePrimaria == false && verifica_llave_primaria(entidadEncontrada) == false &&
+                                                esLlave == true)
+                                            {
+                                                at.esLlavePrimaria = esLlave;
+                                            }
+                                            // Si el atributo quiere ser la llave primaria pero ya hay una llave primaria
+                                            else if (at.esLlavePrimaria == false && verifica_llave_primaria(entidadEncontrada) == true &&
+                                                esLlave == true)
+                                            {
+                                                at.esLlavePrimaria = false;
+                                            }
+                                            // Si no sera la llave primaria
+                                            else if (at.esLlavePrimaria == false && esLlave == false)
+                                            {
+                                                at.esLlavePrimaria = esLlave;
+                                            }
+                                            // Si era la llave primaria pero ya no lo sera
+                                            else if (at.esLlavePrimaria == true && esLlave == false)
+                                            {
+                                                at.esLlavePrimaria = esLlave;
+                                            }
+
+                                            if (tipo == 3)
+                                            {
+                                                at.esLlaveDeBusqueda = esBusqueda;
+                                            }
+
+                                            break;
+                                        }
+                                    }
+
+                                    switch (tipo)
+                                    {
+                                        case 0:
+                                            escribe_archivo(textBox1.Text);
+
+                                            entidadesLeidas = new List<Entidad>();
+
+                                            manejo_dataGrid(textBox1.Text);
+
+                                            manejo_dataGrid_atributos(entidadEncontrada);
+                                            break;
+                                        case 1:
+                                            escribe_archivo_indexado(textBox1.Text);
+
+                                            entidadesLeidas = new List<Entidad>();
+
+                                            manejo_dataGrid_indexado(textBox1.Text);
+
+                                            manejo_dataGrid_atributos(entidadEncontrada);
+                                            break;
+                                        case 2:
+                                            escribe_archivo_hash(textBox1.Text);
+
+                                            entidadesLeidas = new List<Entidad>();
+
+                                            manejo_dataGrid_hash(textBox1.Text);
+
+                                            manejo_dataGrid_atributos(entidadEncontrada);
+                                            break;
+                                        case 3:
+                                            escribe_archivo_multilistas(textBox1.Text);
+
+                                            entidadesLeidas = new List<Entidad>();
+
+                                            manejo_dataGrid_hash(textBox1.Text);
+
+                                            manejo_dataGrid_atributos(entidadEncontrada);
+                                            break;
+                                    }
+
+                                    toolStripStatusLabel1.Text = "Atributo modificado con exito.";
+                                }
+                                else
+                                {
+                                    toolStripStatusLabel1.Text = "Error, nombre de atributo duplicado.";
+                                }
+                            }
+                            else if (tipo == 1)
+                            {
+                                if (entidadEncontrada.apIndices > -1)
+                                {
+                                    toolStripStatusLabel1.Text = "Error, la entidad correspondiente tiene datos.";
+                                    return;
                                 }
 
-                                toolStripStatusLabel1.Text = "Atributo modificado con exito.";
+                                String nuevoNombreAtributo = "";
+                                char nuevoTipoAtributo = ' ';
+                                long nuevosBytesAtributo = 0;
+                                bool esLlave = false;
+                                int busq = 0;
+                                bool esBusqueda = false;
+
+                                using (ModificadorAtributo modificaAt = new ModificadorAtributo(tipo))
+                                {
+                                    var nuevoAtributo = modificaAt.ShowDialog();
+
+                                    if (nuevoAtributo == DialogResult.OK)
+                                    {
+                                        nuevoNombreAtributo = modificaAt.newNombre;
+                                        nuevoTipoAtributo = modificaAt.newTipo;
+                                        nuevosBytesAtributo = modificaAt.newBytes;
+                                        if (tipo == 3)
+                                        {
+                                            busq = modificaAt.esBusqueda;
+                                        }
+
+                                        if (modificaAt.esLlave == 0)
+                                        {
+                                            esLlave = true;
+
+                                            if (tipo == 3 && busq == 0)
+                                            {
+                                                toolStripStatusLabel1.Text = "Error, una llave primaria no puede ser llave de busqueda.";
+                                                return;
+                                            }
+                                            else if (tipo == 3)
+                                            {
+                                                esBusqueda = false;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            esLlave = false;
+
+                                            if (tipo == 3 && busq == 0)
+                                            {
+                                                esBusqueda = true;
+                                            }
+                                            else if (tipo == 3 && busq == 1)
+                                            {
+                                                esBusqueda = false;
+                                            }
+                                        }
+                                    }
+                                }
+
+                                Atributo atrTemp = regresa_atributo(textBox3.Text, entidadEncontrada);
+
+                                // Si es el mismo atributo que se va a cambiar
+                                if (es_mismo_atributo(nuevoNombreAtributo, entidadEncontrada, atrTemp) == true)
+                                {
+                                    foreach (Atributo at in entidadEncontrada.listaAtributos)
+                                    {
+                                        if (at.posAtributo == atrTemp.posAtributo)
+                                        {
+                                            at.tipo = nuevoTipoAtributo;
+                                            at.bytes = nuevosBytesAtributo;
+
+                                            // Si ese atributo ya es la unica llave primaria que se tiene
+                                            if (at.esLlavePrimaria == true && verifica_llave_primaria(entidadEncontrada) == true && esLlave == true)
+                                            {
+                                                at.esLlavePrimaria = esLlave;
+                                            }
+                                            // Si el atributo sera la llave primaria y no hay ya una llave primaria.
+                                            else if (at.esLlavePrimaria == false && verifica_llave_primaria(entidadEncontrada) == false &&
+                                                esLlave == true)
+                                            {
+                                                at.esLlavePrimaria = esLlave;
+                                            }
+                                            // Si el atributo quiere ser la llave primaria pero ya hay una llave primaria
+                                            else if (at.esLlavePrimaria == false && verifica_llave_primaria(entidadEncontrada) == true &&
+                                                esLlave == true)
+                                            {
+                                                at.esLlavePrimaria = false;
+                                            }
+                                            // Si no sera la llave primaria
+                                            else if (at.esLlavePrimaria == false && esLlave == false)
+                                            {
+                                                at.esLlavePrimaria = esLlave;
+                                            }
+                                            // Si era la llave primaria pero ya no lo sera
+                                            else if (at.esLlavePrimaria == true && esLlave == false)
+                                            {
+                                                at.esLlavePrimaria = esLlave;
+                                            }
+
+                                            if (tipo == 3)
+                                            {
+                                                at.esLlaveDeBusqueda = esBusqueda;
+                                            }
+
+                                            break;
+                                        }
+                                    }
+
+                                    switch (tipo)
+                                    {
+                                        case 0:
+                                            escribe_archivo(textBox1.Text);
+
+                                            entidadesLeidas = new List<Entidad>();
+
+                                            manejo_dataGrid(textBox1.Text);
+
+                                            manejo_dataGrid_atributos(entidadEncontrada);
+                                            break;
+                                        case 1:
+                                            escribe_archivo_indexado(textBox1.Text);
+
+                                            entidadesLeidas = new List<Entidad>();
+
+                                            manejo_dataGrid_indexado(textBox1.Text);
+
+                                            manejo_dataGrid_atributos(entidadEncontrada);
+                                            break;
+                                        case 2:
+                                            escribe_archivo_hash(textBox1.Text);
+
+                                            entidadesLeidas = new List<Entidad>();
+
+                                            manejo_dataGrid_hash(textBox1.Text);
+
+                                            manejo_dataGrid_atributos(entidadEncontrada);
+                                            break;
+                                        case 3:
+                                            escribe_archivo_multilistas(textBox1.Text);
+
+                                            entidadesLeidas = new List<Entidad>();
+
+                                            manejo_dataGrid_multilistas(textBox1.Text);
+
+                                            manejo_dataGrid_atributos(entidadEncontrada);
+                                            break;
+                                    }
+
+                                    toolStripStatusLabel1.Text = "Atributo modificado con exito.";
+                                }
+                                // Si no es el mismo atributo
+                                else if (valida_atributo(nuevoNombreAtributo, entidadEncontrada) == false)
+                                {
+                                    char[] nuevoNombreArr = new char[30];
+                                    nuevoNombreArr[29] = '\n';
+                                    char[] viejoNombreArr = new char[30];
+                                    viejoNombreArr[29] = '\n';
+
+                                    for (int i = 0; i < nuevoNombreAtributo.Length; i++)
+                                    {
+                                        nuevoNombreArr[i] = nuevoNombreAtributo[i];
+                                    }
+
+                                    for (int i = 0; i < textBox3.Text.Length; i++)
+                                    {
+                                        viejoNombreArr[i] = textBox3.Text[i];
+                                    }
+
+                                    foreach (Atributo at in entidadEncontrada.listaAtributos)
+                                    {
+                                        if (at.nombre.SequenceEqual(viejoNombreArr) == true)
+                                        {
+                                            at.nombre = nuevoNombreArr;
+                                            at.tipo = nuevoTipoAtributo;
+                                            at.bytes = nuevosBytesAtributo;
+
+                                            // Si ese atributo ya es la unica llave primaria que se tiene
+                                            if (at.esLlavePrimaria == true && verifica_llave_primaria(entidadEncontrada) == true && esLlave == true)
+                                            {
+                                                at.esLlavePrimaria = esLlave;
+                                            }
+                                            // Si el atributo sera la llave primaria y no hay ya una llave primaria.
+                                            else if (at.esLlavePrimaria == false && verifica_llave_primaria(entidadEncontrada) == false &&
+                                                esLlave == true)
+                                            {
+                                                at.esLlavePrimaria = esLlave;
+                                            }
+                                            // Si el atributo quiere ser la llave primaria pero ya hay una llave primaria
+                                            else if (at.esLlavePrimaria == false && verifica_llave_primaria(entidadEncontrada) == true &&
+                                                esLlave == true)
+                                            {
+                                                at.esLlavePrimaria = false;
+                                            }
+                                            // Si no sera la llave primaria
+                                            else if (at.esLlavePrimaria == false && esLlave == false)
+                                            {
+                                                at.esLlavePrimaria = esLlave;
+                                            }
+                                            // Si era la llave primaria pero ya no lo sera
+                                            else if (at.esLlavePrimaria == true && esLlave == false)
+                                            {
+                                                at.esLlavePrimaria = esLlave;
+                                            }
+
+                                            if (tipo == 3)
+                                            {
+                                                at.esLlaveDeBusqueda = esBusqueda;
+                                            }
+
+                                            break;
+                                        }
+                                    }
+
+                                    switch (tipo)
+                                    {
+                                        case 0:
+                                            escribe_archivo(textBox1.Text);
+
+                                            entidadesLeidas = new List<Entidad>();
+
+                                            manejo_dataGrid(textBox1.Text);
+
+                                            manejo_dataGrid_atributos(entidadEncontrada);
+                                            break;
+                                        case 1:
+                                            escribe_archivo_indexado(textBox1.Text);
+
+                                            entidadesLeidas = new List<Entidad>();
+
+                                            manejo_dataGrid_indexado(textBox1.Text);
+
+                                            manejo_dataGrid_atributos(entidadEncontrada);
+                                            break;
+                                        case 2:
+                                            escribe_archivo_hash(textBox1.Text);
+
+                                            entidadesLeidas = new List<Entidad>();
+
+                                            manejo_dataGrid_hash(textBox1.Text);
+
+                                            manejo_dataGrid_atributos(entidadEncontrada);
+                                            break;
+                                        case 3:
+                                            escribe_archivo_multilistas(textBox1.Text);
+
+                                            entidadesLeidas = new List<Entidad>();
+
+                                            manejo_dataGrid_hash(textBox1.Text);
+
+                                            manejo_dataGrid_atributos(entidadEncontrada);
+                                            break;
+                                    }
+
+                                    toolStripStatusLabel1.Text = "Atributo modificado con exito.";
+                                }
+                                else
+                                {
+                                    toolStripStatusLabel1.Text = "Error, nombre de atributo duplicado.";
+                                }
                             }
-                            else
+                            else if(tipo == 2)
                             {
-                                toolStripStatusLabel1.Text = "Error, nombre de atributo duplicado.";
+                                if (entidadEncontrada.apCajones > -1)
+                                {
+                                    toolStripStatusLabel1.Text = "Error, la entidad correspondiente tiene datos.";
+                                    return;
+                                }
+
+                                String nuevoNombreAtributo = "";
+                                char nuevoTipoAtributo = ' ';
+                                long nuevosBytesAtributo = 0;
+                                bool esLlave = false;
+                                int busq = 0;
+                                bool esBusqueda = false;
+
+                                using (ModificadorAtributo modificaAt = new ModificadorAtributo(tipo))
+                                {
+                                    var nuevoAtributo = modificaAt.ShowDialog();
+
+                                    if (nuevoAtributo == DialogResult.OK)
+                                    {
+                                        nuevoNombreAtributo = modificaAt.newNombre;
+                                        nuevoTipoAtributo = modificaAt.newTipo;
+                                        nuevosBytesAtributo = modificaAt.newBytes;
+                                        if (tipo == 3)
+                                        {
+                                            busq = modificaAt.esBusqueda;
+                                        }
+
+                                        if (modificaAt.esLlave == 0)
+                                        {
+                                            esLlave = true;
+
+                                            if (tipo == 3 && busq == 0)
+                                            {
+                                                toolStripStatusLabel1.Text = "Error, una llave primaria no puede ser llave de busqueda.";
+                                                return;
+                                            }
+                                            else if (tipo == 3)
+                                            {
+                                                esBusqueda = false;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            esLlave = false;
+
+                                            if (tipo == 3 && busq == 0)
+                                            {
+                                                esBusqueda = true;
+                                            }
+                                            else if (tipo == 3 && busq == 1)
+                                            {
+                                                esBusqueda = false;
+                                            }
+                                        }
+                                    }
+                                }
+
+                                Atributo atrTemp = regresa_atributo(textBox3.Text, entidadEncontrada);
+
+                                // Si es el mismo atributo que se va a cambiar
+                                if (es_mismo_atributo(nuevoNombreAtributo, entidadEncontrada, atrTemp) == true)
+                                {
+                                    foreach (Atributo at in entidadEncontrada.listaAtributos)
+                                    {
+                                        if (at.posAtributo == atrTemp.posAtributo)
+                                        {
+                                            at.tipo = nuevoTipoAtributo;
+                                            at.bytes = nuevosBytesAtributo;
+
+                                            // Si ese atributo ya es la unica llave primaria que se tiene
+                                            if (at.esLlavePrimaria == true && verifica_llave_primaria(entidadEncontrada) == true && esLlave == true)
+                                            {
+                                                at.esLlavePrimaria = esLlave;
+                                            }
+                                            // Si el atributo sera la llave primaria y no hay ya una llave primaria.
+                                            else if (at.esLlavePrimaria == false && verifica_llave_primaria(entidadEncontrada) == false &&
+                                                esLlave == true)
+                                            {
+                                                at.esLlavePrimaria = esLlave;
+                                            }
+                                            // Si el atributo quiere ser la llave primaria pero ya hay una llave primaria
+                                            else if (at.esLlavePrimaria == false && verifica_llave_primaria(entidadEncontrada) == true &&
+                                                esLlave == true)
+                                            {
+                                                at.esLlavePrimaria = false;
+                                            }
+                                            // Si no sera la llave primaria
+                                            else if (at.esLlavePrimaria == false && esLlave == false)
+                                            {
+                                                at.esLlavePrimaria = esLlave;
+                                            }
+                                            // Si era la llave primaria pero ya no lo sera
+                                            else if (at.esLlavePrimaria == true && esLlave == false)
+                                            {
+                                                at.esLlavePrimaria = esLlave;
+                                            }
+
+                                            if (tipo == 3)
+                                            {
+                                                at.esLlaveDeBusqueda = esBusqueda;
+                                            }
+
+                                            break;
+                                        }
+                                    }
+
+                                    switch (tipo)
+                                    {
+                                        case 0:
+                                            escribe_archivo(textBox1.Text);
+
+                                            entidadesLeidas = new List<Entidad>();
+
+                                            manejo_dataGrid(textBox1.Text);
+
+                                            manejo_dataGrid_atributos(entidadEncontrada);
+                                            break;
+                                        case 1:
+                                            escribe_archivo_indexado(textBox1.Text);
+
+                                            entidadesLeidas = new List<Entidad>();
+
+                                            manejo_dataGrid_indexado(textBox1.Text);
+
+                                            manejo_dataGrid_atributos(entidadEncontrada);
+                                            break;
+                                        case 2:
+                                            escribe_archivo_hash(textBox1.Text);
+
+                                            entidadesLeidas = new List<Entidad>();
+
+                                            manejo_dataGrid_hash(textBox1.Text);
+
+                                            manejo_dataGrid_atributos(entidadEncontrada);
+                                            break;
+                                        case 3:
+                                            escribe_archivo_multilistas(textBox1.Text);
+
+                                            entidadesLeidas = new List<Entidad>();
+
+                                            manejo_dataGrid_multilistas(textBox1.Text);
+
+                                            manejo_dataGrid_atributos(entidadEncontrada);
+                                            break;
+                                    }
+
+                                    toolStripStatusLabel1.Text = "Atributo modificado con exito.";
+                                }
+                                // Si no es el mismo atributo
+                                else if (valida_atributo(nuevoNombreAtributo, entidadEncontrada) == false)
+                                {
+                                    char[] nuevoNombreArr = new char[30];
+                                    nuevoNombreArr[29] = '\n';
+                                    char[] viejoNombreArr = new char[30];
+                                    viejoNombreArr[29] = '\n';
+
+                                    for (int i = 0; i < nuevoNombreAtributo.Length; i++)
+                                    {
+                                        nuevoNombreArr[i] = nuevoNombreAtributo[i];
+                                    }
+
+                                    for (int i = 0; i < textBox3.Text.Length; i++)
+                                    {
+                                        viejoNombreArr[i] = textBox3.Text[i];
+                                    }
+
+                                    foreach (Atributo at in entidadEncontrada.listaAtributos)
+                                    {
+                                        if (at.nombre.SequenceEqual(viejoNombreArr) == true)
+                                        {
+                                            at.nombre = nuevoNombreArr;
+                                            at.tipo = nuevoTipoAtributo;
+                                            at.bytes = nuevosBytesAtributo;
+
+                                            // Si ese atributo ya es la unica llave primaria que se tiene
+                                            if (at.esLlavePrimaria == true && verifica_llave_primaria(entidadEncontrada) == true && esLlave == true)
+                                            {
+                                                at.esLlavePrimaria = esLlave;
+                                            }
+                                            // Si el atributo sera la llave primaria y no hay ya una llave primaria.
+                                            else if (at.esLlavePrimaria == false && verifica_llave_primaria(entidadEncontrada) == false &&
+                                                esLlave == true)
+                                            {
+                                                at.esLlavePrimaria = esLlave;
+                                            }
+                                            // Si el atributo quiere ser la llave primaria pero ya hay una llave primaria
+                                            else if (at.esLlavePrimaria == false && verifica_llave_primaria(entidadEncontrada) == true &&
+                                                esLlave == true)
+                                            {
+                                                at.esLlavePrimaria = false;
+                                            }
+                                            // Si no sera la llave primaria
+                                            else if (at.esLlavePrimaria == false && esLlave == false)
+                                            {
+                                                at.esLlavePrimaria = esLlave;
+                                            }
+                                            // Si era la llave primaria pero ya no lo sera
+                                            else if (at.esLlavePrimaria == true && esLlave == false)
+                                            {
+                                                at.esLlavePrimaria = esLlave;
+                                            }
+
+                                            if (tipo == 3)
+                                            {
+                                                at.esLlaveDeBusqueda = esBusqueda;
+                                            }
+
+                                            break;
+                                        }
+                                    }
+
+                                    switch (tipo)
+                                    {
+                                        case 0:
+                                            escribe_archivo(textBox1.Text);
+
+                                            entidadesLeidas = new List<Entidad>();
+
+                                            manejo_dataGrid(textBox1.Text);
+
+                                            manejo_dataGrid_atributos(entidadEncontrada);
+                                            break;
+                                        case 1:
+                                            escribe_archivo_indexado(textBox1.Text);
+
+                                            entidadesLeidas = new List<Entidad>();
+
+                                            manejo_dataGrid_indexado(textBox1.Text);
+
+                                            manejo_dataGrid_atributos(entidadEncontrada);
+                                            break;
+                                        case 2:
+                                            escribe_archivo_hash(textBox1.Text);
+
+                                            entidadesLeidas = new List<Entidad>();
+
+                                            manejo_dataGrid_hash(textBox1.Text);
+
+                                            manejo_dataGrid_atributos(entidadEncontrada);
+                                            break;
+                                        case 3:
+                                            escribe_archivo_multilistas(textBox1.Text);
+
+                                            entidadesLeidas = new List<Entidad>();
+
+                                            manejo_dataGrid_hash(textBox1.Text);
+
+                                            manejo_dataGrid_atributos(entidadEncontrada);
+                                            break;
+                                    }
+
+                                    toolStripStatusLabel1.Text = "Atributo modificado con exito.";
+                                }
+                                else
+                                {
+                                    toolStripStatusLabel1.Text = "Error, nombre de atributo duplicado.";
+                                }
+                            }
+                            else if(tipo == 3)
+                            {
+                                if (revisa_datos_entidad_vacia(entidadEncontrada) == false)
+                                {
+                                    toolStripStatusLabel1.Text = "Error, la entidad correspondiente tiene datos.";
+                                    return;
+                                }
+
+                                String nuevoNombreAtributo = "";
+                                char nuevoTipoAtributo = ' ';
+                                long nuevosBytesAtributo = 0;
+                                bool esLlave = false;
+                                int busq = 0;
+                                bool esBusqueda = false;
+
+                                using (ModificadorAtributo modificaAt = new ModificadorAtributo(tipo))
+                                {
+                                    var nuevoAtributo = modificaAt.ShowDialog();
+
+                                    if (nuevoAtributo == DialogResult.OK)
+                                    {
+                                        nuevoNombreAtributo = modificaAt.newNombre;
+                                        nuevoTipoAtributo = modificaAt.newTipo;
+                                        nuevosBytesAtributo = modificaAt.newBytes;
+                                        if (tipo == 3)
+                                        {
+                                            busq = modificaAt.esBusqueda;
+                                        }
+
+                                        if (modificaAt.esLlave == 0)
+                                        {
+                                            esLlave = true;
+
+                                            if (tipo == 3 && busq == 0)
+                                            {
+                                                toolStripStatusLabel1.Text = "Error, una llave primaria no puede ser llave de busqueda.";
+                                                return;
+                                            }
+                                            else if (tipo == 3)
+                                            {
+                                                esBusqueda = false;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            esLlave = false;
+
+                                            if (tipo == 3 && busq == 0)
+                                            {
+                                                esBusqueda = true;
+                                            }
+                                            else if (tipo == 3 && busq == 1)
+                                            {
+                                                esBusqueda = false;
+                                            }
+                                        }
+                                    }
+                                }
+
+                                Atributo atrTemp = regresa_atributo(textBox3.Text, entidadEncontrada);
+
+                                // Si es el mismo atributo que se va a cambiar
+                                if (es_mismo_atributo(nuevoNombreAtributo, entidadEncontrada, atrTemp) == true)
+                                {
+                                    foreach (Atributo at in entidadEncontrada.listaAtributos)
+                                    {
+                                        if (at.posAtributo == atrTemp.posAtributo)
+                                        {
+                                            at.tipo = nuevoTipoAtributo;
+                                            at.bytes = nuevosBytesAtributo;
+
+                                            // Si ese atributo ya es la unica llave primaria que se tiene
+                                            if (at.esLlavePrimaria == true && verifica_llave_primaria(entidadEncontrada) == true && esLlave == true)
+                                            {
+                                                at.esLlavePrimaria = esLlave;
+                                            }
+                                            // Si el atributo sera la llave primaria y no hay ya una llave primaria.
+                                            else if (at.esLlavePrimaria == false && verifica_llave_primaria(entidadEncontrada) == false &&
+                                                esLlave == true)
+                                            {
+                                                at.esLlavePrimaria = esLlave;
+                                            }
+                                            // Si el atributo quiere ser la llave primaria pero ya hay una llave primaria
+                                            else if (at.esLlavePrimaria == false && verifica_llave_primaria(entidadEncontrada) == true &&
+                                                esLlave == true)
+                                            {
+                                                at.esLlavePrimaria = false;
+                                            }
+                                            // Si no sera la llave primaria
+                                            else if (at.esLlavePrimaria == false && esLlave == false)
+                                            {
+                                                at.esLlavePrimaria = esLlave;
+                                            }
+                                            // Si era la llave primaria pero ya no lo sera
+                                            else if (at.esLlavePrimaria == true && esLlave == false)
+                                            {
+                                                at.esLlavePrimaria = esLlave;
+                                            }
+
+                                            if (tipo == 3)
+                                            {
+                                                at.esLlaveDeBusqueda = esBusqueda;
+                                            }
+
+                                            break;
+                                        }
+                                    }
+
+                                    switch (tipo)
+                                    {
+                                        case 0:
+                                            escribe_archivo(textBox1.Text);
+
+                                            entidadesLeidas = new List<Entidad>();
+
+                                            manejo_dataGrid(textBox1.Text);
+
+                                            manejo_dataGrid_atributos(entidadEncontrada);
+                                            break;
+                                        case 1:
+                                            escribe_archivo_indexado(textBox1.Text);
+
+                                            entidadesLeidas = new List<Entidad>();
+
+                                            manejo_dataGrid_indexado(textBox1.Text);
+
+                                            manejo_dataGrid_atributos(entidadEncontrada);
+                                            break;
+                                        case 2:
+                                            escribe_archivo_hash(textBox1.Text);
+
+                                            entidadesLeidas = new List<Entidad>();
+
+                                            manejo_dataGrid_hash(textBox1.Text);
+
+                                            manejo_dataGrid_atributos(entidadEncontrada);
+                                            break;
+                                        case 3:
+                                            escribe_archivo_multilistas(textBox1.Text);
+
+                                            entidadesLeidas = new List<Entidad>();
+
+                                            manejo_dataGrid_multilistas(textBox1.Text);
+
+                                            manejo_dataGrid_atributos(entidadEncontrada);
+                                            break;
+                                    }
+
+                                    toolStripStatusLabel1.Text = "Atributo modificado con exito.";
+                                }
+                                // Si no es el mismo atributo
+                                else if (valida_atributo(nuevoNombreAtributo, entidadEncontrada) == false)
+                                {
+                                    char[] nuevoNombreArr = new char[30];
+                                    nuevoNombreArr[29] = '\n';
+                                    char[] viejoNombreArr = new char[30];
+                                    viejoNombreArr[29] = '\n';
+
+                                    for (int i = 0; i < nuevoNombreAtributo.Length; i++)
+                                    {
+                                        nuevoNombreArr[i] = nuevoNombreAtributo[i];
+                                    }
+
+                                    for (int i = 0; i < textBox3.Text.Length; i++)
+                                    {
+                                        viejoNombreArr[i] = textBox3.Text[i];
+                                    }
+
+                                    foreach (Atributo at in entidadEncontrada.listaAtributos)
+                                    {
+                                        if (at.nombre.SequenceEqual(viejoNombreArr) == true)
+                                        {
+                                            at.nombre = nuevoNombreArr;
+                                            at.tipo = nuevoTipoAtributo;
+                                            at.bytes = nuevosBytesAtributo;
+
+                                            // Si ese atributo ya es la unica llave primaria que se tiene
+                                            if (at.esLlavePrimaria == true && verifica_llave_primaria(entidadEncontrada) == true && esLlave == true)
+                                            {
+                                                at.esLlavePrimaria = esLlave;
+                                            }
+                                            // Si el atributo sera la llave primaria y no hay ya una llave primaria.
+                                            else if (at.esLlavePrimaria == false && verifica_llave_primaria(entidadEncontrada) == false &&
+                                                esLlave == true)
+                                            {
+                                                at.esLlavePrimaria = esLlave;
+                                            }
+                                            // Si el atributo quiere ser la llave primaria pero ya hay una llave primaria
+                                            else if (at.esLlavePrimaria == false && verifica_llave_primaria(entidadEncontrada) == true &&
+                                                esLlave == true)
+                                            {
+                                                at.esLlavePrimaria = false;
+                                            }
+                                            // Si no sera la llave primaria
+                                            else if (at.esLlavePrimaria == false && esLlave == false)
+                                            {
+                                                at.esLlavePrimaria = esLlave;
+                                            }
+                                            // Si era la llave primaria pero ya no lo sera
+                                            else if (at.esLlavePrimaria == true && esLlave == false)
+                                            {
+                                                at.esLlavePrimaria = esLlave;
+                                            }
+
+                                            if (tipo == 3)
+                                            {
+                                                at.esLlaveDeBusqueda = esBusqueda;
+                                            }
+
+                                            break;
+                                        }
+                                    }
+
+                                    switch (tipo)
+                                    {
+                                        case 0:
+                                            escribe_archivo(textBox1.Text);
+
+                                            entidadesLeidas = new List<Entidad>();
+
+                                            manejo_dataGrid(textBox1.Text);
+
+                                            manejo_dataGrid_atributos(entidadEncontrada);
+                                            break;
+                                        case 1:
+                                            escribe_archivo_indexado(textBox1.Text);
+
+                                            entidadesLeidas = new List<Entidad>();
+
+                                            manejo_dataGrid_indexado(textBox1.Text);
+
+                                            manejo_dataGrid_atributos(entidadEncontrada);
+                                            break;
+                                        case 2:
+                                            escribe_archivo_hash(textBox1.Text);
+
+                                            entidadesLeidas = new List<Entidad>();
+
+                                            manejo_dataGrid_hash(textBox1.Text);
+
+                                            manejo_dataGrid_atributos(entidadEncontrada);
+                                            break;
+                                        case 3:
+                                            escribe_archivo_multilistas(textBox1.Text);
+
+                                            entidadesLeidas = new List<Entidad>();
+
+                                            manejo_dataGrid_multilistas(textBox1.Text);
+
+                                            manejo_dataGrid_atributos(entidadEncontrada);
+                                            break;
+                                    }
+
+                                    toolStripStatusLabel1.Text = "Atributo modificado con exito.";
+                                }
+                                else
+                                {
+                                    toolStripStatusLabel1.Text = "Error, nombre de atributo duplicado.";
+                                }
                             }
                         }
                         else
@@ -4010,7 +4955,7 @@ namespace ArchivosTarea2
                                     }
                                     break;
                                 case 3:
-                                    if (entidadEncontrada.apCabeceras > -1)
+                                    if (revisa_datos_entidad_vacia(entidadEncontrada) == false)
                                     {
                                         toolStripStatusLabel1.Text = "Error, la entidad correspondiente tiene datos.";
                                         return;
@@ -4501,6 +5446,45 @@ namespace ArchivosTarea2
                     toolStripStatusLabel1.Text = "Error, esta entidad no tiene atributos o llave primaria.";
                 }
             }
+        }
+
+        /// <summary>
+        /// Boton que revisa si una entidad aun tiene datos
+        /// </summary>
+        /// <param name="ent">La entidad que tiene los datos.</param>
+        /// <returns>Booleano que indica si la lista de datos de la entidad esta vacia o no.</returns>
+        private bool revisa_datos_entidad_vacia(Entidad ent)
+        {
+            bool vacia = false;
+            int countDatos = 0;
+            int indiceLlave = 0;
+
+            foreach(Atributo atr in ent.listaAtributos)
+            {
+                if(atr.esLlavePrimaria == true)
+                {
+                    break;
+                }
+                else
+                {
+                    indiceLlave++;
+                }
+            }
+
+            foreach(Dato dat in ent.listaDatos)
+            {
+                if (dat.apuntadoresLlaveBusq[indiceLlave] != -2 && dat.apuntadoresLlaveBusq[indiceLlave] != -4)
+                {
+                    countDatos++;
+                }
+            }
+
+            if(countDatos == 0)
+            {
+                vacia = true;
+            }
+
+            return vacia;
         }
     }
 }

@@ -246,7 +246,7 @@ namespace ArchivosTarea2
                             if (res.Length > (atr.bytes / 2))
                             {
                                 int start = Convert.ToInt32(atr.bytes);
-                                start = start / 2;
+                                start = (start / 2) - 1;
                                 int count = res.Length - start;
                                 res = res.Remove(start, count);
                             }
