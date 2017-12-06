@@ -1206,7 +1206,6 @@ namespace ArchivosTarea2
                     ent.listaDatos.Add(datoInsertar);
                 }
 
-                // actualiza_cabeceras(datoInsertar);
                 actualiza_todo();
                 inicia_dataGrid_cabeceras();
                 inicia_dataGrid_datos();

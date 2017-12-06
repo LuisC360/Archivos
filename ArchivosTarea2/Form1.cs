@@ -554,9 +554,7 @@ namespace ArchivosTarea2
 
                                 manejo_dataGrid_multilistas(textBox1.Text);
                                 break;
-                        }
-
-                        //actualiza_archivo_entidad(eN, nuevoNombreArr, eN.apAtributos, eN.apDatos, eN.posEntidad, eN.apSigEntidad);
+                        }                       
 
                         toolStripStatusLabel1.Text = "Entidad modificada con exito.";
                     }

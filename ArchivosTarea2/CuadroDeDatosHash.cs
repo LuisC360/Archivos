@@ -305,7 +305,7 @@ namespace ArchivosTarea2
             dataGridView3.ColumnCount = numAtributos + 1;
             dataGridView3.ColumnHeadersVisible = true;
 
-            string[] fila = new string[(int)numAtributos + 1];
+            string[] fila = new string[numAtributos + 1];
             List<String[]> filas = new List<string[]>();
             Dato datoCubeta = cub.regresa_datoCubeta();
             int count = 0;
