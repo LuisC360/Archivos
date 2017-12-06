@@ -428,7 +428,6 @@ namespace ArchivosTarea2
             bool duplicada = false;
 
             List<Dato> datosOrdenados = new List<Dato>();
-            Dato muestra = ent.listaDatos[0];
 
             if (ent.listaAtributos[indiceLlavePrimaria].tipo == 'S')
             {

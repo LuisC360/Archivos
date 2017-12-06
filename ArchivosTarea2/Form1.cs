@@ -3433,25 +3433,6 @@ namespace ArchivosTarea2
         }
 
         /// <summary>
-        /// Metodo que transforma el dato de la llave primaria de todos los datos a arreglos de caracteres.
-        /// </summary>
-        /// <param name="ent">La entidad con la lista de datos.</param>
-        /// <returns>La lista de datos con algunos datos cambiados en su tipo de cadenas de caracteres a strings.</returns>
-        private List<Dato> regresa_lista_string(Entidad ent, int indiceLlave)
-        {
-            // No se puede convertir de string a arreglo de caracteres
-            foreach (Dato dat in ent.listaDatos)
-            {
-                if (dat.datos[indiceLlave] is char[])
-                {
-                    dat.datos[indiceLlave] = new string((char[])dat.datos[indiceLlave]);
-                }
-            }
-
-            return ent.listaDatos;
-        }
-
-        /// <summary>
         /// Boton para añadir un atributo a una entidad.
         /// </summary>
         /// <param name="sender">Sender.</param>
